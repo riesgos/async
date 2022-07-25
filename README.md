@@ -6,6 +6,8 @@
     - so that I have an overview of the spread of possible values 
  - As a user, I want to be able to request new data by specifying parameters like: "I'm interested in eq's of magnitude 7.5 and using the USGS-grid", *leaving out* some other parameters, 
     - so that I can fill any gaps in the catalogue where I'm interested in data that isn't already there.
+    - all conditional on one selected eq from catalog (=mag, location, angle etc)
+   
 
 
 ## Architecture
