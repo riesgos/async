@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  queue:
+    image: apachepulsar/pulsar-standalone
+    ports:
+      - 80:80
+      - 8080:8080
+      - 6650:6650
+    volumes:
+      - pulsardata:/pulsar/data
+      - pulsarconf:/pulsar/conf
+  db:
+    image: postgres:14.1-alpine
+    depends_on:
+      - queue
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+
+volumes:
+  postgresdata:
+  pulsardata:
+  pulsarconf:
