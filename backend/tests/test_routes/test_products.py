@@ -53,6 +53,21 @@ def test_read_product_list_one():
             "service": "shakyground"
         }]
 
+def test_read_product_list_101():
+    for session in overwrite_get_db():
+        for i in range(101):
+            product = Product(service="shakyground")
+            session.add(product)
+            session.commit()
+        # In the first page we have 100 products.
+        response = client.get(f"{ROOT_PATH}/products")
+        assert response.status_code == 200
+        assert len(response.json()) == 100
+        # On the second one we have only one left.
+        response2 = client.get(f"{ROOT_PATH}/products?skip=100")
+        assert response2.status_code == 200
+        assert len(response2.json()) == 1
+
 def test_read_product_detail_one():
     for session in overwrite_get_db():
         product = Product(service="shakyground")
