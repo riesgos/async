@@ -9,6 +9,8 @@ import { AlertService } from './components/global-alert/alert.service';
 import { GlobalProgressComponent } from './components/global-progress/global-progress.component';
 import { ProgressService } from './components/global-progress/progress.service';
 import { ExampleViewComponent } from './views/example-view/example-view.component';
+import { PulsarService } from './services/pulsar.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -22,10 +24,12 @@ import { ExampleViewComponent } from './views/example-view/example-view.componen
     BrowserModule,
     BrowserAnimationsModule,
     ClarityModule,
+    FormsModule
   ],
   providers: [
     AlertService,
-    ProgressService
+    ProgressService,
+    PulsarService
   ],
   bootstrap: [AppComponent]
 })

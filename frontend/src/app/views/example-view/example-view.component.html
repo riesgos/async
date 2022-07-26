@@ -1,14 +1,19 @@
 <main class="content-area">
-  <p>This is the content-area</p>
+  <p [innerText]="messages"></p>
 </main>
 
-<clr-vertical-nav class="right">
-</clr-vertical-nav>
+<!-- <clr-vertical-nav class="right">
+</clr-vertical-nav> -->
 
 <nav class="sidenav">
-  <a href="">Test link</a>
+  <button class="btn btn-primary" (click)="connect()">Connect</button>
+  <button class="btn btn-primary" (click)="disconnect()">Disconnect</button>
+
+
+  <input clrInput type="text" [(ngModel)]="messageInput" />
+  <button class="btn btn-primary" (click)="send()">Send</button>
 </nav>
 
-<section class="footer ukis-footer">
+<!-- <section class="footer ukis-footer">
 
-</section>
+</section> -->

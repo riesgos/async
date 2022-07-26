@@ -1,4 +1,5 @@
 import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
+import { PulsarService } from 'src/app/services/pulsar.service';
 
 
 
@@ -10,12 +11,31 @@ import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
 })
 export class ExampleViewComponent implements OnInit, OnDestroy {
   @HostBinding('class') class = 'content-container';
-  constructor() { }
+
+  public messages: string = '';
+  public messageInput: string = 'Test Message';
+  constructor(private pulsarSvc: PulsarService) { }
   ngOnInit() {
 
   }
 
   ngOnDestroy() {
 
+  }
+
+  connect() {
+    this.pulsarSvc.connect();
+    this.pulsarSvc.socket$.subscribe(data => {
+      console.log(data);
+      this.messages += `; ${data}`;
+    });
+  }
+
+  disconnect() {
+    this.pulsarSvc.close();
+  }
+
+  send() {
+    this.pulsarSvc.sendMessage(this.messageInput);
   }
 }
