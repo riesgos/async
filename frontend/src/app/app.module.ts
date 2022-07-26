@@ -8,9 +8,13 @@ import { GlobalAlertComponent } from './components/global-alert/global-alert.com
 import { AlertService } from './components/global-alert/alert.service';
 import { GlobalProgressComponent } from './components/global-progress/global-progress.component';
 import { ProgressService } from './components/global-progress/progress.service';
-import { ExampleViewComponent } from './views/example-view/example-view.component';
-import { PulsarService } from './services/pulsar.service';
-import { FormsModule } from '@angular/forms';
+import { OrderService } from './services/order.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UkisRoutingModule } from "./app-routing.module";
+import { CatalogViewComponent } from './views/catalog-view/catalog-view.component';
+import { OrderViewComponent } from './views/order-view/order-view.component';
+
+
 
 @NgModule({
   declarations: [
@@ -18,18 +22,21 @@ import { FormsModule } from '@angular/forms';
     HeaderComponent,
     GlobalAlertComponent,
     GlobalProgressComponent,
-    ExampleViewComponent
+    CatalogViewComponent,
+    OrderViewComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     ClarityModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    UkisRoutingModule
   ],
   providers: [
     AlertService,
     ProgressService,
-    PulsarService
+    OrderService
   ],
   bootstrap: [AppComponent]
 })
