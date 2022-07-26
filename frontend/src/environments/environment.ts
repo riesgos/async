@@ -11,7 +11,8 @@ const producerConsumer: 'producer' | 'consumer' = 'consumer';
 
 export const environment = {
   production: false,
-  pulsarWS: `wss://socketsbay.com/wss/v2/2/demo/`
+  pulsarWS: `ws://localhost:8080`
+  // pulsarWS: `wss://socketsbay.com/wss/v2/2/demo/`
   // pulsarWS: `ws://rz-vm154.gfz-potsdam.de:8080/ws/v2/${producerConsumer}/non-persistent/public/standalone/digital-earth/${topic}`
 };
 
