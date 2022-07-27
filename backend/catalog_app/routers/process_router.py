@@ -14,10 +14,13 @@ def read_list(
     skip: int = 0,
     limit: int = 100,
     wps_identifier: Optional[str] = None,
+    wps_url: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
     """Return the list of processes."""
-    return crud.get_processes(db, skip=skip, limit=limit, wps_identifier=wps_identifier)
+    return crud.get_processes(
+        db, skip=skip, limit=limit, wps_identifier=wps_identifier, wps_url=wps_url
+    )
 
 
 @process_router.get("/{process_id}", response_model=schemas.Process)

@@ -170,11 +170,17 @@ def get_order_job_ref(db: Session, order_job_ref_id: int):
 
 
 def get_processes(
-    db: Session, skip: int = 0, limit: int = 100, wps_identifier: Optional[str] = None
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    wps_identifier: Optional[str] = None,
+    wps_url: Optional[str] = None,
 ):
     query = db.query(Process)
     if wps_identifier is not None:
         query = query.filter(Process.wps_identifier == wps_identifier)
+    if wps_url is not None:
+        query = query.filter(Process.wps_url == wps_url)
     return query.offset(skip).limit(limit).all()
 
 

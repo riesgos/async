@@ -29,9 +29,12 @@ def test_read_order_list_one(session, client):
 def test_read_order_list_filter_user_id(session, client):
     user1 = User(email="homer.j@fox.at")
     user2 = User(email="m.simp@fox.at")
-    order1 = Order(user=user1, order_constraints={
-        "gmpe": ["Abrahamson"],
-    })
+    order1 = Order(
+        user=user1,
+        order_constraints={
+            "gmpe": ["Abrahamson"],
+        },
+    )
     order2 = Order(user=user2, order_constraints={})
     session.add_all([user1, user2, order1, order2])
     session.commit()
@@ -41,9 +44,7 @@ def test_read_order_list_filter_user_id(session, client):
         {
             "id": order1.id,
             "user_id": user1.id,
-            "order_constraints": {
-                "gmpe": ["Abrahamson"]
-            }
+            "order_constraints": {"gmpe": ["Abrahamson"]},
         }
     ]
 
@@ -67,9 +68,12 @@ def test_read_order_list_101(session, client):
 
 def test_read_order_detail_one(session, client):
     user = User(email="homer.j@fox.at")
-    order = Order(user=user, order_constraints={
-        "gmpe": ["Abrahamson"],
-    })
+    order = Order(
+        user=user,
+        order_constraints={
+            "gmpe": ["Abrahamson"],
+        },
+    )
     session.add_all([user, order])
     session.commit()
     response = client.get(f"{ROOT_PATH}/orders/{order.id}")
@@ -77,9 +81,7 @@ def test_read_order_detail_one(session, client):
     assert response.json() == {
         "id": order.id,
         "user_id": user.id,
-        "order_constraints": {
-            "gmpe": ["Abrahamson"]
-        }
+        "order_constraints": {"gmpe": ["Abrahamson"]},
     }
 
 

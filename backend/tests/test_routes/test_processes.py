@@ -45,6 +45,29 @@ def test_read_process_list_filter_wps_identifier(session, client):
     ]
 
 
+def test_read_process_list_filter_wps_url(session, client):
+    process1 = Process(
+        wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="shakyground"
+    )
+    process2 = Process(wps_url="https://rz-vm141.gfz-potsdam.de", wps_identifier="deus")
+    session.add_all([process1, process2])
+    session.commit()
+    response = client.get(
+        f"{ROOT_PATH}/processes",
+        params={
+            "wps_url": "https://rz-vm140.gfz-potsdam.de",
+        },
+    )
+    assert response.status_code == 200
+    assert response.json() == [
+        {
+            "id": process1.id,
+            "wps_url": "https://rz-vm140.gfz-potsdam.de",
+            "wps_identifier": "shakyground",
+        }
+    ]
+
+
 def test_read_process_list_101(session, client):
     for i in range(101):
         process = Process(
