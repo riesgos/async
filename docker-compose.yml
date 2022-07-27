@@ -3,6 +3,8 @@ version: "3.8"
 services:
   queue:
     image: apachepulsar/pulsar-standalone
+    environment:
+      - LOG4J_FORMAT_MSG_NO_LOOKUPS: 'true'
     ports:
       - 80:80
       - 8080:8080
@@ -12,8 +14,6 @@ services:
       - pulsarconf:/pulsar/conf
   db:
     image: postgres:14.1-alpine
-    depends_on:
-      - queue
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres

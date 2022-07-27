@@ -11,7 +11,6 @@ export class Producer {
         port: number = 8080,
         storageType: StorageType = "non-persistent",
         tenant = "public",
-        clusterRegion = "standalone",
         namespace = "default",
         topic: string = "riesgos") {
 
@@ -21,7 +20,7 @@ export class Producer {
         // @TODO: consumer, auto-ack
         const clientType: ClientType = "producer";
 
-        this.ws = new WebSocket(`${protocol}://${domain}:${port}/ws/v2/${clientType}/${storageType}/${tenant}/${clusterRegion}/${namespace}/${topic}`);
+        this.ws = new WebSocket(`${protocol}://${domain}:${port}/ws/v2/${clientType}/${storageType}/${tenant}/${namespace}/${topic}`);
     }
 
     public postMessage(body: string, properties?: { [key: string]: string }, context?: string): Observable<Response> {
@@ -54,7 +53,7 @@ type ClientType = 'producer' | 'consumer';
 type StorageType = 'persistent' | 'non-persistent';
 
 export interface Response {
-    result: 'ok',
+    result: 'ok' | string,
     messageId: string,
     errorCode: number,
     schemaVersion: number
