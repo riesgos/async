@@ -14,16 +14,8 @@ create table users (
 create table orders (
   id serial,
   user_id bigint,
+  order_constraints jsonb,
   primary key (id)
-);
-
-create table order_constraints (
-  id serial,
-  order_id bigint,
-  key varchar(256),
-  constraint_value varchar(256),
-  primary key (id),
-  foreign key (order_id) references orders(id)
 );
 
 create table jobs (

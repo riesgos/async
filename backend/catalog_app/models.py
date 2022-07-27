@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, Text, JSON
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -24,17 +24,8 @@ class Order(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="orders")
-    constraints = relationship("OrderConstraint", back_populates="order")
+    order_constraints = Column(JSON)
     order_job_refs = relationship("OrderJobRef", back_populates="order")
-
-
-class OrderConstraint(Base):
-    __tablename__ = "order_constraints"
-    id = Column(Integer, primary_key=True)
-    order_id = Column(Integer, ForeignKey("orders.id"))
-    order = relationship("Order", back_populates="constraints")
-    key = Column(String(256))
-    constraint_value = Column(String(256))
 
 
 class Job(Base):

@@ -4,7 +4,6 @@ from .complex_output_as_input_router import complex_output_as_input_router
 from .complex_output_router import complex_output_router
 from .job_router import job_router
 from .literal_input_router import literal_input_router
-from .order_constraint_router import order_constraint_router
 from .order_job_ref_router import order_job_ref_router
 from .order_router import order_router
 from .process_router import process_router

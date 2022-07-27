@@ -10,7 +10,6 @@ from .models import (
     Job,
     LiteralInput,
     Order,
-    OrderConstraint,
     OrderJobRef,
     Process,
     User,
@@ -149,29 +148,6 @@ def get_orders(
 
 def get_order(db: Session, order_id: int):
     return db.query(Order).filter(Order.id == order_id).first()
-
-
-def get_order_constraints(
-    db: Session,
-    skip: int = 0,
-    limit: int = 100,
-    order_id: Optional[int] = None,
-    key: Optional[str] = None,
-):
-    query = db.query(OrderConstraint)
-    if order_id is not None:
-        query = query.filter(OrderConstraint.order_id == order_id)
-    if key is not None:
-        query = query.filter(OrderConstraint.key == key)
-    return query.offset(skip).limit(limit).all()
-
-
-def get_order_constraint(db: Session, order_constraint_id: int):
-    return (
-        db.query(OrderConstraint)
-        .filter(OrderConstraint.id == order_constraint_id)
-        .first()
-    )
 
 
 def get_order_job_refs(

@@ -90,22 +90,10 @@ class LiteralInput(LiteralInputBase):
 
 class OrderBase(BaseModel):
     user_id: int
+    order_constraints: dict
 
 
 class Order(OrderBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
-class OrderConstraintBase(BaseModel):
-    order_id: int
-    key: str
-    constraint_value: str
-
-
-class OrderConstraint(OrderConstraintBase):
     id: int
 
     class Config:
