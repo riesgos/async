@@ -63,6 +63,7 @@ class ComplexOutput(Base):
     link = Column(String(1024))
     mime_type = Column(String(64))
     xmlschema = Column(String(256))
+    encoding = Column(String(16))
     inputs = relationship("ComplexOutputAsInput", back_populates="complex_output")
 
 
@@ -85,6 +86,7 @@ class ComplexInput(Base):
     link = Column(String(1024))
     mime_type = Column(String(64))
     xmlschema = Column(String(256))
+    encoding = Column(String(16))
 
 
 class LiteralInput(Base):

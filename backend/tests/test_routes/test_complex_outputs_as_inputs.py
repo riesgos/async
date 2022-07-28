@@ -21,6 +21,7 @@ def test_read_complex_output_as_input_list_one(session, client):
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     complex_output_as_input = ComplexOutputAsInput(
         complex_output=complex_output, job=job, wps_identifier="intensity"
@@ -50,6 +51,7 @@ def test_read_complex_output_as_input_list_filter_wps_identifier(session, client
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     complex_output_as_input1 = ComplexOutputAsInput(
         complex_output=complex_output, job=job, wps_identifier="intensity1"
@@ -93,6 +95,7 @@ def test_read_complex_output_as_input_list_filter_job_id(session, client):
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     complex_output_as_input1 = ComplexOutputAsInput(
         complex_output=complex_output, job=job1, wps_identifier="intensity1"
@@ -137,6 +140,7 @@ def test_read_complex_output_as_input_list_101(session, client):
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     session.add_all([process, job, complex_output])
     for i in range(101):
@@ -166,6 +170,7 @@ def test_read_complex_output_as_input_detail_one(session, client):
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     complex_output_as_input = ComplexOutputAsInput(
         complex_output=complex_output, job=job, wps_identifier="intensity"

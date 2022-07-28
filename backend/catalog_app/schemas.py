@@ -26,6 +26,7 @@ class ComplexInputBase(BaseModel):
     link: str
     mime_type: str
     xmlschema: Optional[str]
+    encoding: str
 
 
 class ComplexInput(ComplexInputBase):
@@ -41,6 +42,7 @@ class ComplexOutputBase(BaseModel):
     link: str
     mime_type: str
     xmlschema: Optional[str]
+    encoding: str
 
 
 class ComplexOutput(ComplexOutputBase):

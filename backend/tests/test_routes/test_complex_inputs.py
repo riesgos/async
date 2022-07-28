@@ -21,6 +21,7 @@ def test_read_complex_input_list_one(session, client):
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     session.add_all([process, job, complex_input])
     session.commit()
@@ -34,6 +35,7 @@ def test_read_complex_input_list_one(session, client):
             "link": "https://download",
             "mime_type": "application/xml",
             "xmlschema": "https://shakemap",
+            "encoding": "UTF-8",
         }
     ]
 
@@ -49,6 +51,7 @@ def test_read_complex_input_list_filter_wps_identifier(session, client):
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     complex_input2 = ComplexInput(
         job=job,
@@ -56,6 +59,7 @@ def test_read_complex_input_list_filter_wps_identifier(session, client):
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     session.add_all([process, job, complex_input1, complex_input2])
     session.commit()
@@ -69,6 +73,7 @@ def test_read_complex_input_list_filter_wps_identifier(session, client):
             "link": "https://download",
             "mime_type": "application/xml",
             "xmlschema": "https://shakemap",
+            "encoding": "UTF-8",
         }
     ]
 
@@ -85,6 +90,7 @@ def test_read_complex_input_list_filter_job_id(session, client):
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     complex_input2 = ComplexInput(
         job=job1,
@@ -92,6 +98,7 @@ def test_read_complex_input_list_filter_job_id(session, client):
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     session.add_all([process, job1, job2, complex_input1, complex_input2])
     session.commit()
@@ -105,6 +112,7 @@ def test_read_complex_input_list_filter_job_id(session, client):
             "link": "https://download",
             "mime_type": "application/xml",
             "xmlschema": "https://shakemap",
+            "encoding": "UTF-8",
         }
     ]
 
@@ -125,6 +133,7 @@ def test_read_complex_input_list_101(session, client):
             link="https://download",
             mime_type="application/xml",
             xmlschema="https://shakemap",
+            encoding="UTF-8",
         )
         session.add(complex_input)
         session.commit()
@@ -149,6 +158,7 @@ def test_read_complex_input_detail_one(session, client):
         link="https://download",
         mime_type="application/xml",
         xmlschema="https://shakemap",
+        encoding="UTF-8",
     )
     session.add_all([process, job, complex_input])
     session.commit()
@@ -161,6 +171,7 @@ def test_read_complex_input_detail_one(session, client):
         "link": "https://download",
         "mime_type": "application/xml",
         "xmlschema": "https://shakemap",
+        "encoding": "UTF-8",
     }
 
 

@@ -42,6 +42,7 @@ create table complex_outputs (
   link varchar(1024),
   mime_type varchar(64),
   xmlschema varchar(256),
+  encoding varchar(16),
   primary key (id),
   foreign key (job_id) references jobs(id)
 );
@@ -65,6 +66,7 @@ create table complex_inputs (
   link varchar(1024),
   mime_type varchar(64),
   xmlschema varchar(256),
+  encoding varchar(16),
   primary key (id),
   foreign key (job_id) references jobs(id)
 );
