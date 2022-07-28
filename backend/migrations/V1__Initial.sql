@@ -71,6 +71,18 @@ create table complex_inputs (
   foreign key (job_id) references jobs(id)
 );
 
+create table complex_inputs_as_values (
+  id serial,
+  job_id bigint,
+  wps_identifier varchar(256),
+  input_value text,
+  mime_type varchar(64),
+  xmlschema varchar(256),
+  encoding varchar(16),
+  primary key (id),
+  foreign key (job_id) references jobs(id)
+);
+
 create table literal_inputs (
   id serial,
   job_id bigint,

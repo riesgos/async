@@ -18,6 +18,7 @@ app = FastAPI(
 prefix_router = APIRouter(prefix=ROOT_PATH)
 prefix_router.include_router(routers.bbox_input_router)
 prefix_router.include_router(routers.complex_input_router)
+prefix_router.include_router(routers.complex_input_as_value_router)
 prefix_router.include_router(routers.complex_output_router)
 prefix_router.include_router(routers.complex_output_as_input_router)
 prefix_router.include_router(routers.job_router)

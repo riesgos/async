@@ -1,5 +1,6 @@
 from .bbox_input_router import bbox_input_router
 from .complex_input_router import complex_input_router
+from .complex_input_as_value_router import complex_input_as_value_router
 from .complex_output_as_input_router import complex_output_as_input_router
 from .complex_output_router import complex_output_router
 from .job_router import job_router

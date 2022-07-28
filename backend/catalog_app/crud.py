@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from .models import (
     BboxInput,
     ComplexInput,
+    ComplexInputAsValue,
     ComplexOutput,
     ComplexOutputAsInput,
     Job,
@@ -53,6 +54,24 @@ def get_complex_inputs(
 def get_complex_input(db: Session, complex_input_id: int):
     return db.query(ComplexInput).filter(ComplexInput.id == complex_input_id).first()
 
+
+def get_complex_inputs_as_values(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    wps_identifier: Optional[str] = None,
+    job_id: Optional[int] = None,
+):
+    query = db.query(ComplexInputAsValue)
+    if wps_identifier is not None:
+        query = query.filter(ComplexInputAsValue.wps_identifier == wps_identifier)
+    if job_id is not None:
+        query = query.filter(ComplexInputAsValue.job_id == job_id)
+    return query.offset(skip).limit(limit).all()
+
+
+def get_complex_input_as_value(db: Session, complex_input_as_value_id: int):
+    return db.query(ComplexInputAsValue).filter(ComplexInputAsValue.id == complex_input_as_value_id).first()
 
 def get_complex_outputs(
     db: Session,

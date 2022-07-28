@@ -35,6 +35,20 @@ class ComplexInput(ComplexInputBase):
     class Config:
         orm_mode = True
 
+class ComplexInputAsValueBase(BaseModel):
+    job_id: int
+    wps_identifier: str
+    input_value: str
+    mime_type: str
+    xmlschema: Optional[str]
+    encoding: str
+
+
+class ComplexInputAsValue(ComplexInputAsValueBase):
+    id: int
+
+    class Config:
+        orm_mode = True
 
 class ComplexOutputBase(BaseModel):
     job_id: int

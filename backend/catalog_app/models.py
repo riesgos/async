@@ -41,6 +41,7 @@ class Job(Base):
         "ComplexOutputAsInput", back_populates="job"
     )
     complex_inputs = relationship("ComplexInput", back_populates="job")
+    complex_inputs_as_values = relationship("ComplexInputAsValue", back_populates="job")
     literal_inputs = relationship("LiteralInput", back_populates="job")
     bbox_inputs = relationship("BboxInput", back_populates="job")
 
@@ -84,6 +85,17 @@ class ComplexInput(Base):
     job = relationship("Job", back_populates="complex_inputs")
     wps_identifier = Column(String(256))
     link = Column(String(1024))
+    mime_type = Column(String(64))
+    xmlschema = Column(String(256))
+    encoding = Column(String(16))
+
+class ComplexInputAsValue(Base):
+    __tablename__ = "complex_inputs_as_values"
+    id = Column(Integer, primary_key=True)
+    job_id = Column(Integer, ForeignKey("jobs.id"))
+    job = relationship("Job", back_populates="complex_inputs_as_values")
+    wps_identifier = Column(String(256))
+    input_value = Column(Text)
     mime_type = Column(String(64))
     xmlschema = Column(String(256))
     encoding = Column(String(16))
