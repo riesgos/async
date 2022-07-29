@@ -24,10 +24,12 @@ class PulsarSubscriptionInitializer(val appConfig: AppConfiguration, val pulsarC
             startConsumerThread(consumer, subscriptionName)
         }
 
-        println("create consumer thread for order messages")
-        val subscriptionName = "${appConfig.appID}_${pulsarConfig.orderTopic}_subscription"
-        val consumer = PulsarConsumer(pulsarConfig.orderTopic, subscriptionName, clientService, orderMessageHandler)
-        startConsumerThread(consumer, subscriptionName)
+        if(pulsarConfig.orderTopic != null) {
+            println("create consumer thread for order messages")
+            val subscriptionName = "${appConfig.appID}_${pulsarConfig.orderTopic}_subscription"
+            val consumer = PulsarConsumer(pulsarConfig.orderTopic!!, subscriptionName, clientService, orderMessageHandler)
+            startConsumerThread(consumer, subscriptionName)
+        }
     }
 
     @PreDestroy
