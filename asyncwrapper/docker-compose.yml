@@ -1,0 +1,32 @@
+version: '3.3'
+
+services:
+  mvn:
+    image: maven:3.8.6-openjdk-18
+    container_name: riesgos-mvn-builder
+    user: 1000:1000
+    volumes:
+      - './:/usr/src/mymaven'
+    working_dir: '/usr/src/mymaven'
+    command: 'tail -f /dev/null'
+  postgres:
+    image: postgres:14.4-alpine
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  pulsar:
+    image: apachepulsar/pulsar:2.9.1
+    container_name: pulsar
+    ports:
+      - 8081:8080
+      - 6650:6650
+    volumes:
+      - pulsardata:/pulsar/data
+      - pulsarconf:/pulsar/conf
+    command: bin/pulsar standalone
+volumes:
+  pulsardata:
+  pulsarconf:
