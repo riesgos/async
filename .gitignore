@@ -37,6 +37,8 @@ frontend/libpeerconnection.log
 frontend/testem.log
 frontend/typings
 
+tools/pulsar_pub_sub/target
+
 # System files
 .DS_Store
 Thumbs.db

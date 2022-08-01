@@ -1,6 +1,32 @@
-version: "3.8"
+version: "3.3"
 
 services:
+  backend:
+    image: async-backend
+    build:
+      context: backend
+    volumes:
+      - './backend:/usr/src/app'
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    networks:
+      - db
+    environment:
+      ROOT_PATH: '/api/v1'
+      SQLALCHEMY_DATABASE_URL: 'postgresql://postgres:postgres@db:5432/postgres'
+
+  backend_migrations:
+    image: flyway/flyway
+    volumes:
+      - ./backend/migrations:/flyway/sql
+    networks:
+      - db
+    depends_on:
+      - db
+    command: -url=jdbc:postgresql://db:5432/postgres -schemas=public -user=postgres -password=postgres -connectRetries=60 migrate
+
   queue:
     image: apachepulsar/pulsar-standalone
     environment:
@@ -12,6 +38,7 @@ services:
     volumes:
       - pulsardata:/pulsar/data
       - pulsarconf:/pulsar/conf
+
   db:
     image: postgres:14.1-alpine
     environment:
@@ -19,6 +46,8 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - 5432:5432
+    networks:
+      - db
     volumes:
       - postgresdata:/var/lib/postgresql/data
 
@@ -26,3 +55,6 @@ volumes:
   postgresdata:
   pulsardata:
   pulsarconf:
+
+networks:
+  db:

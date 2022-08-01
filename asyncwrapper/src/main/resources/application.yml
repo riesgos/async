@@ -1,0 +1,21 @@
+appID: test-asyncwrapper
+#pulsar properties
+pulsar:
+    pulsarURL : pulsar://localhost:6650
+    orderTopic: new-order
+    inputTopics :
+        - input-topic1
+        - input-topic2
+        - input-topic3
+    outputTopic : output-topic
+    failureTopic: failure-topic
+#wps properties
+wps:
+    wpsURL : https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
+    wpsVersion : 2.0.0
+    process : org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess
+spring:
+    datasource:
+        url: jdbc:postgresql://localhost:5432/postgres
+        username: postgres
+        password: postgres
