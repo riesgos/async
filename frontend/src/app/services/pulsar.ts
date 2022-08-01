@@ -20,7 +20,7 @@ export class Producer {
         // @TODO: consumer, auto-ack
         const clientType: ClientType = "producer";
 
-        this.ws = new WebSocket(`${protocol}://${domain}:${port}/ws/v2/${clientType}/${storageType}/${tenant}/${namespace}/${topic}`);
+        this.ws = new WebSocket(`${protocol}://${domain}:${port}/ws/v2/${clientType}/${storageType}/${tenant === "" ? "" : tenant + "/"}${namespace}/${topic}`);
     }
 
     public postMessage(body: string, properties?: { [key: string]: string }, context?: string): Observable<Response> {

@@ -1,11 +1,35 @@
 <main class="content-area">
-    <p [innerText]="response"></p>
-  </main>
-  
-  <!-- <clr-vertical-nav class="right">
-  </clr-vertical-nav> -->
-  
-  <nav class="sidenav">
-    <input clrInput type="text" [(ngModel)]="messageInput" />
-    <button class="btn btn-primary" (click)="send()">Send</button>
-  </nav>
+
+  <form clrForm [formGroup]="formGroup">
+
+    <table class="table table-vertical">
+      <tbody>
+        <tr>
+          <th>Product-Id</th>
+          <td>1</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <clr-control-container>
+      <label>Schema</label>
+      <select clrControl formControlName="schema">
+        <option [ngValue]="null" disabled>...</option>
+        <option *ngFor="let schema of schemas" [ngValue]="schema">{{ schema }}</option>
+      </select> 
+    </clr-control-container>
+
+    <clr-control-container>
+      <label>Model</label>
+      <select clrControl formControlName="model">
+        <option [ngValue]="null" disabled>...</option>
+        <option *ngFor="let model of models" [ngValue]="model">{{ model }}</option>
+      </select> 
+    </clr-control-container>
+
+    <button class="btn btn-primary" type="submit" (click)="submit()">Submit</button>
+    <button class="btn" type="button" (click)="resetForm()">Reset</button>
+
+  </form>
+
+</main>

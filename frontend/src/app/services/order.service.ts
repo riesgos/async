@@ -9,8 +9,8 @@ import { Producer } from './pulsar';
 })
 export class OrderService {
 
-  private pulsarProducer = new Producer('ws', 'localhost', 8080, 'non-persistent', 'public', 'default', 'riesgos');
-  // private pulsarProducer = new Producer('ws', 'rz-vm154.gfz-potsdam.de', 8082, 'non-persistent', 'public', 'digital-earth', 'riesgos');
+  private pulsarProducer = new Producer('ws', 'localhost', 8080, 'non-persistent', "public", 'default', 'riesgos');
+  // private pulsarProducer = new Producer('ws', 'rz-vm154.gfz-potsdam.de', 8082, 'non-persistent', 'digital-earth', 'riesgos');
 
   constructor() { }
 
@@ -27,7 +27,6 @@ export class OrderService {
 }
 
 export interface Order {
-  targetProductId: string,
   constraints: ServiceConstraints
 }
 
