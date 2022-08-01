@@ -4,8 +4,7 @@ import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.datamanagement.mapper.*
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexOutput
-import org.n.riesgos.asyncwrapper.datamanagement.utils.NamedInput
-import org.n52.javaps.algorithm.annotation.ComplexInput
+import org.n.riesgos.asyncwrapper.datamanagement.models.LiteralInput
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.PreparedStatementCreator
@@ -94,8 +93,8 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
     // TODO maybe this should be synchronized (but how to do that in Kotlin?)
     fun hasAlreadyProcessed(
             processIdentifier: String,
-            complexInputs: List<NamedInput<ComplexInputConstraint>>,
-            literalInputs: List<NamedInput<String>>
+            complexInputs: Map<String, ComplexInputConstraint>,
+            literalInputs: Map<String, String>
     ): Boolean {
         // first search for the complex inputs that were there
         val sqlComplexInputs = """
@@ -155,17 +154,18 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
 
         val jobIdSet = HashSet<Long>()
         var jobIdSetNotSetYet = true
-        for (complexInput in complexInputs) {
+        for (complexInputKey in complexInputs.keys) {
+            val complexInput = complexInputs.get(complexInputKey) as ComplexInputConstraint
             val searchForThisComplexInput =
                 jdbcTemplate.query(
                         sqlComplexInputs,
                         ComplexInputRowMapper(),
                         processIdentifier,
-                        complexInput.name,
-                        complexInput.input.link,
-                        complexInput.input.mimeType,
-                        complexInput.input.xmlschema,
-                        complexInput.input.encoding
+                        complexInputKey,
+                        complexInput.link,
+                        complexInput.mimeType,
+                        complexInput.xmlschema,
+                        complexInput.encoding
                 )
 
             val searchForThisComplexOutputAsInput =
@@ -176,11 +176,11 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
                             // the exsting output).
                             ComplexInputRowMapper(),
                             processIdentifier,
-                            complexInput.name,
-                            complexInput.input.link,
-                            complexInput.input.mimeType,
-                            complexInput.input.xmlschema,
-                            complexInput.input.encoding
+                            complexInputKey,
+                            complexInput.link,
+                            complexInput.mimeType,
+                            complexInput.xmlschema,
+                            complexInput.encoding
                     )
 
             val searchForThisComplexInputAsValue =
@@ -188,11 +188,11 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
                             sqlComplexInputsAsValues,
                             ComplexInputAsValueRowMapper(),
                             processIdentifier,
-                            complexInput.name,
-                            complexInput.input.inputValue,
-                            complexInput.input.mimeType,
-                            complexInput.input.xmlschema,
-                            complexInput.input.encoding
+                            complexInputKey,
+                            complexInput.inputValue,
+                            complexInput.mimeType,
+                            complexInput.xmlschema,
+                            complexInput.encoding
                     )
             // if we all of them are empty, we never used that complex input
             // so there is no way a job has already processed those
@@ -221,14 +221,15 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
             }
         }
         // same question for the literal inputs
-        for (literalInput in literalInputs) {
+        for (literalInputKey in literalInputs.keys) {
+            val literalInput = literalInputs.get(literalInputKey)
             val searchForThisLiteralInput =
                     jdbcTemplate.query(
                             sqlLiteralInputs,
                             LiteralInputRowMapper(),
                             processIdentifier,
-                            literalInput.name,
-                            literalInput.input
+                            literalInputKey,
+                            literalInput
                     )
 
             if (searchForThisLiteralInput.isEmpty()) {
@@ -290,11 +291,11 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
             // now we extract the input identifiers from the query
             val usedWpsIdentifiersInThatJob = HashSet(jdbcTemplate.query(sqlJobWpsIdentifier, StringRowMapper("wps_identifier"), jobId) as List<String>)
             // and remove the input identifiers we got from the method call.
-            for (complexInput in complexInputs) {
-                usedWpsIdentifiersInThatJob.remove(complexInput.name)
+            for (complexInputKey in complexInputs.keys) {
+                usedWpsIdentifiersInThatJob.remove(complexInputKey)
             }
-            for (literalInput in literalInputs) {
-                usedWpsIdentifiersInThatJob.remove(literalInput.name)
+            for (literalInputKey in literalInputs.keys) {
+                usedWpsIdentifiersInThatJob.remove(literalInputKey)
             }
             if (usedWpsIdentifiersInThatJob.isEmpty()) {
                 // Now we have found a job id that had the same input parameters (and no others!)
@@ -393,15 +394,13 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
      *
      * Returns the id of the complex output or null.
      */
-    fun findOptionalExistingComplexOutputToUseAsInput (wpsProcessIdentifier: String, wpsOutputIdentifier: String, complexInputConstraint: ComplexInputConstraint): Long? {
+    fun findOptionalExistingComplexOutputToUseAsInput (complexInputConstraint: ComplexInputConstraint): Long? {
         val sql = """
             select complex_output_id
             from complex_outputs
             join jobs on jobs.id = complex_outputs.job_id
             join processes on processes.id = jobs.process_id
-            where processes.wps_identifier = ?
-            and complex_outputs.wps_identifier = ?
-            and complex_outputs.link = ?
+            where complex_outputs.link = ?
             and complex_outputs.mime_type = ?
             and complex_outputs.xmlschema = ?
             and complex_outputs.encoding = ?
@@ -410,8 +409,6 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
             return jdbcTemplate.queryForObject(
                     sql,
                     Long::class.javaObjectType,
-                    wpsProcessIdentifier,
-                    wpsOutputIdentifier,
                     complexInputConstraint.link,
                     complexInputConstraint.mimeType,
                     complexInputConstraint.xmlschema,
@@ -458,5 +455,28 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
         """.trimIndent()
 
         jdbcTemplate.update(sql, jobId, wpsIdentifier, link, mimeType, xmlschema, encoding)
+    }
+
+    fun findLiteralInputsForComplexOutput (complexInputConstraint: ComplexInputConstraint, wpsInputIdentifier: String): List<LiteralInput> {
+        val sqlLiteralInputs = """
+            select literal_inputs.*
+            from literal_inputs
+            join complex_outputs complex_outputs on complex_outputs.job_id = literal_inputs.job_id
+            where complex_outputs.link = ?
+            and complex_outputs.mime_type = ?
+            and complex_outputs.xmlschema = ?
+            and complex_outputs.encoding = ?
+            and literal_inputs.wps_identifier = ?
+            and literal_inputs.input_value = ?
+       """.trimIndent()
+        return jdbcTemplate.query(
+                sqlLiteralInputs,
+                LiteralInputRowMapper(),
+                complexInputConstraint.link,
+                complexInputConstraint.mimeType,
+                complexInputConstraint.xmlschema,
+                complexInputConstraint.encoding,
+                wpsInputIdentifier
+        )
     }
 }

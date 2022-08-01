@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
+import java.util.stream.Collectors
 
 @RestController
 class DummyController (val jdbcTemplate: JdbcTemplate, val datamanagementRepo: DatamanagementRepo) {
@@ -183,9 +184,20 @@ class DummyController (val jdbcTemplate: JdbcTemplate, val datamanagementRepo: D
                             NamedInput(WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_VSGRID, vsgridConstraint)
                     )
 
+                    val mappedLiteralInputs = HashMap<String, String>()
+                    for (input in namedLiteralInputs) {
+                        mappedLiteralInputs.put(input.name, input.input)
+                    }
+
                     val namedComplexInputs = Arrays.asList(
                             NamedInput(WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_QUAKEML_FILE, quakeMLConstraint)
                     )
+
+                    val mappedComplexInputs = HashMap<String, ComplexInputConstraint>()
+                    for (input in namedComplexInputs) {
+                        mappedComplexInputs.put(input.name, input.input)
+                    }
+
 
                     //
                     // test if we already used this combo for one job.
@@ -196,8 +208,8 @@ class DummyController (val jdbcTemplate: JdbcTemplate, val datamanagementRepo: D
 
                     if (datamanagementRepo.hasAlreadyProcessed(
                                     WPS_PROCESS_IDENTIFIER_SHAKYGROUND,
-                                    namedComplexInputs,
-                                    namedLiteralInputs
+                                    mappedComplexInputs,
+                                    mappedLiteralInputs
                             )
                     ) {
                         // send success
@@ -218,15 +230,9 @@ class DummyController (val jdbcTemplate: JdbcTemplate, val datamanagementRepo: D
                         }
                         for (input in namedComplexInputs) {
                             if (input.input.link != null) {
-                                var optionalComplexOutputId: Long? = null
-                                if (lookupForExistingOutputsAsInputs.containsKey(input.name)) {
-                                    val lookup = lookupForExistingOutputsAsInputs.get(input.name)
-                                    optionalComplexOutputId = datamanagementRepo.findOptionalExistingComplexOutputToUseAsInput(
-                                            lookup!!.processWpsIdentifier,
-                                            lookup.outputWpsIndentifier,
-                                            input.input
-                                    )
-                                }
+                                val optionalComplexOutputId = datamanagementRepo.findOptionalExistingComplexOutputToUseAsInput(
+                                        input.input
+                                )
                                 if (optionalComplexOutputId != null ) {
                                     datamanagementRepo.insertComplexOutputAsInput(jobId, optionalComplexOutputId, input.name)
                                 } else {
