@@ -1,1 +1,23 @@
-<p>catalog-view works!</p>
+<main class="content-area">
+
+</main>
+
+<!-- <clr-vertical-nav class="right">
+</clr-vertical-nav> -->
+
+<nav class="sidenav">
+  <clr-accordion clrAccordionMultiPanel="true">
+    <ng-container *ngFor="let pType of productTypes$ |async">
+      <clr-accordion-panel>
+        <clr-accordion-title>{{pType}}</clr-accordion-title>
+        <clr-accordion-content *clrIfExpanded>
+          <ng-container *ngFor="let p of products$ |async">
+            <div *ngIf="p.wps_identifier === pType">
+              {{p.name}}
+            </div>
+          </ng-container>
+        </clr-accordion-content>
+      </clr-accordion-panel>
+    </ng-container>
+  </clr-accordion>
+</nav>

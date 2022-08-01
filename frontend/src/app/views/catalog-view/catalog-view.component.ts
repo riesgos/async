@@ -1,5 +1,6 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { DbService } from 'src/app/services/db.service';
+import { Observable } from 'rxjs';
+import { DbService, IProduct } from 'src/app/services/db.service';
 
 @Component({
   selector: 'app-catalog-view',
@@ -9,9 +10,15 @@ import { DbService } from 'src/app/services/db.service';
 export class CatalogViewComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
-  constructor(private dbSvc: DbService) { }
+  productTypes$ : Observable<IProduct['wps_identifier'][]>;
+  products$: Observable<IProduct[]>;
+  constructor(private dbSvc: DbService) {
+    this.productTypes$ = this.dbSvc.getProductsTypes('/api/complex-outputs');
+    this.products$ = this.dbSvc.getProducts('/api/complex-outputs');
+  }
 
   ngOnInit(): void {
+
   }
 
 }

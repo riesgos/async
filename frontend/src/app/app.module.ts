@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ClarityModule } from "@clr/angular";
+import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from "./app.component";
 import { HeaderComponent } from './components/header/header.component';
 import { GlobalAlertComponent } from './components/global-alert/global-alert.component';
@@ -29,6 +30,7 @@ import { OrderViewComponent } from './views/order-view/order-view.component';
     BrowserModule,
     BrowserAnimationsModule,
     ClarityModule,
+    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     UkisRoutingModule
