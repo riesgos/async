@@ -11,7 +11,19 @@
       </tbody>
     </table>
 
-    <clr-control-container>
+    <div *ngFor="let step of model | keyvalue" [formGroupName]="step.key">
+      <h3>{{ step.key }}</h3>
+
+      <clr-control-container *ngFor="let para of step.value | keyvalue">
+        <label>{{ para.key }}</label>
+        <select clrControl [formControlName]="para.key">
+          <option [ngValue]="null">...</option>
+          <option *ngFor="let option of para.value" [ngValue]="option">{{ option }}</option>
+        </select>
+      </clr-control-container>
+    </div>
+
+    <!-- <clr-control-container formGroupName="modelProp">
       <label>Schema</label>
       <select clrControl formControlName="schema">
         <option [ngValue]="null" disabled>...</option>
@@ -19,13 +31,13 @@
       </select> 
     </clr-control-container>
 
-    <clr-control-container>
+    <clr-control-container formGroupName="assetMaster">
       <label>Model</label>
       <select clrControl formControlName="model">
         <option [ngValue]="null" disabled>...</option>
         <option *ngFor="let model of models" [ngValue]="model">{{ model }}</option>
       </select> 
-    </clr-control-container>
+    </clr-control-container> -->
 
     <button class="btn btn-primary" type="submit" (click)="submit()">Submit</button>
     <button class="btn" type="button" (click)="resetForm()">Reset</button>
