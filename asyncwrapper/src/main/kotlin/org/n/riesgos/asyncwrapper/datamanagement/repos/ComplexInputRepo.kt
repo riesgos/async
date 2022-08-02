@@ -5,7 +5,11 @@ import org.n.riesgos.asyncwrapper.datamanagement.mapper.LiteralInputRowMapper
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInput
 import org.n.riesgos.asyncwrapper.datamanagement.models.LiteralInput
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.PreparedStatementCreator
+import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.stereotype.Component
+import java.sql.Connection
+import java.sql.Statement
 
 @Component
 class ComplexInputRepo (val jdbcTemplate: JdbcTemplate) {
@@ -41,14 +45,30 @@ class ComplexInputRepo (val jdbcTemplate: JdbcTemplate) {
         )
     }
 
-    fun persist (complexInput: ComplexInput) {
+    fun persist (complexInput: ComplexInput): ComplexInput {
         if (complexInput.id == null) {
             val sqlInsert = """
                 insert into complex_inputs (job_id, wps_identifier, link, mime_type, xmlschema, encoding) values (?, ?, ?, ?, ?, ?)
             """.trimIndent()
-            jdbcTemplate.update(sqlInsert, complexInput.jobId, complexInput.wpsIdentifier,
-                    complexInput.link, complexInput.mimeType, complexInput.xmlschema, complexInput.encoding)
-            // Doesn't extract the id at the moment.
+
+            val key = GeneratedKeyHolder()
+
+            val preparedStatementCreator = PreparedStatementCreator { con: Connection ->
+                val ps = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)
+                ps.setLong(1, complexInput.jobId)
+                ps.setString(2, complexInput.wpsIdentifier)
+                ps.setString(3, complexInput.link)
+                ps.setString(4, complexInput.mimeType)
+                ps.setString(5, complexInput.xmlschema)
+                ps.setString(6, complexInput.encoding)
+                ps
+            }
+
+            jdbcTemplate.update(preparedStatementCreator, key)
+
+            val newId = key.getKey()!!.toLong()
+
+            return ComplexInput(newId, complexInput.jobId, complexInput.wpsIdentifier, complexInput.link, complexInput.mimeType, complexInput.xmlschema, complexInput.encoding)
         } else {
             val sqlUpdate = """
                 update complex_inputs set 
@@ -61,6 +81,7 @@ class ComplexInputRepo (val jdbcTemplate: JdbcTemplate) {
                 where id = ?
             """.trimIndent()
             jdbcTemplate.update(sqlUpdate, complexInput.jobId, complexInput.wpsIdentifier, complexInput.link, complexInput.mimeType, complexInput.xmlschema, complexInput.encoding, complexInput.id)
+            return complexInput
         }
     }
 }

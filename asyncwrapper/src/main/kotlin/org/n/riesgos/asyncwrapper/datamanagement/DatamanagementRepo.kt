@@ -311,22 +311,22 @@ class DatamanagementRepo (
     /**
      * Insert the literal input data into the database.
      */
-    fun insertLiteralInput(jobId: Long, wpsIdentifier: String, inputValue: String) {
-        literalInputRepo.persist(LiteralInput(null, jobId, wpsIdentifier, inputValue))
+    fun insertLiteralInput(jobId: Long, wpsIdentifier: String, inputValue: String): LiteralInput {
+        return literalInputRepo.persist(LiteralInput(null, jobId, wpsIdentifier, inputValue))
     }
 
     /**
      * Insert the complex input data (with link) into the database.
      */
-    fun insertComplexInput(jobId: Long, wpsIdentifier: String, complexInputConstraint: ComplexInputConstraint) {
-        complexInputRepo.persist(ComplexInput(null, jobId, wpsIdentifier, complexInputConstraint.link!!, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding))
+    fun insertComplexInput(jobId: Long, wpsIdentifier: String, complexInputConstraint: ComplexInputConstraint): ComplexInput {
+        return complexInputRepo.persist(ComplexInput(null, jobId, wpsIdentifier, complexInputConstraint.link!!, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding))
     }
 
     /**
      * Insert the bbox input data into the database.
      */
-    fun insertBboxInput(jobId: Long, wpsIdentifier: String, bBoxInputConstraint: BBoxInputConstraint) {
-        bboxInputRepo.persist(BboxInput(
+    fun insertBboxInput(jobId: Long, wpsIdentifier: String, bBoxInputConstraint: BBoxInputConstraint): BboxInput {
+        return bboxInputRepo.persist(BboxInput(
                 null, jobId, wpsIdentifier, bBoxInputConstraint.lowerCornerX, bBoxInputConstraint.lowerCornerY,
                 bBoxInputConstraint.upperCornerX, bBoxInputConstraint.upperCornerY, bBoxInputConstraint.crs
         ))
@@ -335,11 +335,30 @@ class DatamanagementRepo (
     /**
      * Insert the complex input data (with value) into the database.
      */
-    fun insertComplexInputAsValue(jobId: Long, wpsIdentifier: String, complexInputConstraint: ComplexInputConstraint) {
+    fun insertComplexInputAsValue(jobId: Long, wpsIdentifier: String, complexInputConstraint: ComplexInputConstraint): ComplexInputAsValue {
         val sqlInsert = """
             insert into complex_inputs_as_values (job_id, wps_identifier, input_value, mime_type, xmlschema, encoding) values (?, ?, ?, ?, ?, ?)
         """.trimIndent()
-        jdbcTemplate.update(sqlInsert, jobId, wpsIdentifier, complexInputConstraint.inputValue, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding)
+
+        val key = GeneratedKeyHolder()
+
+        val preparedStatementCreator = PreparedStatementCreator { con: Connection ->
+            val ps = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)
+            ps.setLong(1, jobId)
+            ps.setString(2, wpsIdentifier)
+            ps.setString(3, complexInputConstraint.inputValue)
+            ps.setString(4, complexInputConstraint.mimeType)
+            ps.setString(5, complexInputConstraint.xmlschema)
+            ps.setString(6, complexInputConstraint.encoding)
+            ps
+        }
+
+        jdbcTemplate.update(preparedStatementCreator, key)
+
+        val newId = key.getKey()!!.toLong()
+
+        return ComplexInputAsValue(newId, jobId, wpsIdentifier, complexInputConstraint.inputValue!!, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding)
+
     }
 
     /**
@@ -365,12 +384,42 @@ class DatamanagementRepo (
      * This reuses the link & format but also provides information about which
      * existing products where used to calculate new products.
      */
-    fun insertComplexOutputAsInput (jobId: Long, complexOutputId: Long, wpsIdentifier: String) {
-        val sql = """
+    fun insertComplexOutputAsInput (jobId: Long, complexOutputId: Long, wpsIdentifier: String): ComplexInput {
+        val sqlInsert = """
             insert into complex_outputs_as_inputs (job_id, complex_output_id, wps_identifier)
             values (?, ?, ?)
         """.trimIndent()
-        jdbcTemplate.update(sql, jobId, complexOutputId, wpsIdentifier)
+
+        val key = GeneratedKeyHolder()
+
+        val preparedStatementCreator = PreparedStatementCreator { con: Connection ->
+            val ps = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)
+            ps.setLong(1, jobId)
+            ps.setLong(2, complexOutputId)
+            ps.setString(3, wpsIdentifier)
+            ps
+        }
+
+        jdbcTemplate.update(preparedStatementCreator, key)
+
+        val newId = key.getKey()!!.toLong()
+
+        // And with the new entry we return the object with links, mimetype, etc.
+        val sqlSelect = """
+            select 
+              complex_outputs_as_inputs.id,
+              complex_outputs_as_inputs.job_id,
+              complex_outputs_as_inputs.wps_identifier,
+              complex_outputs.link,
+              complex_outputs.mime_type,
+              complex_outputs.xmlschema,
+              complex_outputs.encoding
+            from complex_outputs_as_inputs
+            join complex_outputs on complex_outputs.id = complex_outputs_as_inputs.complex_output_id
+            where complex_outputs_as_inputs.id = ?
+        """.trimIndent()
+
+        return jdbcTemplate.queryForObject(sqlSelect, ComplexInputRowMapper(), newId)
     }
 
     /**

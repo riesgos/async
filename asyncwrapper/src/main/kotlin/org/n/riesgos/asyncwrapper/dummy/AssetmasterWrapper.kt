@@ -124,6 +124,7 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
     }
 
     override fun runWpsItself(): List<Data> {
+        // TODO Remove, as we talk now with the real wps
         fun createFakeData(id: String, mimeType: String, schema: String, encoding: String, link: String): Data {
             val data = Data()
             data.id = id

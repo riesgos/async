@@ -1,9 +1,14 @@
 package org.n.riesgos.asyncwrapper.dummy
 
 import org.json.JSONObject
+import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.*
 import org.n.riesgos.asyncwrapper.datamanagement.utils.getStringOrDefault
+import org.n.riesgos.asyncwrapper.process.wps.InputMapper
+import org.n.riesgos.asyncwrapper.process.wps.OutputMapper
+import org.n.riesgos.asyncwrapper.process.wps.WPSClientService
+import org.n.riesgos.asyncwrapper.process.wps.WPSProcess
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
@@ -199,14 +204,17 @@ abstract class AbstractWrapper {
         val processId = datamanagementRepo().findProcessIdOrInsert(getWpsUrl(), getWpsIdentifier())
         val jobId = datamanagementRepo().createJob(processId, WPS_JOB_STATUS_ACCEPTED)
 
+        val literalInputs = ArrayList<LiteralInput>()
         for (inputKey in jobInput.literalConstraints.keys) {
-            datamanagementRepo().insertLiteralInput(jobId, inputKey, jobInput.literalConstraints.get(inputKey)!!)
+            literalInputs.add(datamanagementRepo().insertLiteralInput(jobId, inputKey, jobInput.literalConstraints.get(inputKey)!!))
         }
-
+        val bboxInputs = ArrayList<BboxInput>()
         for (innerKey in jobInput.bboxConstraints.keys) {
-            datamanagementRepo().insertBboxInput(jobId, innerKey, jobInput.bboxConstraints.get(innerKey)!!)
+            bboxInputs.add(datamanagementRepo().insertBboxInput(jobId, innerKey, jobInput.bboxConstraints.get(innerKey)!!))
         }
 
+        val complexInputs = ArrayList<ComplexInput>()
+        val complexInputsAsValues = ArrayList<ComplexInputAsValue>()
         for (inputKey in jobInput.complexConstraints.keys) {
             val inputValue = jobInput.complexConstraints.get(inputKey)!!
 
@@ -214,15 +222,16 @@ abstract class AbstractWrapper {
             if (inputValue.link != null) {
                 val optionalComplexOutputId = datamanagementRepo().findOptionalExistingComplexOutputToUseAsInput(inputValue)
                 if (optionalComplexOutputId != null ) {
-                    datamanagementRepo().insertComplexOutputAsInput(jobId, optionalComplexOutputId, inputKey)
+                    // TODO: Must be a complex input result
+                    complexInputs.add(datamanagementRepo().insertComplexOutputAsInput(jobId, optionalComplexOutputId, inputKey))
                 } else {
                     // nothing found, insert as we got
-                    datamanagementRepo().insertComplexInput(jobId, inputKey, inputValue)
+                    complexInputs.add(datamanagementRepo().insertComplexInput(jobId, inputKey, inputValue))
                 }
 
             } else {
                 // input as value, insert as we got it
-                datamanagementRepo().insertComplexInputAsValue(jobId, inputKey, inputValue)
+                complexInputsAsValues.add(datamanagementRepo().insertComplexInputAsValue(jobId, inputKey, inputValue))
             }
         }
 
@@ -230,19 +239,31 @@ abstract class AbstractWrapper {
         datamanagementRepo().addJobToOrder(jobId, orderId)
 
         datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_RUNNING) // maybe not needed to set it to running
+
+        val wpsInputMapper = InputMapper(getWpsIdentifier())
+        val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, literalInputs, bboxInputs)
+        // TODO: Extract the version from the implementations themselves
+        val wpsClientService = WPSClientService(WPSConfiguration(getWpsUrl(), getWpsIdentifier(), "2.0.0"))
+        val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0")
+        val wpsOutputs = wpsProcess.runProcess(wpsInputs)
+        val wpsOutputMapper = OutputMapper(jobId, wpsOutputs)
+        val complexOutputs = wpsOutputMapper.mapOutputs()
+
+        // TODO Add handling for inline parameters
+        wpsOutputs.referenceParameters
         val outputs = runWpsItself()
 
         datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_SUCCEEDED)
         // TODO: What if failed?
-        for (output in outputs) {
-            val complexReferenceData = output.asComplexReferenceData()
+        for (output in complexOutputs) {
+
             datamanagementRepo().insertComplexOutput(
-                    jobId,
-                    complexReferenceData.id,
-                    complexReferenceData.reference.href.toString(),
-                    complexReferenceData.format.mimeType,
-                    complexReferenceData.format.schema,
-                    complexReferenceData.format.encoding
+                    output.jobId,
+                    output.wpsIdentifier,
+                    output.link,
+                    output.mimeType,
+                    output.xmlschema,
+                    output.encoding
             )
         }
 

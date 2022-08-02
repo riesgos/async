@@ -5,7 +5,11 @@ import org.n.riesgos.asyncwrapper.datamanagement.mapper.LiteralInputRowMapper
 import org.n.riesgos.asyncwrapper.datamanagement.models.BboxInput
 import org.n.riesgos.asyncwrapper.datamanagement.models.LiteralInput
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.PreparedStatementCreator
+import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.stereotype.Component
+import java.sql.Connection
+import java.sql.Statement
 
 @Component
 class BboxInputRepo (val jdbcTemplate: JdbcTemplate) {
@@ -43,20 +47,31 @@ class BboxInputRepo (val jdbcTemplate: JdbcTemplate) {
         )
     }
 
-    fun persist (bboxInput: BboxInput) {
+    fun persist (bboxInput: BboxInput): BboxInput {
         if (bboxInput.id == null) {
             val sqlInsert = """
                 insert into bbox_inputs (job_id, wps_identifier, lower_corner_x, lower_corner_y, upper_corner_x, upper_corner_y, crs)
                 values (?, ?, ?, ?, ?, ?, ?)
             """.trimIndent()
-            jdbcTemplate.update(sqlInsert, bboxInput.jobId, bboxInput.wpsIdentifier,
-                    bboxInput.lowerCornerX,
-                    bboxInput.lowerCornerY,
-                    bboxInput.upperCornerX,
-                    bboxInput.upperCornerY,
-                    bboxInput.crs
+            val key = GeneratedKeyHolder()
+            val preparedStatementCreator = PreparedStatementCreator { con: Connection ->
+                val ps = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)
+                ps.setLong(1, bboxInput.jobId)
+                ps.setString(2, bboxInput.wpsIdentifier)
+                ps.setDouble(3, bboxInput.lowerCornerX)
+                ps.setDouble(4, bboxInput.lowerCornerY)
+                ps.setDouble(5, bboxInput.upperCornerX)
+                ps.setDouble(6, bboxInput.upperCornerY)
+                ps.setString(7, bboxInput.crs)
+                ps
+            }
+            jdbcTemplate.update(preparedStatementCreator, key)
+
+            val newId = key.getKey()!!.toLong()
+            return BboxInput(
+                    newId, bboxInput.jobId, bboxInput.wpsIdentifier, bboxInput.lowerCornerX, bboxInput.lowerCornerY,
+                    bboxInput.upperCornerX, bboxInput.upperCornerY, bboxInput.crs
             )
-            // Doesn't extract the id at the moment.
         } else {
             val sqlUpdate = """
                 update bbox_inputs set 
@@ -69,6 +84,7 @@ class BboxInputRepo (val jdbcTemplate: JdbcTemplate) {
                 crs = ?
                 where id = ?
             """.trimIndent()
+
             jdbcTemplate.update(sqlUpdate, bboxInput.jobId, bboxInput.wpsIdentifier,
                     bboxInput.lowerCornerX,
                     bboxInput.lowerCornerY,
@@ -76,6 +92,7 @@ class BboxInputRepo (val jdbcTemplate: JdbcTemplate) {
                     bboxInput.upperCornerY,
                     bboxInput.crs,
                     bboxInput.id)
+            return bboxInput
         }
     }
 }
