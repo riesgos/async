@@ -13,7 +13,7 @@ abstract class OutputMapper(private val jobId : Long,  private val output : Proc
 
         for (refParams in output.referenceParameters){ //only complex reference outputs
             for(refParam in refParams.value) {
-                val compOut = ComplexOutput(Random.nextLong(), jobId, refParams.key, refParam.link, refParam.mimeType, refParam.schema, refParam.encoding)
+                val compOut = ComplexOutput(null, jobId, refParams.key, refParam.link, refParam.mimeType, refParam.schema, refParam.encoding) //id is set by database
                 complexOutputs.add(compOut)
             }
         }
