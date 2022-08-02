@@ -222,7 +222,6 @@ abstract class AbstractWrapper {
             if (inputValue.link != null) {
                 val optionalComplexOutputId = datamanagementRepo().findOptionalExistingComplexOutputToUseAsInput(inputValue)
                 if (optionalComplexOutputId != null ) {
-                    // TODO: Must be a complex input result
                     complexInputs.add(datamanagementRepo().insertComplexOutputAsInput(jobId, optionalComplexOutputId, inputKey))
                 } else {
                     // nothing found, insert as we got
