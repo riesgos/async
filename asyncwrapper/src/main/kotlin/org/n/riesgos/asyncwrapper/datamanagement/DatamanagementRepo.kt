@@ -352,10 +352,10 @@ class DatamanagementRepo (
      * Returns the id of the complex output or null.
      */
     fun findOptionalExistingComplexOutputToUseAsInput (complexInputConstraint: ComplexInputConstraint): Long? {
-        val optionalComplexOutput = complexOutputRepo.findByLinkMimetypeXmlschemaAndEncoding(complexInputConstraint.link, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding).stream().findFirst()
+        val optionalComplexOutput = complexOutputRepo.findOptionalFirstByLinkMimetypeXmlschemaAndEncoding(complexInputConstraint.link, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding)
 
-        if (optionalComplexOutput.isPresent()) {
-            return optionalComplexOutput.get().id
+        if (optionalComplexOutput != null) {
+            return optionalComplexOutput.id
         }
         return null
     }
