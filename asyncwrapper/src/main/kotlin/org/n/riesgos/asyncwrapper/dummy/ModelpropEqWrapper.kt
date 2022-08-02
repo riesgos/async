@@ -1,6 +1,7 @@
 package org.n.riesgos.asyncwrapper.dummy
 
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
+import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
 import org.n52.geoprocessing.wps.client.model.Format
@@ -62,7 +63,12 @@ class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
         return HashMap<String, MutableList<ComplexInputConstraint>>()
     }
 
-    override fun getJobInputs (literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>): List<JobConstraints> {
+
+    override fun getDefaultBBoxConstraints (orderId: Long): Map<String, List<BBoxInputConstraint>> {
+        return HashMap<String, MutableList<BBoxInputConstraint>>()
+    }
+
+    override fun getJobInputs (literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>, bboxInputs: Map<String, List<BBoxInputConstraint>>): List<JobConstraints> {
         val result = ArrayList<JobConstraints>()
         for (schemaConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA, ArrayList())) {
             for (assetCategoryConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_ASSETCATEGORY, ArrayList())) {
@@ -74,10 +80,11 @@ class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
                         literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_LOSSCATEGORY, lossCategoryConstraint)
                         literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TAXONOMIES, taxonomyConstraint)
 
-                        val complexInputValues = HashMap<String, ComplexInputConstraint>()
                         // stays empty
+                        val complexInputValues = HashMap<String, ComplexInputConstraint>()
+                        val bboxInputValues = HashMap<String, BBoxInputConstraint>()
 
-                        result.add(JobConstraints(literalInputValues, complexInputValues))
+                        result.add(JobConstraints(literalInputValues, complexInputValues, bboxInputValues))
                     }
 
                 }

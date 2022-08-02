@@ -1,6 +1,7 @@
 package org.n.riesgos.asyncwrapper.dummy
 
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
+import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
 import org.n52.geoprocessing.wps.client.model.Format
@@ -63,6 +64,7 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo) : Abstract
 
         val result = HashMap<String, MutableList<ComplexInputConstraint>>()
         // We search for existing quakeML outputs that are already in our database for our order.
+        // TODO Only quakeml result?
         val existingQuakeMLOutputs = datamanagementRepo.complexOutputs(orderId, WPS_PROCESS_IDENTIFIER_QUAKELEDGER, WPS_PROCESS_OUTPUT_IDENTIFIER_QUAKELEDGER_QUAKEML)
         for (existingQuakeMLOutput in existingQuakeMLOutputs) {
             val innerList = result.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_QUAKEML_FILE, ArrayList())
@@ -80,7 +82,12 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo) : Abstract
     }
 
 
-    override fun getJobInputs (literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>): List<JobConstraints> {
+    override fun getDefaultBBoxConstraints (orderId: Long): Map<String, List<BBoxInputConstraint>> {
+        return HashMap<String, MutableList<BBoxInputConstraint>>()
+    }
+
+
+    override fun getJobInputs (literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>, bboxInputs: Map<String, List<BBoxInputConstraint>>): List<JobConstraints> {
         val result = ArrayList<JobConstraints>()
         for (gmpeConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_GMPE, ArrayList())) {
             for (vsgridConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_VSGRID, ArrayList())) {
@@ -93,7 +100,9 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo) : Abstract
                     val complexInputValues = HashMap<String, ComplexInputConstraint>()
                     complexInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_QUAKEML_FILE, quakeMlConstraint)
 
-                    result.add(JobConstraints(literalInputValues, complexInputValues))
+                    val bboxInputConstraints = HashMap<String, BBoxInputConstraint>()
+
+                    result.add(JobConstraints(literalInputValues, complexInputValues, bboxInputConstraints))
                 }
             }
         }

@@ -1,6 +1,7 @@
 package org.n.riesgos.asyncwrapper.dummy
 
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
+import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
 import org.n52.geoprocessing.wps.client.model.Format
@@ -74,39 +75,50 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
         return HashMap<String, MutableList<ComplexInputConstraint>>()
     }
 
-    override fun getJobInputs(literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>): List<JobConstraints> {
+    override fun getDefaultBBoxConstraints (orderId: Long): Map<String, List<BBoxInputConstraint>> {
+        // We don't use bbox inputs for assetmaster (we use several literal inputs instead)
+        return HashMap<String, MutableList<BBoxInputConstraint>>()
+    }
+
+    override fun getJobInputs(literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>, bboxInputs: Map<String, List<BBoxInputConstraint>>): List<JobConstraints> {
         val result = ArrayList<JobConstraints>()
-        for (lonminConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LONMIN, ArrayList())) {
-            for (lonmaxConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LONMAX, ArrayList())) {
-                for (latminConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMIN, ArrayList())) {
-                    for (latmaxConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMAX, ArrayList())) {
-                        for (schemaConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, ArrayList())) {
-                            for (assetTypeConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_ASSETTYPE, ArrayList())) {
-                                for (queryModeConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_QUERYMODE, ArrayList())) {
-                                    for (modelConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_MODEL, ArrayList())) {
-                                        val literalInputValues = HashMap<String, String>()
-                                        literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, schemaConstraint)
-                                        literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_ASSETTYPE, assetTypeConstraint)
-                                        literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_QUERYMODE, queryModeConstraint)
-                                        literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_MODEL, modelConstraint)
-                                        literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMAX, latmaxConstraint)
-                                        literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMIN, latminConstraint)
-                                        literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LONMAX, lonmaxConstraint)
-                                        literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LONMIN, lonminConstraint)
+        val lonmins = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LONMIN, ArrayList())
+        val lonmaxs = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LONMAX, ArrayList())
+        val latmins = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMIN, ArrayList())
+        val latmaxs = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMAX, ArrayList())
 
-                                        val complexInputValues = HashMap<String, ComplexInputConstraint>()
-                                        // stays empty
+        val minLength = Math.min(lonmins.size, Math.min(lonmaxs.size, Math.min(latmins.size, latmaxs.size)))
+        for (i in 0..minLength) {
+            val lonminConstraint = lonmins.get(i)
+            val lonmaxConstraint = lonmaxs.get(i)
+            val latminConstraint = latmins.get(i)
+            val latmaxConstraint = latmaxs.get(i)
 
-                                        result.add(JobConstraints(literalInputValues, complexInputValues))
-                                    }
+            for (schemaConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, ArrayList())) {
+                for (assetTypeConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_ASSETTYPE, ArrayList())) {
+                    for (queryModeConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_QUERYMODE, ArrayList())) {
+                        for (modelConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_MODEL, ArrayList())) {
+                            val literalInputValues = HashMap<String, String>()
+                            literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, schemaConstraint)
+                            literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_ASSETTYPE, assetTypeConstraint)
+                            literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_QUERYMODE, queryModeConstraint)
+                            literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_MODEL, modelConstraint)
+                            literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMAX, latmaxConstraint)
+                            literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMIN, latminConstraint)
+                            literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LONMAX, lonmaxConstraint)
+                            literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LONMIN, lonminConstraint)
 
-                                }
-                            }
+                            // stays empty
+                            val complexInputValues = HashMap<String, ComplexInputConstraint>()
+                            val bboxInputValues = HashMap<String, BBoxInputConstraint>()
+
+                            result.add(JobConstraints(literalInputValues, complexInputValues, bboxInputValues))
                         }
                     }
                 }
             }
         }
+
 
         return result
     }

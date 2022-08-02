@@ -2,6 +2,7 @@ package org.n.riesgos.asyncwrapper.datamanagement
 
 import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.datamanagement.mapper.*
+import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexOutput
 import org.n.riesgos.asyncwrapper.datamanagement.models.LiteralInput
@@ -94,7 +95,8 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
     fun hasAlreadyProcessed(
             processIdentifier: String,
             complexInputs: Map<String, ComplexInputConstraint>,
-            literalInputs: Map<String, String>
+            literalInputs: Map<String, String>,
+            bboxInputs: Map<String, BBoxInputConstraint>
     ): Boolean {
         // first search for the complex inputs that were there
         val sqlComplexInputs = """
@@ -140,8 +142,6 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
             and complex_outputs.encoding = ?
         """.trimIndent()
 
-        // TODO Also consider that we could have complex_outputs_as_inputs
-
        val sqlLiteralInputs = """
            select literal_inputs.*
             from literal_inputs
@@ -151,6 +151,20 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
             and literal_inputs.wps_identifier = ?
             and literal_inputs.input_value = ?
        """.trimIndent()
+
+        val sqlBboxInputs = """
+            select bbox_inputs.*
+            from bbox_inputs
+            join jobs on jobs.id = bbox_inputs.job_id
+            join processes on processes.id = jobs.process_id
+            where processes.wps_identifier = ?
+            and bbox_inputs.wps_identifier = ?
+            and bbox_inputs.lower_corner_x = ?
+            and bbox_inputs.lower_corner_y = ?
+            and bbox_inputs.upper_corner_x = ?
+            and bbox_inputs.upper_corner_y = ?
+            and bbox_inputs.crs = ?
+        """.trimIndent()
 
         val jobIdSet = HashSet<Long>()
         var jobIdSetNotSetYet = true
@@ -246,7 +260,35 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
                 return false
             }
         }
-        // TODO: Add also checks for the bbox inputs & their job ids
+        // same for the bbox inputs
+        for (bboxInputKey in bboxInputs.keys) {
+            val bboxInput = bboxInputs.get(bboxInputKey)
+            val searchForTthisBboxInput =
+                    jdbcTemplate.query(
+                            sqlBboxInputs,
+                            BboxInputRowMapper(),
+                            processIdentifier,
+                            bboxInputKey,
+                            bboxInput!!.lowerCornerY,
+                            bboxInput.lowerCornerY,
+                            bboxInput.upperCornerY,
+                            bboxInput.upperCornerY,
+                            bboxInput.crs
+                    )
+            if (searchForTthisBboxInput.isEmpty()) {
+                return false
+            }
+            // TODO
+            val literalInputJobIds = searchForTthisBboxInput.stream().map { x -> x.jobId }.distinct().collect(Collectors.toSet())
+            if (jobIdSetNotSetYet) {
+                jobIdSet.addAll(literalInputJobIds)
+            } else {
+                jobIdSet.retainAll(literalInputJobIds)
+            }
+            if (jobIdSet.isEmpty()) {
+                return false
+            }
+        }
 
         // ok we found one or more job ids that have all the parameters
         // now it is the task to check if there were additional parameters that we don't checked yet.
@@ -296,6 +338,9 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
             }
             for (literalInputKey in literalInputs.keys) {
                 usedWpsIdentifiersInThatJob.remove(literalInputKey)
+            }
+            for (bboxInputKey in bboxInputs.keys) {
+                usedWpsIdentifiersInThatJob.remove(bboxInputKey)
             }
             if (usedWpsIdentifiersInThatJob.isEmpty()) {
                 // Now we have found a job id that had the same input parameters (and no others!)
@@ -373,6 +418,17 @@ class DatamanagementRepo (val jdbcTemplate: JdbcTemplate) {
             insert into complex_inputs (job_id, wps_identifier, link, mime_type, xmlschema, encoding) values (?, ?, ?, ?, ?, ?)
         """.trimIndent()
         jdbcTemplate.update(sqlInsert, jobId, wpsIdentifier, complexInputConstraint.link, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding)
+    }
+
+    /**
+     * Insert the bbox input data into the database.
+     */
+    fun insertBboxInput(jobId: Long, wpsIdentifier: String, bBoxInputConstraint: BBoxInputConstraint) {
+        val sqlInsert = """
+            insert into bbox_inputs (job_id, wps_identifier, lower_corner_x, lower_corner_y, upper_corner_x, upper_corner_y, crs)
+            values (?, ?, ?, ?, ?, ?, ?)
+        """.trimIndent()
+        jdbcTemplate.update(sqlInsert, jobId, wpsIdentifier, bBoxInputConstraint.lowerCornerX, bBoxInputConstraint.lowerCornerY, bBoxInputConstraint.upperCornerX, bBoxInputConstraint.upperCornerY, bBoxInputConstraint.crs)
     }
 
     /**

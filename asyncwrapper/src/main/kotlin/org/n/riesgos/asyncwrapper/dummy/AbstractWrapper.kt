@@ -60,10 +60,12 @@ abstract class AbstractWrapper {
      */
     abstract fun getDefaultComplexConstraints (orderId: Long): Map<String, List<ComplexInputConstraint>>
 
+    abstract fun getDefaultBBoxConstraints (orderId: Long): Map<String, List<BBoxInputConstraint>>
+
     /**
      * Transformation of the inputs lists (with all of what we can do) to concrete job constraints (one concrete parametrization).
      */
-    abstract fun getJobInputs (literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>): List<JobConstraints>
+    abstract fun getJobInputs (literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>, bboxInputs: Map<String, List<BBoxInputConstraint>>): List<JobConstraints>
 
     /**
      * The wps identifier fo the process itself.
@@ -102,6 +104,7 @@ abstract class AbstractWrapper {
 
         val literalConstraints = HashMap<String, MutableList<String>>()
         val complexConstraints = HashMap<String, MutableList<ComplexInputConstraint>>()
+        val bboxConstraints = HashMap<String, MutableList<BBoxInputConstraint>>()
 
         if (wrapperRawConstraints.has("literal_inputs")) {
             val literalInputConstraints = wrapperRawConstraints.getJSONObject("literal_inputs")
@@ -129,9 +132,27 @@ abstract class AbstractWrapper {
                         )
                 }
             }
-
         }
-        return OrderConstraintsResult(literalConstraints, complexConstraints)
+        if (wrapperRawConstraints.has("bbox_inputs")) {
+            val bboxInputConstraints = wrapperRawConstraints.getJSONObject("bbox_inputs")
+            for (key in bboxInputConstraints.keySet()) {
+                val constraintArray = bboxInputConstraints.getJSONArray(key)
+                for (constraintValue in constraintArray) {
+                    val constraintObject = constraintValue as JSONObject
+                    bboxConstraints.getOrDefault(key, ArrayList()).add(
+                            BBoxInputConstraint(
+                                    constraintObject.getDouble("lower_corner_x"),
+                                    constraintObject.getDouble("lower_corner_y"),
+                                    constraintObject.getDouble("upper_corner_x"),
+                                    constraintObject.getDouble("upper_corner_y"),
+                                    constraintObject.getString("crs")
+                            )
+                    )
+                }
+            }
+        }
+
+        return OrderConstraintsResult(literalConstraints, complexConstraints, bboxConstraints)
     }
 
 
@@ -160,9 +181,10 @@ abstract class AbstractWrapper {
     private fun fillConstraintsAndRun(orderConstraints: OrderConstraintsResult, orderId: Long) {
         val filledLiteralConstraints = mergeConstraintsWithDefaults(orderConstraints.literalConstraints, getDefaultLiteralConstraints())
         val filledComplexConstraints = mergeConstraintsWithDefaults(orderConstraints.complexConstraints, getDefaultComplexConstraints(orderId))
+        val filledBBoxConstraints = mergeConstraintsWithDefaults(orderConstraints.bboxConstraints, getDefaultBBoxConstraints(orderId))
 
-        for (jobInput in getJobInputs(filledLiteralConstraints, filledComplexConstraints)) {
-            if (datamanagementRepo().hasAlreadyProcessed(getWpsIdentifier(), jobInput.complexConstraints, jobInput.literalConstraints)) {
+        for (jobInput in getJobInputs(filledLiteralConstraints, filledComplexConstraints, filledBBoxConstraints)) {
+            if (datamanagementRepo().hasAlreadyProcessed(getWpsIdentifier(), jobInput.complexConstraints, jobInput.literalConstraints, jobInput.bboxConstraints)) {
                 sendSuccess()
             } else {
                 runOneJob(jobInput, orderId)
@@ -179,6 +201,10 @@ abstract class AbstractWrapper {
 
         for (inputKey in jobInput.literalConstraints.keys) {
             datamanagementRepo().insertLiteralInput(jobId, inputKey, jobInput.literalConstraints.get(inputKey)!!)
+        }
+
+        for (innerKey in jobInput.bboxConstraints.keys) {
+            datamanagementRepo().insertBboxInput(jobId, innerKey, jobInput.bboxConstraints.get(innerKey)!!)
         }
 
         for (inputKey in jobInput.complexConstraints.keys) {
@@ -198,29 +224,29 @@ abstract class AbstractWrapper {
                 // input as value, insert as we got it
                 datamanagementRepo().insertComplexInputAsValue(jobId, inputKey, inputValue)
             }
-
-            // add the reference of the job to that order
-            datamanagementRepo().addJobToOrder(jobId, orderId)
-
-            datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_RUNNING) // maybe not needed to set it to running
-            val outputs = runWpsItself()
-
-            datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_SUCCEEDED)
-            // TODO: What if failed?
-            for (output in outputs) {
-                val complexReferenceData = output.asComplexReferenceData()
-                datamanagementRepo().insertComplexOutput(
-                        jobId,
-                        complexReferenceData.id,
-                        complexReferenceData.reference.href.toString(),
-                        complexReferenceData.format.mimeType,
-                        complexReferenceData.format.schema,
-                        complexReferenceData.format.encoding
-                )
-            }
-            sendSuccess()
         }
 
+        // add the reference of the job to that order
+        datamanagementRepo().addJobToOrder(jobId, orderId)
+
+        datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_RUNNING) // maybe not needed to set it to running
+        val outputs = runWpsItself()
+
+        datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_SUCCEEDED)
+        // TODO: What if failed?
+        for (output in outputs) {
+            val complexReferenceData = output.asComplexReferenceData()
+            datamanagementRepo().insertComplexOutput(
+                    jobId,
+                    complexReferenceData.id,
+                    complexReferenceData.reference.href.toString(),
+                    complexReferenceData.format.mimeType,
+                    complexReferenceData.format.schema,
+                    complexReferenceData.format.encoding
+            )
+        }
+
+        sendSuccess()
     }
 
     /**

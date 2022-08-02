@@ -1,6 +1,7 @@
 package org.n.riesgos.asyncwrapper.dummy
 
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
+import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexOutput
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
@@ -103,6 +104,11 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo) : AbstractWrapper
         return result
     }
 
+
+    override fun getDefaultBBoxConstraints (orderId: Long): Map<String, List<BBoxInputConstraint>> {
+        return HashMap<String, MutableList<BBoxInputConstraint>>()
+    }
+
     fun createdWithLiteralInput (complexOutput: ComplexOutput, wpsInputIdentifier: String, options: List<String>) : Boolean {
         val asInput = ComplexInputConstraint(complexOutput.link, null, complexOutput.mimeType, complexOutput.xmlschema, complexOutput.encoding)
         val literalInputs = datamanagementRepo.findLiteralInputsForComplexOutput(asInput, wpsInputIdentifier)
@@ -112,7 +118,7 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo) : AbstractWrapper
     }
 
 
-    override fun getJobInputs (literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>): List<JobConstraints> {
+    override fun getJobInputs (literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>, bboxInputs: Map<String, List<BBoxInputConstraint>>): List<JobConstraints> {
         val result = ArrayList<JobConstraints>()
         for (intensityConstraint in complexInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_INTENSITY, ArrayList())) {
             for (fragilityConstraint in complexInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_FRAGILITY, ArrayList())) {
@@ -132,7 +138,9 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo) : AbstractWrapper
                         complexInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_FRAGILITY, fragilityConstraint)
                         complexInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_INTENSITY, intensityConstraint)
 
-                        result.add(JobConstraints(literalInputValues, complexInputValues))
+                        val bboxInputValues = HashMap<String, BBoxInputConstraint>()
+
+                        result.add(JobConstraints(literalInputValues, complexInputValues, bboxInputValues))
                     }
 
                 }
