@@ -248,12 +248,7 @@ abstract class AbstractWrapper {
         val wpsOutputMapper = OutputMapper(jobId, wpsOutputs)
         val complexOutputs = wpsOutputMapper.mapOutputs()
 
-        // TODO Add handling for inline parameters
-        wpsOutputs.referenceParameters
-        val outputs = runWpsItself()
 
-        datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_SUCCEEDED)
-        // TODO: What if failed?
         for (output in complexOutputs) {
 
             datamanagementRepo().insertComplexOutput(
@@ -265,6 +260,9 @@ abstract class AbstractWrapper {
                     output.encoding
             )
         }
+
+        datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_SUCCEEDED)
+        // TODO: What if failed?
 
         sendSuccess()
     }
