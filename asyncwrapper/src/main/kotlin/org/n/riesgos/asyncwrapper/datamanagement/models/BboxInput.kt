@@ -1,7 +1,7 @@
 package org.n.riesgos.asyncwrapper.datamanagement.models
 
 data class BboxInput (
-        val id: Long,
+        val id: Long?,
         val jobId: Long,
         val wpsIdentifier: String,
         val lowerCornerX: Double,
