@@ -1,4 +1,5 @@
 appID: test-asyncwrapper
+wrapperClass: org.n.riesgos.asyncwrapper.dummy.ShakygroundWrapper
 #pulsar properties
 pulsar:
     pulsarURL : pulsar://localhost:6650
