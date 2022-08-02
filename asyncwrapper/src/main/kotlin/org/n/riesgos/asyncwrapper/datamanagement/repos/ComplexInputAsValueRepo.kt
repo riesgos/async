@@ -1,4 +1,4 @@
-package org.n.riesgos.asyncwrapper.datamanagement
+package org.n.riesgos.asyncwrapper.datamanagement.repos
 
 import org.n.riesgos.asyncwrapper.datamanagement.mapper.ComplexInputAsValueRowMapper
 import org.n.riesgos.asyncwrapper.datamanagement.mapper.ComplexInputRowMapper

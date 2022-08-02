@@ -3,6 +3,7 @@ package org.n.riesgos.asyncwrapper.datamanagement
 import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.datamanagement.mapper.*
 import org.n.riesgos.asyncwrapper.datamanagement.models.*
+import org.n.riesgos.asyncwrapper.datamanagement.repos.*
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.PreparedStatementCreator
@@ -21,23 +22,20 @@ class DatamanagementRepo (
         val complexInputRepo: ComplexInputRepo,
         val complexOutputAsInputRepo: ComplexOutputAsInputRepo,
         val complexInputAsValueRepo: ComplexInputAsValueRepo,
-        val bboxInputRepo: BboxInputRepo
+        val bboxInputRepo: BboxInputRepo,
+        val orderJobRefRepo: OrderJobRefRepo,
+        val complexOutputRepo: ComplexOutputRepo,
+        val orderRepo: OrderRepo
 ) {
     /**
      * Extracts the constraints of the order as json object.
      */
     fun orderConstraints(orderId: Long): JSONObject? {
-        val sql = """
-            select order_constraints
-            from orders
-            where id=?
-        """.trimIndent()
-
-        try {
-            return jdbcTemplate.queryForObject(sql, OrderConstraintsRowMapper(), orderId)
-        } catch (e: EmptyResultDataAccessException) {
-            return null
+        val order = orderRepo.getOptionalById(orderId)
+        if (order == null) {
+            return order
         }
+        return order.orderConstraints
     }
 
     /**
@@ -63,11 +61,7 @@ class DatamanagementRepo (
      * Later processes can look up for the current order.
      */
     fun addJobToOrder(jobId: Long, orderId: Long) {
-        val sql = """
-            insert into order_job_refs (job_id, order_id) values (?, ?)
-        """.trimIndent()
-
-        jdbcTemplate.update(sql, jobId, orderId)
+        orderJobRefRepo.persist(OrderJobRef(null, orderId, jobId))
     }
 
     /**
@@ -358,28 +352,12 @@ class DatamanagementRepo (
      * Returns the id of the complex output or null.
      */
     fun findOptionalExistingComplexOutputToUseAsInput (complexInputConstraint: ComplexInputConstraint): Long? {
-        val sql = """
-            select complex_output_id
-            from complex_outputs
-            join jobs on jobs.id = complex_outputs.job_id
-            join processes on processes.id = jobs.process_id
-            where complex_outputs.link = ?
-            and complex_outputs.mime_type = ?
-            and complex_outputs.xmlschema = ?
-            and complex_outputs.encoding = ?
-        """.trimIndent()
-        try {
-            return jdbcTemplate.queryForObject(
-                    sql,
-                    Long::class.javaObjectType,
-                    complexInputConstraint.link,
-                    complexInputConstraint.mimeType,
-                    complexInputConstraint.xmlschema,
-                    complexInputConstraint.encoding
-            )
-        } catch (e: EmptyResultDataAccessException) {
-            return null
+        val optionalComplexOutput = complexOutputRepo.findByLinkMimetypeXmlschemaAndEncoding(complexInputConstraint.link, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding).stream().findFirst()
+
+        if (optionalComplexOutput.isPresent()) {
+            return optionalComplexOutput.get().id
         }
+        return null
     }
 
     /**
@@ -412,12 +390,7 @@ class DatamanagementRepo (
      * Insert a complex output data in the database.
      */
     fun insertComplexOutput (jobId: Long, wpsIdentifier: String, link: String, mimeType: String, xmlschema: String, encoding: String) {
-        val sql = """
-            insert into complex_outputs (job_id, wps_identifier, link, mime_type, xmlschema, encoding)
-            values (?, ?, ?, ?, ?)
-        """.trimIndent()
-
-        jdbcTemplate.update(sql, jobId, wpsIdentifier, link, mimeType, xmlschema, encoding)
+        complexOutputRepo.persist(ComplexOutput(null, jobId, wpsIdentifier, link, mimeType, xmlschema, encoding))
     }
 
     fun findLiteralInputsForComplexOutput (complexInputConstraint: ComplexInputConstraint, wpsInputIdentifier: String): List<LiteralInput> {
