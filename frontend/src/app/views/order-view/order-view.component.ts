@@ -13,6 +13,7 @@ export class OrderViewComponent implements OnInit {
 
   public formGroup: FormGroup;
   public model = model;
+  public state: 'ready' | 'running' | 'done' = 'ready';
 
 
   constructor(private orderSvc: OrderService, private fb: FormBuilder) {
@@ -41,12 +42,14 @@ export class OrderViewComponent implements OnInit {
   }
 
   private send(data: any) {
+    this.state = 'running';
     this.orderSvc.postOrder({
       constraints: {
         ... data
       }
     }).subscribe(success => {
       console.log("success: ", success);
+      this.state = 'done';
     })
   }
 
