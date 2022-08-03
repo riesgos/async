@@ -1,5 +1,6 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
@@ -8,12 +9,12 @@ import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
-class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo): AbstractWrapper() {
+class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration): AbstractWrapper() {
+
+    private val wpsURL = wpsConfig.wpsURL
+    private val wpsProcessIdentifier = wpsConfig.process
+
     companion object {
-        val WPS_URL = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService"
-
-        val WPS_PROCESS_IDENTIFIER_MODELPROP = "org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess"
-
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA = "schema"
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_ASSETCATEGORY = "assetcategory"
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_LOSSCATEGORY = "losscategory"
@@ -43,11 +44,11 @@ class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
     }
 
     override fun getWpsIdentifier(): String {
-        return WPS_PROCESS_IDENTIFIER_MODELPROP
+        return wpsProcessIdentifier
     }
 
     override fun getWpsUrl(): String {
-        return WPS_URL
+        return wpsURL
     }
 
     override fun getDefaultLiteralConstraints (): Map<String, List<String>> {

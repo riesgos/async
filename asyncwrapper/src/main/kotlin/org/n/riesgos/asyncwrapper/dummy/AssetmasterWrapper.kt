@@ -1,5 +1,6 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
@@ -8,11 +9,12 @@ import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
-class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo): AbstractWrapper() {
-    companion object {
-        val WPS_URL = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService"
+class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration): AbstractWrapper() {
 
-        val WPS_PROCESS_IDENTIFIER_ASSETMASTER = "org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess"
+    private val wpsURL = wpsConfig.wpsURL
+    private val wpsProcessIdentifier = wpsConfig.process
+
+    companion object {
 
         val WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LONMIN = "lonmin"
         val WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LONMAX = "lonmax"
@@ -55,11 +57,11 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
     }
 
     override fun getWpsIdentifier(): String {
-        return WPS_PROCESS_IDENTIFIER_ASSETMASTER
+        return wpsProcessIdentifier
     }
 
     override fun getWpsUrl(): String {
-        return WPS_URL
+        return wpsURL
     }
 
     override fun getDefaultLiteralConstraints(): Map<String, List<String>> {

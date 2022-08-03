@@ -1,5 +1,6 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
@@ -14,12 +15,13 @@ import java.util.*
 import java.util.stream.Collectors
 
 
-class DeusWrapper (val datamanagementRepo: DatamanagementRepo) : AbstractWrapper() {
+class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration) : AbstractWrapper() {
+
+
+    private val wpsURL = wpsConfig.wpsURL
+    private val wpsProcessIdentifier = wpsConfig.process
 
     companion object {
-        val WPS_URL = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService"
-
-        val WPS_PROCESS_IDENTIFIER_DEUS = "org.n52.gfz.riesgos.algorithm.impl.DeusProcess"
         val WPS_PROCESS_INPUT_IDENTIFIER_DEUS_SCHEMA = "schema"
         val WPS_PROCESS_INPUT_IDENTIFIER_DEUS_INTENSITY = "intensity"
         val WPS_PROCESS_INPUT_IDENTIFIER_DEUS_EXPOSURE = "exposure"
@@ -60,11 +62,11 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo) : AbstractWrapper
     }
 
     override fun getWpsIdentifier(): String {
-        return WPS_PROCESS_IDENTIFIER_DEUS
+        return wpsProcessIdentifier
     }
 
     override fun getWpsUrl(): String {
-        return WPS_URL
+        return wpsURL
     }
 
     override fun getDefaultLiteralConstraints (): Map<String, List<String>> {

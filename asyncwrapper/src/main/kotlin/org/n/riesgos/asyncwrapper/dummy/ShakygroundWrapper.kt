@@ -1,5 +1,6 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
@@ -9,7 +10,7 @@ import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
 
-class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo) : AbstractWrapper() {
+class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration) : AbstractWrapper() {
 
     companion object {
         val WPS_URL = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService"

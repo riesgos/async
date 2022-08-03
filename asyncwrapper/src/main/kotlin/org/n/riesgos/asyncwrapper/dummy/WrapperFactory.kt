@@ -12,8 +12,8 @@ class WrapperFactory(val datamgmtRepo : DatamanagementRepo, val appConfig: AppCo
     fun createWrapper() : AbstractWrapper{
         val fullClassName = appConfig.wrapperClass
         val classDef = Class.forName(fullClassName)
-        val cons = classDef.getConstructor(DatamanagementRepo::class.java)
-        val wrapperInst = cons.newInstance(datamgmtRepo) as AbstractWrapper
+        val cons = classDef.getConstructor(DatamanagementRepo::class.java, WPSConfiguration::class.java)
+        val wrapperInst = cons.newInstance(datamgmtRepo, wpsConfig) as AbstractWrapper
 
         println("init wrapper " + wrapperInst.javaClass.name)
 
