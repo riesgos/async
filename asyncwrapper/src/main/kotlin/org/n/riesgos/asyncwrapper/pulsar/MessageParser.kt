@@ -13,4 +13,9 @@ class MessageParser {
         return orderId
     }
 
+    fun buildMessageForOrderId(orderId: Long): String {
+        val json = JSONObject(mapOf( orderIdKey to orderId ))
+        return json.toString()
+    }
+
 }
