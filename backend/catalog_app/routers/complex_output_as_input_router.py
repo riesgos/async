@@ -17,11 +17,17 @@ def read_list(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
     db: Session = Depends(get_db),
 ):
     """Return the list of complex outputs as inputs."""
     return crud.get_complex_outputs_as_inputs(
-        db, skip=skip, limit=limit, wps_identifier=wps_identifier, job_id=job_id
+        db,
+        skip=skip,
+        limit=limit,
+        wps_identifier=wps_identifier,
+        job_id=job_id,
+        process_id=process_id,
     )
 
 

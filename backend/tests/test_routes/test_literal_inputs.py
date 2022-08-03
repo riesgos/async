@@ -79,6 +79,31 @@ def test_read_literal_input_list_filter_job_id(session, client):
     ]
 
 
+def test_read_literal_input_list_filter_process_id(session, client):
+    process1 = Process(
+        wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="shakyground"
+    )
+    process2 = Process(wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="deus")
+    job1 = Job(process=process1, status="pending")
+    job2 = Job(process=process2, status="pending")
+    literal_input1 = LiteralInput(
+        job=job1, wps_identifier="gmpe", input_value="Abrahamson"
+    )
+    literal_input2 = LiteralInput(job=job2, wps_identifier="vsgrid", input_value="usgs")
+    session.add_all([process1, process2, job1, job2, literal_input1, literal_input2])
+    session.commit()
+    response = client.get(f"{ROOT_PATH}/literal-inputs?process_id={process1.id}")
+    assert response.status_code == 200
+    assert response.json() == [
+        {
+            "id": literal_input1.id,
+            "job_id": job1.id,
+            "wps_identifier": "gmpe",
+            "input_value": "Abrahamson",
+        }
+    ]
+
+
 def test_read_literal_input_list_101(session, client):
     process = Process(
         wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="shakyground"

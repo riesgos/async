@@ -63,7 +63,9 @@ def test_read_complex_input_list_filter_wps_identifier(session, client):
     )
     session.add_all([process, job, complex_input1, complex_input2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-inputs-as-values?wps_identifier=shakemap1")
+    response = client.get(
+        f"{ROOT_PATH}/complex-inputs-as-values?wps_identifier=shakemap1"
+    )
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -103,6 +105,48 @@ def test_read_complex_input_list_filter_job_id(session, client):
     session.add_all([process, job1, job2, complex_input1, complex_input2])
     session.commit()
     response = client.get(f"{ROOT_PATH}/complex-inputs-as-values?job_id={job2.id}")
+    assert response.status_code == 200
+    assert response.json() == [
+        {
+            "id": complex_input1.id,
+            "job_id": job2.id,
+            "wps_identifier": "shakemap1",
+            "input_value": "https://download",
+            "mime_type": "application/xml",
+            "xmlschema": "https://shakemap",
+            "encoding": "UTF-8",
+        }
+    ]
+
+
+def test_read_complex_input_list_filter_process_id(session, client):
+    process1 = Process(
+        wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="shakyground"
+    )
+    process2 = Process(wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="deus")
+    job1 = Job(process=process1, status="pending")
+    job2 = Job(process=process2, status="pending")
+    complex_input1 = ComplexInputAsValue(
+        job=job2,
+        wps_identifier="shakemap1",
+        input_value="https://download",
+        mime_type="application/xml",
+        xmlschema="https://shakemap",
+        encoding="UTF-8",
+    )
+    complex_input2 = ComplexInputAsValue(
+        job=job1,
+        wps_identifier="shakemap2",
+        input_value="https://download",
+        mime_type="application/xml",
+        xmlschema="https://shakemap",
+        encoding="UTF-8",
+    )
+    session.add_all([process1, process2, job1, job2, complex_input1, complex_input2])
+    session.commit()
+    response = client.get(
+        f"{ROOT_PATH}/complex-inputs-as-values?process_id={process2.id}"
+    )
     assert response.status_code == 200
     assert response.json() == [
         {

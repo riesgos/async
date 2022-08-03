@@ -15,11 +15,17 @@ def read_list(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
     db: Session = Depends(get_db),
 ):
     """Return the list of literal inputs."""
     return crud.get_literal_inputs(
-        db, skip=skip, limit=limit, wps_identifier=wps_identifier, job_id=job_id
+        db,
+        skip=skip,
+        limit=limit,
+        wps_identifier=wps_identifier,
+        job_id=job_id,
+        process_id=process_id,
     )
 
 

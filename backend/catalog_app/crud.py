@@ -24,12 +24,15 @@ def get_bbox_inputs(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(BboxInput)
     if wps_identifier is not None:
         query = query.filter(BboxInput.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(BboxInput.job_id == job_id)
+    if process_id is not None:
+        query = query.join(BboxInput.job).filter(Job.process_id == process_id)
     return query.offset(skip).limit(limit).all()
 
 
@@ -43,12 +46,15 @@ def get_complex_inputs(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(ComplexInput)
     if wps_identifier is not None:
         query = query.filter(ComplexInput.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(ComplexInput.job_id == job_id)
+    if process_id is not None:
+        query = query.join(ComplexInput.job).filter(Job.process_id == process_id)
     return query.offset(skip).limit(limit).all()
 
 
@@ -62,12 +68,15 @@ def get_complex_inputs_as_values(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(ComplexInputAsValue)
     if wps_identifier is not None:
         query = query.filter(ComplexInputAsValue.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(ComplexInputAsValue.job_id == job_id)
+    if process_id is not None:
+        query = query.join(ComplexInputAsValue.job).filter(Job.process_id == process_id)
     return query.offset(skip).limit(limit).all()
 
 
@@ -104,12 +113,17 @@ def get_complex_outputs_as_inputs(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(ComplexOutputAsInput)
     if wps_identifier is not None:
         query = query.filter(ComplexOutputAsInput.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(ComplexOutputAsInput.job_id == job_id)
+    if process_id is not None:
+        query = query.join(ComplexOutputAsInput.job).filter(
+            Job.process_id == process_id
+        )
     return query.offset(skip).limit(limit).all()
 
 
@@ -149,12 +163,15 @@ def get_literal_inputs(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(LiteralInput)
     if wps_identifier is not None:
         query = query.filter(LiteralInput.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(LiteralInput.job_id == job_id)
+    if process_id is not None:
+        query = query.join(LiteralInput.job).filter(Job.process_id == process_id)
     return query.offset(skip).limit(limit).all()
 
 
