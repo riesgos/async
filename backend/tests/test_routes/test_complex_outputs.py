@@ -117,6 +117,46 @@ def test_read_complex_output_list_filter_job_id(session, client):
     ]
 
 
+def test_read_complex_output_list_filter_process_id(session, client):
+    process1 = Process(
+        wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="shakyground"
+    )
+    process2 = Process(wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="deus")
+    job1 = Job(process=process1, status="pending")
+    job2 = Job(process=process2, status="pending")
+    complex_output1 = ComplexOutput(
+        job=job1,
+        wps_identifier="shakemap1",
+        link="https://download",
+        mime_type="application/xml",
+        xmlschema="https://shakemap",
+        encoding="UTF-8",
+    )
+    complex_output2 = ComplexOutput(
+        job=job2,
+        wps_identifier="shakemap2",
+        link="https://download",
+        mime_type="application/xml",
+        xmlschema="https://shakemap",
+        encoding="UTF-8",
+    )
+    session.add_all([process1, process2, job1, job2, complex_output1, complex_output2])
+    session.commit()
+    response = client.get(f"{ROOT_PATH}/complex-outputs?process_id={process1.id}")
+    assert response.status_code == 200
+    assert response.json() == [
+        {
+            "id": complex_output1.id,
+            "job_id": job1.id,
+            "wps_identifier": "shakemap1",
+            "link": "https://download",
+            "mime_type": "application/xml",
+            "xmlschema": "https://shakemap",
+            "encoding": "UTF-8",
+        }
+    ]
+
+
 def test_read_complex_output_list_101(session, client):
     process = Process(
         wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="shakyground"

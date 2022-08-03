@@ -94,12 +94,15 @@ def get_complex_outputs(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(ComplexOutput)
     if wps_identifier is not None:
         query = query.filter(ComplexOutput.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(ComplexOutput.job_id == job_id)
+    if process_id is not None:
+        query = query.join(ComplexOutput.job).filter(Job.process_id == process_id)
     return query.offset(skip).limit(limit).all()
 
 
