@@ -419,7 +419,7 @@ class DatamanagementRepo (
             where complex_outputs_as_inputs.id = ?
         """.trimIndent()
 
-        return jdbcTemplate.queryForObject(sqlSelect, ComplexInputRowMapper(), newId)
+        return jdbcTemplate.queryForObject(sqlSelect, ComplexInputRowMapper(), newId)!!
     }
 
     /**

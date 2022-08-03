@@ -3,7 +3,6 @@ package org.n.riesgos.asyncwrapper.dummy
 import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
-import org.n.riesgos.asyncwrapper.datamanagement.utils.NamedInput
 import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import org.springframework.jdbc.core.JdbcTemplate
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.*
 import java.util.stream.Collectors
 
+/*
 @RestController
 class DummyController (val jdbcTemplate: JdbcTemplate, val datamanagementRepo: DatamanagementRepo) {
 
@@ -309,3 +309,4 @@ fun createFakeData(id: String, mimeType: String, schema: String, encoding: Strin
 }
 
 data class LookupForExistingOutputs (val processWpsIdentifier: String, val outputWpsIndentifier: String)
+*/

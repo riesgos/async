@@ -37,6 +37,7 @@ abstract class AbstractWrapper {
         when (constraints) {
             is JobIdConstraintResult -> return addJobIdToOrderAndSendSuccess(constraints.jobId, orderId)
             is OrderConstraintsResult -> return fillConstraintsAndRun(constraints, orderId)
+            else -> return
         }
 
     }
