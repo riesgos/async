@@ -26,8 +26,7 @@ class InputMapper (var wpsProcessIdentifier : String) {
         }
 
         for(compValInput in complexValInputs){
-            // TODO: Check if really inputValue as key
-            inlineInputParams[compValInput.inputValue] = InlineParameter(compValInput.wpsIdentifier, compValInput.inputValue, compValInput.mimeType, compValInput.encoding, compValInput.xmlschema, InputType.COMPLEX)
+            inlineInputParams[compValInput.wpsIdentifier] = InlineParameter(compValInput.wpsIdentifier, compValInput.inputValue, compValInput.mimeType, compValInput.encoding, compValInput.xmlschema, InputType.COMPLEX)
         }
         for (bboxInput in bboxInputs) {
             // TODO: handle bbox inputs as well
