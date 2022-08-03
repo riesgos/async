@@ -6,7 +6,7 @@ class MessageParser {
 
     private val orderIdKey = "orderId";
 
-    fun  parseOrderId(jsonMsg : String){
+    fun  parseOrderId(jsonMsg : String) : Long{
         val jsonObj = JSONObject(jsonMsg)
         val orderId = jsonObj.getLong(orderIdKey)
 
