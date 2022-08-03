@@ -95,10 +95,13 @@ def get_complex_outputs(
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
     process_id: Optional[int] = None,
+    mime_type: Optional[str] = None,
 ):
     query = db.query(ComplexOutput)
     if wps_identifier is not None:
         query = query.filter(ComplexOutput.wps_identifier == wps_identifier)
+    if mime_type is not None:
+        query = query.filter(ComplexOutput.mime_type == mime_type)
     if job_id is not None:
         query = query.filter(ComplexOutput.job_id == job_id)
     if process_id is not None:

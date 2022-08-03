@@ -16,6 +16,7 @@ def read_list(
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
     process_id: Optional[int] = None,
+    mime_type: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
     """Return the list of complex outputs."""
@@ -26,6 +27,7 @@ def read_list(
         wps_identifier=wps_identifier,
         job_id=job_id,
         process_id=process_id,
+        mime_type=mime_type,
     )
 
 
