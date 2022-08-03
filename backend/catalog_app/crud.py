@@ -291,3 +291,57 @@ def get_product(db: Session, product_id: int):
         product_type_id=job.process_id,
         name=f"{job.process.wps_identifier} output ({job.id})",
     )
+
+
+def get_derived_products(
+    db: Session,
+    product_id: int,
+    skip: int = 0,
+    limit: int = 0,
+):
+    query = (
+        db.query(Job)
+        .filter(Job.status == "Succeeded")
+        .join(Job.process)
+        .join(Job.complex_outputs_as_inputs)
+        .join(ComplexOutputAsInput.complex_output)
+        .filter(ComplexOutput.job_id == product_id)
+    )
+    jobs = query.offset(skip).limit(100)
+    result = []
+    for job in jobs:
+        result.append(
+            schemas.Product(
+                id=job.id,
+                product_type_id=job.process_id,
+                name=f"{job.process.wps_identifier} output ({job.id})",
+            )
+        )
+    return result
+
+
+def get_base_products(
+    db: Session,
+    product_id: int,
+    skip: int = 0,
+    limit: int = 0,
+):
+    query = (
+        db.query(Job)
+        .filter(Job.status == "Succeeded")
+        .join(Job.process)
+        .join(Job.complex_outputs)
+        .join(ComplexOutput.inputs)
+        .filter(ComplexOutputAsInput.job_id == product_id)
+    )
+    jobs = query.offset(skip).limit(100)
+    result = []
+    for job in jobs:
+        result.append(
+            schemas.Product(
+                id=job.id,
+                product_type_id=job.process_id,
+                name=f"{job.process.wps_identifier} output ({job.id})",
+            )
+        )
+    return result
