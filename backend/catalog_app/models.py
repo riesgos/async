@@ -1,4 +1,4 @@
-from sqlalchemy import JSON, Column, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Boolean, Column, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -16,6 +16,9 @@ class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     email = Column(String(256))
+    password_hash = Column(String(256))
+    apikey = Column(String(256))
+    superuser = Column(Boolean, default=False)
     orders = relationship("Order", back_populates="user")
 
 
@@ -88,6 +91,7 @@ class ComplexInput(Base):
     mime_type = Column(String(64))
     xmlschema = Column(String(256))
     encoding = Column(String(16))
+
 
 class ComplexInputAsValue(Base):
     __tablename__ = "complex_inputs_as_values"
