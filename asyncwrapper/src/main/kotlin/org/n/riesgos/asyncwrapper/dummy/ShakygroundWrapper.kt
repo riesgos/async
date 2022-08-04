@@ -5,12 +5,15 @@ import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
+import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
 
-class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration) : AbstractWrapper() {
+class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration,
+                          publisher: PulsarPublisher
+) : AbstractWrapper(publisher) {
 
     companion object {
         val WPS_URL = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService"

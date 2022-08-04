@@ -9,13 +9,16 @@ import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
 import org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS
 import org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA
 import org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS
+import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 import java.util.stream.Collectors
 
 
-class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration) : AbstractWrapper() {
+class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, publisher: PulsarPublisher) : AbstractWrapper(
+    publisher
+) {
 
 
     private val wpsURL = wpsConfig.wpsURL
