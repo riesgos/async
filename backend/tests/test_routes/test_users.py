@@ -132,3 +132,95 @@ def test_read_user_detail_none_auth_superuser(session, client):
     session.commit()
     response = client.get(f"{ROOT_PATH}/users/-123", headers={"X-APIKEY": "123"})
     assert response.status_code == 404
+
+def test_register_user(client):
+    response = client.post(f"{ROOT_PATH}/users/register", json={
+        "email": "test@user.net",
+        "password": "test123"
+    })
+    assert response.status_code == 200
+    response_data = response.json()
+    assert "email" in response_data.keys()
+    assert response_data["email"] == "test@user.net"
+    assert "id" in response_data.keys()
+    assert "apikey" in response_data.keys()
+
+def test_registration_existing_user(session, client):
+    user = User(email="test@user.net")
+    session.add(user)
+    session.commit()
+    response = client.post(f"{ROOT_PATH}/users/register", json={
+        "email": "test@user.net",
+        "password": "test123"
+    })
+    assert response.status_code == 409
+
+def test_register_user_no_password(client):
+    response = client.post(f"{ROOT_PATH}/users/register", json={
+        "email": "test@user.net",
+        "password": ""
+    })
+    assert response.status_code == 400
+
+def test_login_user(client):
+    response = client.post(f"{ROOT_PATH}/users/register", json={
+        "email": "test@user.net",
+        "password": "test123"
+    })
+    assert response.status_code == 200
+    registration_data = response.json()
+    response = client.post(f"{ROOT_PATH}/users/login", json={
+        "email": "test@user.net",
+        "password": "test123"
+    })
+    assert response.status_code == 200
+    login_data = response.json()
+    assert registration_data["apikey"] == login_data["apikey"]
+
+def test_login_user_multiple(client):
+    response = client.post(f"{ROOT_PATH}/users/register", json={
+        "email": "test@user.net",
+        "password": "test123"
+    })
+    assert response.status_code == 200
+    response = client.post(f"{ROOT_PATH}/users/register", json={
+        "email": "test2@user.net",
+        "password": "test1234"
+    })
+    assert response.status_code == 200
+    response = client.post(f"{ROOT_PATH}/users/login", json={
+        "email": "test@user.net",
+        "password": "test123"
+    })
+    assert response.status_code == 200
+    response = client.post(f"{ROOT_PATH}/users/login", json={
+        "email": "test2@user.net",
+        "password": "test1234"
+    })
+    assert response.status_code == 200
+
+def test_login_wrong_email(client):
+    response = client.post(f"{ROOT_PATH}/users/register", json={
+        "email": "test@user.net",
+        "password": "test123"
+    })
+    assert response.status_code == 200
+    registration_data = response.json()
+    response = client.post(f"{ROOT_PATH}/users/login", json={
+        "email": "test2@user.net",
+        "password": "test123"
+    })
+    assert response.status_code == 400
+
+def test_login_wrong_password(client):
+    response = client.post(f"{ROOT_PATH}/users/register", json={
+        "email": "test@user.net",
+        "password": "test123"
+    })
+    assert response.status_code == 200
+    registration_data = response.json()
+    response = client.post(f"{ROOT_PATH}/users/login", json={
+        "email": "test@user.net",
+        "password": "test1234"
+    })
+    assert response.status_code == 400

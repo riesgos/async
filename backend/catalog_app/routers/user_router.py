@@ -51,7 +51,7 @@ def read_detail(
     return db_user
 
 
-@user_router.post("/register", response_model=schemas.User)
+@user_router.post("/register", response_model=schemas.UserSelfInformation)
 def register_user(
     user_credentials: schemas.UserCredentials, db: Session = Depends(get_db)
 ):
@@ -75,7 +75,11 @@ def register_user(
         db,
         User(email=user_credentials.email, password_hash=password_hash, apikey=apikey),
     )
-    return user
+    return schemas.UserSelfInformation(
+        id=user.id,
+        email=user.email,
+        apikey=user.apikey,
+    )
 
 
 @user_router.post("/login", response_model=schemas.UserSelfInformation)
