@@ -88,3 +88,28 @@ def test_read_order_detail_one(session, client):
 def test_read_order_detail_none(client):
     response = client.get(f"{ROOT_PATH}/orders/-123")
     assert response.status_code == 404
+
+
+def test_create_order_no_auth(client):
+    response = client.post(
+        f"{ROOT_PATH}/orders/", json={"order_constraints": {"gmpe": ["Abrahamson"]}}
+    )
+    assert response.status_code == 401
+
+
+def test_create_order_auth(client, session):
+    user = User(email="abc@def", apikey="123")
+    session.add(user)
+    session.commit()
+    response = client.post(
+        f"{ROOT_PATH}/orders/",
+        json={
+            "order_constraints": {"gmpe": ["Abrahamson"]},
+        },
+        headers={"X-APIKEY": "123"},
+    )
+    assert response.status_code == 200
+    response_data = response.json()
+    assert "id" in response_data.keys()
+    assert "user_id" in response_data.keys()
+    assert "order_constraints" in response_data.keys()

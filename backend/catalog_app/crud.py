@@ -258,6 +258,12 @@ def create_user(db: Session, user: User):
     return user
 
 
+def create_order(db: Session, order: Order):
+    db.add(order)
+    db.commit()
+    return order
+
+
 def get_product_types(db: Session, skip: int = 0, limit: int = 100):
     processes = (
         db.query(Process)

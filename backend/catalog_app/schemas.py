@@ -118,6 +118,10 @@ class Order(OrderBase):
         orm_mode = True
 
 
+class OrderPost(BaseModel):
+    order_constraints: dict
+
+
 class OrderJobRefBase(BaseModel):
     order_id: int
     job_id: int
