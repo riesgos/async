@@ -15,13 +15,12 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
                           publisher: PulsarPublisher
 ) : AbstractWrapper(publisher) {
 
-    companion object {
-        val WPS_URL = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService"
+    private val wpsURL = wpsConfig.wpsURL
+    private val wpsShakygroundProcessIdentifier = wpsConfig.process
 
+    companion object {
         val WPS_PROCESS_IDENTIFIER_QUAKELEDGER = "org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess"
         val WPS_PROCESS_OUTPUT_IDENTIFIER_QUAKELEDGER_QUAKEML = "selectedRows"
-
-        val WPS_PROCESS_IDENTIFIER_SHAKYGROUND = "org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess"
 
         val WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_GMPE = "gmpe"
         val WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_VSGRID = "vsgrid"
@@ -49,11 +48,11 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
     }
 
     override fun getWpsIdentifier(): String {
-        return WPS_PROCESS_IDENTIFIER_SHAKYGROUND
+        return wpsShakygroundProcessIdentifier
     }
 
     override fun getWpsUrl(): String {
-        return WPS_URL
+        return wpsURL
     }
 
     override fun getDefaultLiteralConstraints (): Map<String, List<String>> {
