@@ -15,11 +15,17 @@ def read_list(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[str] = None,
+    process_id: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
     """Return the list of bbox inputs."""
     return crud.get_bbox_inputs(
-        db, skip=skip, limit=limit, wps_identifier=wps_identifier, job_id=job_id
+        db,
+        skip=skip,
+        limit=limit,
+        wps_identifier=wps_identifier,
+        job_id=job_id,
+        process_id=process_id,
     )
 
 
