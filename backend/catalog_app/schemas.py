@@ -162,3 +162,14 @@ class Product(BaseModel):
     id: int
     product_type_id: int
     name: str
+
+
+class UserCredentials(BaseModel):
+    email: str
+    password: str
+
+
+class UserSelfInformation(BaseModel):
+    id: int
+    email: str
+    apikey: str
