@@ -1,9 +1,9 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
-from .. import crud, routers, schemas
+from .. import crud, models, routers, schemas
 from ..dependencies import get_db
 
 order_router = APIRouter(prefix="/orders")
@@ -27,3 +27,20 @@ def read_detail(order_id: int, db: Session = Depends(get_db)):
     if db_order is None:
         raise HTTPException(status_code=404, detail="Order not found")
     return db_order
+
+
+@order_router.post("/", response_model=schemas.Order)
+def create_order(
+    order: schemas.OrderPost,
+    db: Session = Depends(get_db),
+    x_apikey=Header(default=None),
+):
+    if not x_apikey:
+        raise HTTPException(status_code=401, detail="Authentification needed")
+    current_user = crud.get_user_by_apikey(db, apikey=x_apikey)
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Authentification needed")
+    new_order = models.Order(
+        user_id=current_user.id, order_constraints=order.order_constraints
+    )
+    return crud.create_order(db, new_order)
