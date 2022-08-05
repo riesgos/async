@@ -61,6 +61,7 @@ class ComplexOutputRepo (val jdbcTemplate: JdbcTemplate){
         if (complexOutput.id == null) {
             val sqlInsert = """
                 insert into complex_outputs (job_id, wps_identifier, link, mime_type, xmlschema, encoding) values (?, ?, ?, ?, ?, ?)
+                returning id
             """.trimIndent()
             jdbcTemplate.update(sqlInsert, complexOutput.jobId, complexOutput.wpsIdentifier,
                     complexOutput.link, complexOutput.mimeType, complexOutput.xmlschema, complexOutput.encoding)

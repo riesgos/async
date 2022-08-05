@@ -92,17 +92,35 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         val latmins = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMIN, ArrayList())
         val latmaxs = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMAX, ArrayList())
 
+        LOGGER.info("Lonmins: " + lonmins.toString())
+        LOGGER.info("Lonmaxs: " + lonmaxs.toString())
+        LOGGER.info("Latmins: " + latmins.toString())
+        LOGGER.info("Latmaxs: " + latmaxs.toString())
+
         val minLength = Math.min(lonmins.size, Math.min(lonmaxs.size, Math.min(latmins.size, latmaxs.size)))
+
+
+
+        val schemas = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, ArrayList())
+        val assetTypes = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_ASSETTYPE, ArrayList())
+        val queryModes = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_QUERYMODE, ArrayList())
+        val models = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_MODEL, ArrayList())
+
+        LOGGER.info("schemas: " + schemas.toString())
+        LOGGER.info("assetTypes: " + assetTypes.toString())
+        LOGGER.info("queryModes: " + queryModes.toString())
+        LOGGER.info("models: " + models.toString())
+
         for (i in 0..minLength) {
             val lonminConstraint = lonmins.get(i)
             val lonmaxConstraint = lonmaxs.get(i)
             val latminConstraint = latmins.get(i)
             val latmaxConstraint = latmaxs.get(i)
 
-            for (schemaConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, ArrayList())) {
-                for (assetTypeConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_ASSETTYPE, ArrayList())) {
-                    for (queryModeConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_QUERYMODE, ArrayList())) {
-                        for (modelConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_MODEL, ArrayList())) {
+            for (schemaConstraint in schemas) {
+                for (assetTypeConstraint in assetTypes) {
+                    for (queryModeConstraint in queryModes) {
+                        for (modelConstraint in models) {
                             val literalInputValues = HashMap<String, String>()
                             literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, schemaConstraint)
                             literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_ASSETTYPE, assetTypeConstraint)

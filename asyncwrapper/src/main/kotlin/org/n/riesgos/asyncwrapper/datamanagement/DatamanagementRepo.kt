@@ -291,6 +291,7 @@ class DatamanagementRepo (
         // https://www.developinjava.com/spring/retrieve-auto-generated-key/
         val sqlInsert = """
             insert into jobs (process_id, status) values (?, ?)
+            returning id
         """.trimIndent()
 
         val key = GeneratedKeyHolder()
@@ -338,6 +339,7 @@ class DatamanagementRepo (
     fun insertComplexInputAsValue(jobId: Long, wpsIdentifier: String, complexInputConstraint: ComplexInputConstraint): ComplexInputAsValue {
         val sqlInsert = """
             insert into complex_inputs_as_values (job_id, wps_identifier, input_value, mime_type, xmlschema, encoding) values (?, ?, ?, ?, ?, ?)
+            returning id
         """.trimIndent()
 
         val key = GeneratedKeyHolder()
@@ -388,6 +390,7 @@ class DatamanagementRepo (
         val sqlInsert = """
             insert into complex_outputs_as_inputs (job_id, complex_output_id, wps_identifier)
             values (?, ?, ?)
+            returning id
         """.trimIndent()
 
         val key = GeneratedKeyHolder()
