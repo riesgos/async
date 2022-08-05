@@ -5,11 +5,14 @@ import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
+import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
-class QuakeledgerWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig: WPSConfiguration): AbstractWrapper() {
+class QuakeledgerWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig: WPSConfiguration,
+                          publisher: PulsarPublisher
+): AbstractWrapper(publisher) {
 
     private val wpsURL = wpsConfig.wpsURL
     private val wpsProcessIdentifier = wpsConfig.process

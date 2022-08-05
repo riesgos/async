@@ -9,6 +9,8 @@ import org.n.riesgos.asyncwrapper.process.wps.InputMapper
 import org.n.riesgos.asyncwrapper.process.wps.OutputMapper
 import org.n.riesgos.asyncwrapper.process.wps.WPSClientService
 import org.n.riesgos.asyncwrapper.process.wps.WPSProcess
+import org.n.riesgos.asyncwrapper.pulsar.MessageParser
+import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
@@ -16,7 +18,7 @@ import java.util.*
  * This is an abstract wrapper. We are going to overwrite some of the abstract
  * functions in order to make it work with an concrete wps process.
  */
-abstract class AbstractWrapper {
+abstract class AbstractWrapper(val publisher : PulsarPublisher) {
 
     /**
      * Some of the constants that we can reuse.
@@ -169,15 +171,18 @@ abstract class AbstractWrapper {
      */
     private fun addJobIdToOrderAndSendSuccess (jobId: Long, orderId: Long) {
         datamanagementRepo().addJobToOrder(jobId, orderId)
-        sendSuccess()
+        sendSuccess(orderId)
     }
 
 
     /**
      * Just send a success out.
      */
-    private fun sendSuccess () {
-        // TODO
+    private fun sendSuccess (orderId : Long) {
+        val msgParser = MessageParser()
+        val msg = msgParser.buildMessageForOrderId(orderId)
+
+        publisher.publishSuccessMessage(msg)
     }
 
 
@@ -191,7 +196,7 @@ abstract class AbstractWrapper {
 
         for (jobInput in getJobInputs(filledLiteralConstraints, filledComplexConstraints, filledBBoxConstraints)) {
             if (datamanagementRepo().hasAlreadyProcessed(getWpsIdentifier(), jobInput.complexConstraints, jobInput.literalConstraints, jobInput.bboxConstraints)) {
-                sendSuccess()
+                sendSuccess(orderId)
             } else {
                 runOneJob(jobInput, orderId)
             }
@@ -265,7 +270,7 @@ abstract class AbstractWrapper {
         datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_SUCCEEDED)
         // TODO: What if failed?
 
-        sendSuccess()
+        sendSuccess(orderId)
     }
 
     /**
