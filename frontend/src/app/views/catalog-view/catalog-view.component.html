@@ -1,1 +1,62 @@
-<p>catalog-view works!</p>
+<app-login></app-login>
+
+
+<main class="content-area map-view">
+  <ukis-map-ol [layersSvc]="layerSvc" [mapState]="mapStateSvc" [controls]="controls"></ukis-map-ol>
+</main>
+
+<clr-vertical-nav class="left" [clrVerticalNavCollapsible]="true" [clrVerticalNavCollapsed]="false">
+
+
+  <ng-container *ngFor="let pType of productTypes$ | async">
+    <!--     <div *ngIf="navGroups[pType]? navGroups[pType] = true: navGroups[pType] = false;"></div> -->
+    <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="false"
+      (clrVerticalNavGroupExpandedChange)="onNavGroupExpand($event, pType.name)">
+      {{pType.name}}
+      <clr-icon shape="bolt" clrVerticalNavIcon></clr-icon>
+      <clr-vertical-nav-group-children>
+        <ng-container *ngFor="let p of products$ | async">
+          <a clrVerticalNavLink *ngIf="p.product_type_id === pType.id">
+            {{p.name}}
+            <clr-icon shape="ellipsis-horizontal"></clr-icon>
+          </a>
+
+        </ng-container>
+      </clr-vertical-nav-group-children>
+    </clr-vertical-nav-group>
+  </ng-container>
+
+
+</clr-vertical-nav>
+
+<!-- <clr-vertical-nav class="right">
+</clr-vertical-nav> -->
+
+<clr-vertical-nav [clrVerticalNavCollapsible]="true" [clr-nav-level]="2" class="right">
+
+  <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers">
+    <clr-icon shape="world" title="Overlays" clrVerticalNavIcon></clr-icon>
+    Overlays
+    <clr-vertical-nav-group-children class="padding title-ellipsis">
+      <ukis-layer-control [layersSvc]="layerSvc" [mapStateSvc]="mapStateSvc" [layerfilter]="'Overlays'">
+      </ukis-layer-control>
+    </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group>
+
+  <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers">
+    <clr-icon shape="layers" clrVerticalNavIcon title="layers"></clr-icon>
+    Layers
+    <clr-vertical-nav-group-children class="padding title-ellipsis">
+      <ukis-layer-control [layersSvc]="layerSvc" [mapStateSvc]="mapStateSvc"></ukis-layer-control>
+    </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group>
+
+  <clr-vertical-nav-group [clrVerticalNavGroupExpanded]="true" class="layers">
+    <clr-icon shape="world" title="Baselayers" clrVerticalNavIcon></clr-icon>
+    Baselayers
+    <clr-vertical-nav-group-children class="padding title-ellipsis">
+      <ukis-base-layer-control [layersSvc]="layerSvc" [mapStateSvc]="mapStateSvc"></ukis-base-layer-control>
+    </clr-vertical-nav-group-children>
+  </clr-vertical-nav-group>
+
+</clr-vertical-nav>

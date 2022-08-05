@@ -1,0 +1,70 @@
+
+<ng-container *ngIf="!isLoggedIn">
+    <div class="modal">
+        <div class="modal-dialog" role="dialog" aria-hidden="true">
+            <div class="modal-content">
+
+                <ng-container [ngSwitch]="action">
+                    <ng-container *ngSwitchCase="'login'" [ngTemplateOutlet]="LoginForm"></ng-container>
+                    <ng-container *ngSwitchCase="'register'" [ngTemplateOutlet]="RegisterForm"></ng-container>
+                  </ng-container>
+    
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop" aria-hidden="true"></div>
+</ng-container>
+
+
+<ng-template #LoginForm>
+    <div class="modal-header">
+        <h3 class="modal-title">Login</h3>
+    </div>
+    <div class="modal-body">
+        
+        <form clrForm [formGroup]="loginForm">
+            <clr-input-container>
+                <label for="email">Email</label>
+                <input clrInput type="text" name="email" placeholder="user@mail.com" formControlName="email" />
+                <clr-control-error>Invalid email</clr-control-error>
+              </clr-input-container>
+              <clr-password-container>
+                <label for="password">Password</label>
+                <input clrPassword name="password" placeholder="Password please!"  formControlName="password" />
+                <clr-control-error>Invalid password</clr-control-error>
+              </clr-password-container>
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" (click)="login()">Login</button>
+        <button class="btn" type="button" (click)="action = 'register'">... to registration</button>
+    </div>
+</ng-template>
+
+
+<ng-template #RegisterForm>
+    <div class="modal-header">
+        <h3 class="modal-title">Register</h3>
+    </div>
+    <div class="modal-body">
+        
+        <form clrForm [formGroup]="registerForm">
+            <clr-input-container>
+                <label for="email">Email</label>
+                <input clrInput type="text" name="email" placeholder="user@mail.com" formControlName="email" />
+                <clr-control-error>Invalid email</clr-control-error>
+              </clr-input-container>
+              <clr-password-container>
+                <label for="password">Password</label>
+                <input clrPassword name="password" placeholder="Password please!"  formControlName="password" />
+                <clr-control-error>Invalid password</clr-control-error>
+              </clr-password-container>
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" (click)="register()">Register</button>
+        <button class="btn" type="button" (click)="action = 'login'">... to login</button>
+    </div>
+</ng-template>

@@ -1,5 +1,8 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
+import { DbService } from 'src/app/services/db.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { OrderService } from 'src/app/services/order.service';
+import { model } from '../../services/model';
 
 @Component({
   selector: 'app-order-view',
@@ -9,24 +12,97 @@ import { OrderService } from 'src/app/services/order.service';
 export class OrderViewComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
-  public messageInput: string = 'Test Message';
-  public response: string = '';
+  public formGroup: FormGroup;
+  public model = model;
+  public state: 'ready' | 'running' | 'done' = 'ready';
 
-  constructor(private orderSvc: OrderService) { }
 
-  ngOnInit(): void {
+  constructor(
+    private orderSvc: OrderService,
+    private dbSvc: DbService,
+    private fb: FormBuilder,
+  ) {
+    const formData: any = {};
+    for (const step in this.model) {
+      const stepFormData: any = {};
+      for (const para in this.model[step]) {
+        stepFormData[para] = null;
+      }
+      formData[step] = this.fb.group(stepFormData);
+    }
+    this.formGroup = this.fb.group(formData);
+
+    this.formGroup.valueChanges.subscribe(val => console.log(val));
   }
 
-  public send() {
+  ngOnInit(): void {
+    this.dbSvc.login('user@mail.com', '1234').subscribe((result: any) => {
+      this.dbSvc.setApiKey(result.apikey);
+    })
+  }
+
+  public submit() {
+    this.send(this.formGroup.value);
+  }
+
+  public resetForm() {
+    
+  }
+
+  private send(data: any) {
+    this.state = 'running';
     this.orderSvc.postOrder({
-      targetProductId: "shakemap",
-      constraints: {
-        "quakeledger": {
-          "magnitude": [8.5]
+      order_constraints: {
+        quakeledger: {
+          literal_inputs: {
+            gmpe: "MontalvaEtAl2016SInter",
+            vsgrid: "FromSeismogeotechnicsMicrozonation"
+          },
+          complex_inputs: {
+            quakeMlFile: {
+              "features": [
+                {
+                  "geometry": {
+                    "coordinates": [
+                      -77.9318,
+                      -12.1908
+                    ],
+                    "type": "Point"
+                  },
+                  "id": "quakeml:quakeledger/peru_70000011",
+                  "properties": {
+                    "description.text": "observed",
+                    "focalMechanism.nodalPlanes.nodalPlane1.dip.value": "20.0",
+                    "focalMechanism.nodalPlanes.nodalPlane1.rake.value": "90.0",
+                    "focalMechanism.nodalPlanes.nodalPlane1.strike.value": "329.0",
+                    "focalMechanism.nodalPlanes.preferredPlane": "nodalPlane1",
+                    "focalMechanism.publicID": "quakeml:quakeledger/peru_70000011",
+                    "magnitude.creationInfo.value": "GFZ",
+                    "magnitude.mag.value": "9.0",
+                    "magnitude.publicID": "quakeml:quakeledger/peru_70000011",
+                    "magnitude.type": "MW",
+                    "origin.creationInfo.value": "GFZ",
+                    "origin.depth.value": "8.0",
+                    "origin.publicID": "quakeml:quakeledger/peru_70000011",
+                    "origin.time.value": "1746-10-28T00:00:00.000000Z",
+                    "preferredMagnitudeID": "quakeml:quakeledger/peru_70000011",
+                    "preferredOriginID": "quakeml:quakeledger/peru_70000011",
+                    "publicID": "quakeml:quakeledger/peru_70000011",
+                    "selected": true,
+                    "type": "earthquake"
+                  },
+                  "type": "Feature"
+                }
+              ],
+              "type": "FeatureCollection"
+            }
+
+          }
         }
       }
     }).subscribe(success => {
-      this.response = "Successfully posted order."
+      console.log("success: ", success);
+      this.state = 'done';
     })
   }
 
