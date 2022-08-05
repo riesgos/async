@@ -28,7 +28,7 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
             }else if(it is LiteralInputDescription){
                 executeBuilder.addLiteralData(parameterIn, input.inlineParameters[parameterIn]!!.value, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
             }else if(it is BoundingBoxInputDescription){
-                executeBuilder.addBoundingBoxData(parameterIn, input.inlineParameters[parameterIn]!!.value, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
+                executeBuilder.addBoundingBoxData(parameterIn, input.bboxParameters[parameterIn]!!.bbox, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
             }
         }
         val parameterOut = "literalOutput"
