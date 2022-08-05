@@ -15,7 +15,7 @@ import { Order } from './order.service';
 })
 export class DbService {
 
-  private dbUrl = 'http://localhost:8000/api/v1';
+  private dbUrl = 'http://tramiel.eoc.dlr.de:8000/api/v1';
   private apiKey = '';
 
   constructor(private http: HttpClient) { }
@@ -38,11 +38,14 @@ export class DbService {
   }
 
   postOrder(order: Order): Observable<any> {
+    if (this.apiKey === '') {
+      throw new Error(`You need to login first`);
+    }
     const headers: HttpHeaders = new HttpHeaders({
       'accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-APIKEY': this.apiKey
     });
-    if (this.apiKey) headers.append('X-APIKEY', this.apiKey);
 
     return this.http.post(`${this.dbUrl}/orders/`, order, { headers });
   }
