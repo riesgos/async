@@ -1,12 +1,13 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DbService, IProduct, IProductType } from 'src/app/services/db.service';
+import { DbService } from 'src/app/services/db.service';
 
 import { LayersService } from '@dlr-eoc/services-layers';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { IMapControls } from '@dlr-eoc/map-ol';
 
 import { OsmTileLayer, EocLitemap, BlueMarbleTile } from '@dlr-eoc/base-layers-raster';
+import { Product, ProductType } from '../../../../../node-test-wss/fastAPI-Types/index';
 
 @Component({
   selector: 'app-catalog-view',
@@ -17,8 +18,8 @@ import { OsmTileLayer, EocLitemap, BlueMarbleTile } from '@dlr-eoc/base-layers-r
 export class CatalogViewComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
-  productTypes$: Observable<IProductType[]>;
-  products$: Observable<IProduct[]>;
+  productTypes$: Observable<ProductType[]>;
+  products$: Observable<Product[]>;
 
   navGroups: { [name: string]: boolean } = {};
 

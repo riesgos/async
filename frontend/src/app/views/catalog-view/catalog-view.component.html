@@ -15,7 +15,9 @@
         <ng-container *ngFor="let p of products$ | async">
           <a clrVerticalNavLink *ngIf="p.product_type_id === pType.id">
             {{p.name}}
+            <clr-icon shape="ellipsis-horizontal"></clr-icon>
           </a>
+
         </ng-container>
       </clr-vertical-nav-group-children>
     </clr-vertical-nav-group>
