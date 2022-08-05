@@ -197,7 +197,11 @@ module.exports = [
             },
             '/api/complex-outputs': {
                 'get': (req, res, next) => {
-                    return res.send(complexOutputs);
+                    if (req.query.job_id) {
+                        return res.send(complexOutputs.filter(o => o.job_id == req.query.job_id));
+                    } else {
+                        return res.send(complexOutputs);
+                    }
                 }
             },
             '/api/jobs': {

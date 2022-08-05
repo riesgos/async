@@ -15,7 +15,7 @@ import { ProgressService } from './components/global-progress/progress.service';
 import { OrderService } from './services/order.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UkisRoutingModule } from "./app-routing.module";
-import { CatalogViewComponent } from './views/catalog-view/catalog-view.component';
+import { CatalogViewComponent, FilterOnIdPipe } from './views/catalog-view/catalog-view.component';
 import { OrderViewComponent } from './views/order-view/order-view.component';
 
 import { VerticalNavResizeComponent } from './components/vertical-nav-resize/vertical-nav-resize.component';
@@ -35,6 +35,7 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     OrderViewComponent,
     VerticalNavResizeComponent,
     NavResizeDirectiveDirective,
+    FilterOnIdPipe
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DbService } from 'src/app/services/db.service';
 
@@ -7,19 +7,35 @@ import { MapStateService } from '@dlr-eoc/services-map-state';
 import { IMapControls } from '@dlr-eoc/map-ol';
 
 import { OsmTileLayer, EocLitemap, BlueMarbleTile } from '@dlr-eoc/base-layers-raster';
-import { Product, ProductType } from '../../../../../node-test-wss/fastAPI-Types/index';
+import { Product, ProductType, ComplexOutput } from '../../../../../node-test-wss/fastAPI-Types/index';
+import { filter, map } from 'rxjs/operators';
+
+
+
+@Pipe({ name: 'filterOnId' })
+export class FilterOnIdPipe implements PipeTransform {
+  transform(list: Observable<Product[]>, pType: Product['product_type_id']) {
+    return list.pipe(map(p => p.filter(item => item.product_type_id === pType)))
+  }
+}
 
 @Component({
   selector: 'app-catalog-view',
   templateUrl: './catalog-view.component.html',
   styleUrls: ['./catalog-view.component.scss'],
-  providers: [LayersService, MapStateService]
+  providers: [LayersService, MapStateService],
 })
 export class CatalogViewComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
+  public nav = {
+    leftWidth: 19,
+    rightWidth: 19
+  };
+
   productTypes$: Observable<ProductType[]>;
   products$: Observable<Product[]>;
+  outputs$!: Observable<ComplexOutput[]>
 
   navGroups: { [name: string]: boolean } = {};
 
@@ -64,8 +80,10 @@ export class CatalogViewComponent implements OnInit {
         this.navGroups[k] = true;
       }
     });
+  }
 
-    console.log(this.navGroups);
+  getOutputs(productId: Product['id']) {
+    this.outputs$ = this.dbSvc.getOutputsFromProduct('/api/complex-outputs', productId);
   }
 
 }
