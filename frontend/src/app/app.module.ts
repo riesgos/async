@@ -18,7 +18,12 @@ import { UkisRoutingModule } from "./app-routing.module";
 import { CatalogViewComponent } from './views/catalog-view/catalog-view.component';
 import { OrderViewComponent } from './views/order-view/order-view.component';
 
+import { VerticalNavResizeComponent } from './components/vertical-nav-resize/vertical-nav-resize.component';
+import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
 
+// loading an icon from the "core set" now must be done manually
+import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from "@cds/core/icon";
+ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
 @NgModule({
   declarations: [
@@ -27,7 +32,9 @@ import { OrderViewComponent } from './views/order-view/order-view.component';
     GlobalAlertComponent,
     GlobalProgressComponent,
     CatalogViewComponent,
-    OrderViewComponent
+    OrderViewComponent,
+    VerticalNavResizeComponent,
+    NavResizeDirectiveDirective,
   ],
   imports: [
     BrowserModule,
