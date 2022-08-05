@@ -23,6 +23,6 @@ class ProcessInputMessageHandler(var publisher: PulsarPublisher, val clientServi
         val input = ProcessInput("", mapOf("literalInput" to inputParam), HashMap<String, ReferenceParameter>())
         val output = process.runProcess(input)
         println("publish process output: $output")
-        publisher.publishMessage(output.toString())
+        publisher.publishSuccessMessage(output.toString())
     }
 }

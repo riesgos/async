@@ -35,6 +35,7 @@ class ComplexInput(ComplexInputBase):
     class Config:
         orm_mode = True
 
+
 class ComplexInputAsValueBase(BaseModel):
     job_id: int
     wps_identifier: str
@@ -49,6 +50,7 @@ class ComplexInputAsValue(ComplexInputAsValueBase):
 
     class Config:
         orm_mode = True
+
 
 class ComplexOutputBase(BaseModel):
     job_id: int
@@ -116,6 +118,10 @@ class Order(OrderBase):
         orm_mode = True
 
 
+class OrderPost(BaseModel):
+    order_constraints: dict
+
+
 class OrderJobRefBase(BaseModel):
     order_id: int
     job_id: int
@@ -149,3 +155,25 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
+
+class ProductType(BaseModel):
+    id: int
+    name: str
+
+
+class Product(BaseModel):
+    id: int
+    product_type_id: int
+    name: str
+
+
+class UserCredentials(BaseModel):
+    email: str
+    password: str
+
+
+class UserSelfInformation(BaseModel):
+    id: int
+    email: str
+    apikey: str

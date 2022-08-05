@@ -83,6 +83,49 @@ def test_read_bbox_input_list_filter_wps_identifier(session, client):
     ]
 
 
+def test_read_bbox_input_list_filter_process_id(session, client):
+    process1 = Process(
+        wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="shakyground"
+    )
+    process2 = Process(wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="deus")
+    job1 = Job(process=process1, status="pending")
+    job2 = Job(process=process2, status="pending")
+    bbox_input1 = BboxInput(
+        job=job1,
+        wps_identifier="bbox1",
+        lower_corner_x=1.1,
+        lower_corner_y=52,
+        upper_corner_x=2.2,
+        upper_corner_y=53,
+        crs="epsg:4326",
+    )
+    bbox_input2 = BboxInput(
+        job=job2,
+        wps_identifier="bbox2",
+        lower_corner_x=1.1,
+        lower_corner_y=52,
+        upper_corner_x=2.2,
+        upper_corner_y=53,
+        crs="epsg:4326",
+    )
+    session.add_all([process1, process2, job1, job2, bbox_input1, bbox_input2])
+    session.commit()
+    response = client.get(f"{ROOT_PATH}/bbox-inputs?process_id={process2.id}")
+    assert response.status_code == 200
+    assert response.json() == [
+        {
+            "id": bbox_input2.id,
+            "job_id": job2.id,
+            "wps_identifier": "bbox2",
+            "lower_corner_x": 1.1,
+            "lower_corner_y": 52,
+            "upper_corner_x": 2.2,
+            "upper_corner_y": 53,
+            "crs": "epsg:4326",
+        }
+    ]
+
+
 def test_read_bbox_input_list_filter_job_id(session, client):
     process = Process(
         wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="shakyground"

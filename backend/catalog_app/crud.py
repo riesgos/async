@@ -2,6 +2,7 @@ from typing import Optional
 
 from sqlalchemy.orm import Session
 
+from . import schemas
 from .models import (
     BboxInput,
     ComplexInput,
@@ -23,12 +24,15 @@ def get_bbox_inputs(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(BboxInput)
     if wps_identifier is not None:
         query = query.filter(BboxInput.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(BboxInput.job_id == job_id)
+    if process_id is not None:
+        query = query.join(BboxInput.job).filter(Job.process_id == process_id)
     return query.offset(skip).limit(limit).all()
 
 
@@ -42,12 +46,15 @@ def get_complex_inputs(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(ComplexInput)
     if wps_identifier is not None:
         query = query.filter(ComplexInput.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(ComplexInput.job_id == job_id)
+    if process_id is not None:
+        query = query.join(ComplexInput.job).filter(Job.process_id == process_id)
     return query.offset(skip).limit(limit).all()
 
 
@@ -61,17 +68,25 @@ def get_complex_inputs_as_values(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(ComplexInputAsValue)
     if wps_identifier is not None:
         query = query.filter(ComplexInputAsValue.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(ComplexInputAsValue.job_id == job_id)
+    if process_id is not None:
+        query = query.join(ComplexInputAsValue.job).filter(Job.process_id == process_id)
     return query.offset(skip).limit(limit).all()
 
 
 def get_complex_input_as_value(db: Session, complex_input_as_value_id: int):
-    return db.query(ComplexInputAsValue).filter(ComplexInputAsValue.id == complex_input_as_value_id).first()
+    return (
+        db.query(ComplexInputAsValue)
+        .filter(ComplexInputAsValue.id == complex_input_as_value_id)
+        .first()
+    )
+
 
 def get_complex_outputs(
     db: Session,
@@ -79,12 +94,18 @@ def get_complex_outputs(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
+    mime_type: Optional[str] = None,
 ):
     query = db.query(ComplexOutput)
     if wps_identifier is not None:
         query = query.filter(ComplexOutput.wps_identifier == wps_identifier)
+    if mime_type is not None:
+        query = query.filter(ComplexOutput.mime_type == mime_type)
     if job_id is not None:
         query = query.filter(ComplexOutput.job_id == job_id)
+    if process_id is not None:
+        query = query.join(ComplexOutput.job).filter(Job.process_id == process_id)
     return query.offset(skip).limit(limit).all()
 
 
@@ -98,12 +119,17 @@ def get_complex_outputs_as_inputs(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(ComplexOutputAsInput)
     if wps_identifier is not None:
         query = query.filter(ComplexOutputAsInput.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(ComplexOutputAsInput.job_id == job_id)
+    if process_id is not None:
+        query = query.join(ComplexOutputAsInput.job).filter(
+            Job.process_id == process_id
+        )
     return query.offset(skip).limit(limit).all()
 
 
@@ -143,12 +169,15 @@ def get_literal_inputs(
     limit: int = 100,
     wps_identifier: Optional[str] = None,
     job_id: Optional[int] = None,
+    process_id: Optional[int] = None,
 ):
     query = db.query(LiteralInput)
     if wps_identifier is not None:
         query = query.filter(LiteralInput.wps_identifier == wps_identifier)
     if job_id is not None:
         query = query.filter(LiteralInput.job_id == job_id)
+    if process_id is not None:
+        query = query.join(LiteralInput.job).filter(Job.process_id == process_id)
     return query.offset(skip).limit(limit).all()
 
 
@@ -213,3 +242,149 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(User).filter(User.email == email).first()
+
+
+def get_user_by_apikey(db: Session, apikey: str):
+    return db.query(User).filter(User.apikey == apikey).first()
+
+
+def create_user(db: Session, user: User):
+    db.add(user)
+    db.commit()
+    return user
+
+
+def create_order(db: Session, order: Order):
+    db.add(order)
+    db.commit()
+    return order
+
+
+def get_product_types(db: Session, skip: int = 0, limit: int = 100):
+    processes = (
+        db.query(Process)
+        .join(Process.jobs)
+        .filter_by(status="Succeeded")
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+    result = []
+    for process in processes:
+        result.append(
+            schemas.ProductType(name=process.wps_identifier + " output", id=process.id)
+        )
+    return result
+
+
+def get_product_type(db: Session, product_type_id: int):
+    process = (
+        db.query(Process)
+        .filter(Process.id == product_type_id)
+        .join(Process.jobs)
+        .filter_by(status="Succeeded")
+        .first()
+    )
+    if not process:
+        return None
+    return schemas.ProductType(name=process.wps_identifier + " output", id=process.id)
+
+
+def get_products(
+    db: Session,
+    skip: int = 0,
+    limit: int = 0,
+    product_type_id: Optional[int] = None,
+    order_id: Optional[int] = None,
+):
+    query = db.query(Job).filter(Job.status == "Succeeded").join(Job.process)
+    if product_type_id is not None:
+        query = query.filter(Job.process_id == product_type_id)
+    if order_id is not None:
+        query = query.join(OrderJobRef).filter(OrderJobRef.order_id == order_id)
+    jobs = query.offset(skip).limit(100)
+    result = []
+    for job in jobs:
+        result.append(
+            schemas.Product(
+                id=job.id,
+                product_type_id=job.process_id,
+                name=f"{job.process.wps_identifier} output ({job.id})",
+            )
+        )
+    return result
+
+
+def get_product(db: Session, product_id: int):
+    job = (
+        db.query(Job)
+        .join(Job.process)
+        .filter(Job.id == product_id)
+        .filter(Job.status == "Succeeded")
+        .first()
+    )
+    if not job:
+        return None
+    return schemas.Product(
+        id=job.id,
+        product_type_id=job.process_id,
+        name=f"{job.process.wps_identifier} output ({job.id})",
+    )
+
+
+def get_derived_products(
+    db: Session,
+    product_id: int,
+    skip: int = 0,
+    limit: int = 0,
+):
+    query = (
+        db.query(Job)
+        .filter(Job.status == "Succeeded")
+        .join(Job.process)
+        .join(Job.complex_outputs_as_inputs)
+        .join(ComplexOutputAsInput.complex_output)
+        .filter(ComplexOutput.job_id == product_id)
+    )
+    jobs = query.offset(skip).limit(100)
+    result = []
+    for job in jobs:
+        result.append(
+            schemas.Product(
+                id=job.id,
+                product_type_id=job.process_id,
+                name=f"{job.process.wps_identifier} output ({job.id})",
+            )
+        )
+    return result
+
+
+def get_base_products(
+    db: Session,
+    product_id: int,
+    skip: int = 0,
+    limit: int = 0,
+):
+    query = (
+        db.query(Job)
+        .filter(Job.status == "Succeeded")
+        .join(Job.process)
+        .join(Job.complex_outputs)
+        .join(ComplexOutput.inputs)
+        .filter(ComplexOutputAsInput.job_id == product_id)
+    )
+    jobs = query.offset(skip).limit(100)
+    result = []
+    for job in jobs:
+        result.append(
+            schemas.Product(
+                id=job.id,
+                product_type_id=job.process_id,
+                name=f"{job.process.wps_identifier} output ({job.id})",
+            )
+        )
+    return result
