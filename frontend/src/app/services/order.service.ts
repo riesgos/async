@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
+import { DbService } from './db.service';
 import { Producer } from './pulsar';
 
 
@@ -10,15 +11,22 @@ import { Producer } from './pulsar';
 export class OrderService {
 
   private pulsarProducer = new Producer('ws', 'localhost', 8080, 'non-persistent', 'public', 'standalone', 'default', 'riesgos');
-  // private pulsarProducer = new Producer('ws', 'rz-vm154.gfz-potsdam.de', 8080, 'non-persistent', 'public', 'standalone', 'digital-earth', 'riesgos');
+  // private pulsarProducer = new Producer('ws', 'rz-vm154.gfz-potsdam.de', 8081, 'non-persistent', 'public', 'standalone', 'digital-earth', 'riesgos');
 
-  constructor() { }
+  constructor(private db: DbService) { }
 
   public postOrder(order: Order): Observable<boolean> {
-    const orderString = JSON.stringify(order);
-    return this.pulsarProducer.postMessage(orderString).pipe(map(response => {
-      return response.result === 'ok';
-    }));
+    return this.db.postOrder(order).pipe(
+      switchMap(orderId => {
+        const completeOrder = {
+          ... order,
+          orderId: orderId
+        };
+        const orderString = JSON.stringify(completeOrder);
+        return this.pulsarProducer.postMessage(orderString);
+      }),
+      map(response => response.result === 'ok')
+    );
   }
 
   ngOnDestroy() {
@@ -27,8 +35,7 @@ export class OrderService {
 }
 
 export interface Order {
-  targetProductId: string,
-  constraints: ServiceConstraints
+  order_constraints: ServiceConstraints
 }
 
 export interface ServiceConstraints {
@@ -36,5 +43,13 @@ export interface ServiceConstraints {
 }
 
 export interface ParameterConstraints {
-  [parameterName: string]: any[]
+  literal_inputs?: {
+    [parameterName: string]: string
+  },
+  bbox_inputs?: {
+    [parameterName: string]: number[]
+  },
+  complex_inputs?: {
+    [parameterName: string]: any
+  }
 }

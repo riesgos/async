@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { Order } from './order.service';
 
 
 
@@ -13,7 +15,13 @@ import { Observable, of } from 'rxjs';
 })
 export class DbService {
 
-  constructor() { }
+  private dbUrl = 'http://localhost:8000/api/v1';
+
+  constructor(private http: HttpClient) { }
+
+  postOrder(order: Order): Observable<any> {
+    return this.http.post(`${this.dbUrl}/order`, order);
+  }
 
   public getProducts(serviceId: string): Observable<Product[]> {
     return of([]);
