@@ -24,6 +24,23 @@ export class DbService {
     this.apiKey = key;
   }
 
+  getApiKey(): string {
+    return this.apiKey;
+  }
+
+  register(email: string, password: string) {
+    return this.http.post(
+      `${this.dbUrl}/users/register`,
+      { email, password },
+      {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+  }
+
   login(email: string, password: string) {
     return this.http.post(
       `${this.dbUrl}/users/login`,

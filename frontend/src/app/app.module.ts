@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { UkisRoutingModule } from "./app-routing.module";
 import { CatalogViewComponent } from './views/catalog-view/catalog-view.component';
 import { OrderViewComponent } from './views/order-view/order-view.component';
+import { LoginComponent } from './components/login/login.component';
 
 
 
@@ -24,7 +25,8 @@ import { OrderViewComponent } from './views/order-view/order-view.component';
     GlobalAlertComponent,
     GlobalProgressComponent,
     CatalogViewComponent,
-    OrderViewComponent
+    OrderViewComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
