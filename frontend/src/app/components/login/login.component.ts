@@ -12,6 +12,7 @@ export class LoginComponent implements OnInit {
   public errorMessage: string = '';
   public loginForm: FormGroup;
   public registerForm: FormGroup;
+  public action: 'login' | 'register' = 'login';
 
   constructor(
     private loginSvc: LoginService,
