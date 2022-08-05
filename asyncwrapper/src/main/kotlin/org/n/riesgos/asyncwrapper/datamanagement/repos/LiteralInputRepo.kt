@@ -34,6 +34,7 @@ class LiteralInputRepo (val jdbcTemplate: JdbcTemplate) {
         if (literalInput.id == null) {
             val sqlInsert = """
                 insert into literal_inputs (job_id, wps_identifier, input_value) values (?, ?, ?)
+                returning id
             """.trimIndent()
 
             val key = GeneratedKeyHolder()

@@ -9,6 +9,7 @@ import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
+import java.util.logging.Logger
 
 
 class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration,
@@ -36,6 +37,8 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         // Exp. Damage computation for earthquake damage (eqdeus) vs tsunami damage
         // (tsdeus).
         val WRAPPER_NAME_SHAKYGROUND = "shakyground"
+
+        val LOGGER = Logger.getLogger("ShakygroundWrapper")
     }
 
 
