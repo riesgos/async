@@ -1,4 +1,5 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
+import { DbService } from 'src/app/services/db.service';
 import { OrderService } from 'src/app/services/order.service';
 
 @Component({
@@ -12,9 +13,15 @@ export class OrderViewComponent implements OnInit {
   public messageInput: string = 'Test Message';
   public response: string = '';
 
-  constructor(private orderSvc: OrderService) { }
+  constructor(
+    private dbSvc: DbService,
+    private orderSvc: OrderService
+    ) { }
 
   ngOnInit(): void {
+    this.dbSvc.login('user@mail.com', '1234').subscribe((result: any) => {
+      this.dbSvc.setApiKey(result.apikey);
+    })
   }
 
   public send() {

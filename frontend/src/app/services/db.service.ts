@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Order } from './order.service';
@@ -16,11 +16,35 @@ import { Order } from './order.service';
 export class DbService {
 
   private dbUrl = 'http://localhost:8000/api/v1';
+  private apiKey = '';
 
   constructor(private http: HttpClient) { }
 
+  setApiKey(key: string) {
+    this.apiKey = key;
+  }
+
+  login(email: string, password: string) {
+    return this.http.post(
+      `${this.dbUrl}/users/login`,
+      { email, password },
+      {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+  }
+
   postOrder(order: Order): Observable<any> {
-    return this.http.post(`${this.dbUrl}/order`, order);
+    const headers: HttpHeaders = new HttpHeaders({
+      'accept': 'application/json',
+      'Content-Type': 'application/json'
+    });
+    if (this.apiKey) headers.append('X-APIKEY', this.apiKey);
+
+    return this.http.post(`${this.dbUrl}/orders/`, order, { headers });
   }
 
   public getProducts(serviceId: string): Observable<Product[]> {
