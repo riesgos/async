@@ -28,6 +28,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher) {
         val WPS_JOB_STATUS_ACCEPTED = "Accepted"
         val WPS_JOB_STATUS_RUNNING = "Running"
         val WPS_JOB_STATUS_SUCCEEDED = "Succeeded"
+        val WPS_JOB_STATUS_FAILED = "Failed"
 
         val LOGGER = Logger.getLogger("AbstractWrapper")
     }
@@ -110,7 +111,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher) {
         }
         val wrapperName = getWrapperName()
         if (!jsonObject.has(wrapperName)) {
-            return null
+            return OrderConstraintsResult(HashMap(), HashMap(), HashMap())
         }
         val wrapperRawConstraints = jsonObject.getJSONObject(wrapperName)
 
@@ -128,7 +129,9 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher) {
             for (key in literalInputConstraints.keySet()) {
                 val constraintArray = literalInputConstraints.getJSONArray(key)
                 for (constraintValue in constraintArray) {
-                    literalConstraints.getOrDefault(key, ArrayList()).add(constraintValue as String)
+                    val existingList = literalConstraints.getOrDefault(key, ArrayList())
+                    existingList.add(constraintValue as String)
+                    literalConstraints.put(key, existingList)
                     LOGGER.info("Added literal input constraint for " + wrapperName + " " + key + ": " + constraintValue.toString())
                 }
             }
@@ -139,15 +142,17 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher) {
                 val constraintArray = complexInputConstraints.getJSONArray(key)
                 for (constraintValue in constraintArray) {
                     val constraintObject = constraintValue as JSONObject
-                    complexConstraints.getOrDefault(key, ArrayList()).add(
-                            ComplexInputConstraint(
-                                constraintObject.getStringOrDefault("link", null),
-                                constraintObject.getStringOrDefault("input_value", null),
-                                constraintObject.getString("mime_type"),
-                                constraintObject.getString("xmlschema"),
-                                constraintObject.getString("encoding")
-                            )
+                    val existingList = complexConstraints.getOrDefault(key, ArrayList())
+                    existingList.add(
+                        ComplexInputConstraint(
+                            constraintObject.getStringOrDefault("link", null),
+                            constraintObject.getStringOrDefault("input_value", null),
+                            constraintObject.getString("mime_type"),
+                            constraintObject.getString("xmlschema"),
+                            constraintObject.getString("encoding")
                         )
+                    )
+                    complexConstraints.put(key, existingList)
                     LOGGER.info("Added complex input constraint for " + wrapperName + " " + key)
                 }
             }
@@ -158,7 +163,8 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher) {
                 val constraintArray = bboxInputConstraints.getJSONArray(key)
                 for (constraintValue in constraintArray) {
                     val constraintObject = constraintValue as JSONObject
-                    bboxConstraints.getOrDefault(key, ArrayList()).add(
+                    val existingList = bboxConstraints.getOrDefault(key, ArrayList())
+                    existingList.add(
                             BBoxInputConstraint(
                                     constraintObject.getDouble("lower_corner_x"),
                                     constraintObject.getDouble("lower_corner_y"),
@@ -167,6 +173,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher) {
                                     constraintObject.getString("crs")
                             )
                     )
+                    bboxConstraints.put(key, existingList)
                     LOGGER.info("Added bbox input constraint for " + wrapperName + " " + key)
                 }
             }
@@ -214,10 +221,18 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher) {
         LOGGER.info("Define the bbox constraints for the jobs")
         val filledBBoxConstraints = mergeConstraintsWithDefaults(orderConstraints.bboxConstraints, getDefaultBBoxConstraints(orderId))
 
+        var jobInputs: List<JobConstraints> = ArrayList<JobConstraints>()
+        try {
+            jobInputs = getJobInputs(filledLiteralConstraints, filledComplexConstraints, filledBBoxConstraints)
+        } catch (e: Exception) {
+            LOGGER.info("Problem on parameterization for concrete jobs")
+            e.printStackTrace()
+            throw e
+        }
         var hasAtLeastOneRun = false
-        for (jobInput in getJobInputs(filledLiteralConstraints, filledComplexConstraints, filledBBoxConstraints)) {
+        for (jobInput in jobInputs) {
             hasAtLeastOneRun = true
-            LOGGER.info("Will run one job")
+            LOGGER.info("Process job")
             if (datamanagementRepo().hasAlreadyProcessed(getWpsIdentifier(), jobInput.complexConstraints, jobInput.literalConstraints, jobInput.bboxConstraints)) {
                 LOGGER.info("Inputs already processed")
                 sendSuccess(orderId)
@@ -286,34 +301,40 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher) {
         val wpsInputMapper = InputMapper(getWpsIdentifier())
         val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, literalInputs, bboxInputs)
         // TODO: Extract the version from the implementations themselves
-        val wpsClientService = WPSClientService(WPSConfiguration(getWpsUrl(), getWpsIdentifier(), "2.0.0"))
-        val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0")
-        LOGGER.info("Start calling the wps itself")
-        val wpsOutputs = wpsProcess.runProcess(wpsInputs)
-        LOGGER.info("Finished calling the wps itself")
-        val wpsOutputMapper = OutputMapper(jobId, wpsOutputs)
-        val complexOutputs = wpsOutputMapper.mapOutputs()
-        LOGGER.info("Finished mapping the outputs")
+        try {
+            val wpsClientService = WPSClientService(WPSConfiguration(getWpsUrl(), getWpsIdentifier(), "2.0.0"))
+            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0")
+            LOGGER.info("Start calling the wps itself")
+            val wpsOutputs = wpsProcess.runProcess(wpsInputs)
+            LOGGER.info("Finished calling the wps itself")
+            val wpsOutputMapper = OutputMapper(jobId, wpsOutputs)
+            val complexOutputs = wpsOutputMapper.mapOutputs()
+            LOGGER.info("Finished mapping the outputs")
 
 
-        for (output in complexOutputs) {
+            for (output in complexOutputs) {
 
-            datamanagementRepo().insertComplexOutput(
-                    output.jobId,
-                    output.wpsIdentifier,
-                    output.link,
-                    output.mimeType,
-                    output.xmlschema,
-                    output.encoding
-            )
-            LOGGER.info("Stored output for " + output.wpsIdentifier)
+                datamanagementRepo().insertComplexOutput(
+                        output.jobId,
+                        output.wpsIdentifier,
+                        output.link,
+                        output.mimeType,
+                        output.xmlschema,
+                        output.encoding
+                )
+                LOGGER.info("Stored output for " + output.wpsIdentifier)
+            }
+
+            datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_SUCCEEDED)
+            LOGGER.info("Job succeeded")
+
+            sendSuccess(orderId)
+        } catch (e: Exception) {
+            LOGGER.info("WPS call failed")
+            e.printStackTrace()
+            datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_FAILED)
+            throw e
         }
-
-        datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_SUCCEEDED)
-        LOGGER.info("Job succeeded")
-        // TODO: What if failed?
-
-        sendSuccess(orderId)
     }
 
     /**

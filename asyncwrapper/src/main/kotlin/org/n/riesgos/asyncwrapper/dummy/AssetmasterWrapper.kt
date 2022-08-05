@@ -111,7 +111,7 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         LOGGER.info("queryModes: " + queryModes.toString())
         LOGGER.info("models: " + models.toString())
 
-        for (i in 0..minLength) {
+        for (i in 0 until minLength) {
             val lonminConstraint = lonmins.get(i)
             val lonmaxConstraint = lonmaxs.get(i)
             val latminConstraint = latmins.get(i)
@@ -135,6 +135,7 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
                             val complexInputValues = HashMap<String, ComplexInputConstraint>()
                             val bboxInputValues = HashMap<String, BBoxInputConstraint>()
 
+                            LOGGER.info("Added concrete parameterized job")
                             result.add(JobConstraints(literalInputValues, complexInputValues, bboxInputValues))
                         }
                     }
@@ -143,6 +144,7 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         }
 
 
+        LOGGER.info("" + result.size.toString() + " parameterized jobs extracted")
         return result
     }
 
