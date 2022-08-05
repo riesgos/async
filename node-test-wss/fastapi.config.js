@@ -1,5 +1,6 @@
 const port = 8080;
 const base = `http://localhost:${port}`
+
 module.exports = [
     {
         'id': 'api1',
@@ -316,6 +317,102 @@ module.exports = [
             '/api/users': {
                 'get': (req, res, next) => {
                     return res.send([]);
+                }
+            },
+            '/api/products': {
+                'get': (req, res, next) => {
+                    /** @type {import("../frontend/src/app/services/db.service").IProduct[]} */
+                    const products = [
+                        {
+                            "id": 1,
+                            "name": "shakyground output (1)",
+                            "product_type_id": 1,
+                        },
+                        {
+                            "id": 2,
+                            "name": "shakyground output (2)",
+                            "product_type_id": 1,
+                        },
+                        {
+                            "id": 3,
+                            "name": "shakyground output (3)",
+                            "product_type_id": 1,
+                        },
+                        {
+                            "id": 4,
+                            "product_type_id": 2,
+                            "name": "assetmaster output (4)"
+                        },
+                        {
+                            "id": 5,
+                            "product_type_id": 2,
+                            "name": "assetmaster output (5)"
+                        },
+                        {
+                            "id": 6,
+                            "product_type_id": 2,
+                            "name": "assetmaster output (6)"
+                        },
+                        {
+                            "id": 7,
+                            "product_type_id": 3,
+                            "name": "modelprop output (7)"
+                        },
+                        {
+                            "id": 8,
+                            "product_type_id": 4,
+                            "name": "deus output (8)"
+                        },
+                        {
+                            "id": 9,
+                            "product_type_id": 4,
+                            "name": "deus output (9)"
+                        },
+                        {
+                            "id": 9,
+                            "product_type_id": 4,
+                            "name": "deus output (9)"
+                        },
+                        {
+                            "id": 10,
+                            "product_type_id": 5,
+                            "name": "systemReliability output (10)"
+                        },
+                        {
+                            "id": 11,
+                            "product_type_id": 5,
+                            "name": "systemReliability output (11)"
+                        }
+                    ];
+                    return res.send(products);
+                }
+            },
+            '/api/product-types': {
+                'get': (req, res, next) => {
+                    /** @type {import("../frontend/src/app/services/db.service").IProductType[]} */
+                    const productTypes = [
+                        {
+                            "name": "shakyground output",
+                            "id": 1,
+                        },
+                        {
+                            "name": "assetmaster output",
+                            "id": 2,
+                        },
+                        {
+                            "name": "modelprop output",
+                            "id": 3,
+                        },
+                        {
+                            "name": "deus output",
+                            "id": 4,
+                        },
+                        {
+                            "name": "systemReliability output",
+                            "id": 5,
+                        }
+                    ];
+                    return res.send(productTypes);
                 }
             }
         }
