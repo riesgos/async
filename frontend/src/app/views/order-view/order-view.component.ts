@@ -1,6 +1,8 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { DbService } from 'src/app/services/db.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { OrderService } from 'src/app/services/order.service';
+import { model } from '../../services/model';
 
 @Component({
   selector: 'app-order-view',
@@ -10,13 +12,28 @@ import { OrderService } from 'src/app/services/order.service';
 export class OrderViewComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
-  public messageInput: string = 'Test Message';
-  public response: string = '';
+  public formGroup: FormGroup;
+  public model = model;
+  public state: 'ready' | 'running' | 'done' = 'ready';
+
 
   constructor(
+    private orderSvc: OrderService,
     private dbSvc: DbService,
-    private orderSvc: OrderService
-    ) { }
+    private fb: FormBuilder,
+  ) {
+    const formData: any = {};
+    for (const step in this.model) {
+      const stepFormData: any = {};
+      for (const para in this.model[step]) {
+        stepFormData[para] = null;
+      }
+      formData[step] = this.fb.group(stepFormData);
+    }
+    this.formGroup = this.fb.group(formData);
+
+    this.formGroup.valueChanges.subscribe(val => console.log(val));
+  }
 
   ngOnInit(): void {
     this.dbSvc.login('user@mail.com', '1234').subscribe((result: any) => {
@@ -24,7 +41,16 @@ export class OrderViewComponent implements OnInit {
     })
   }
 
-  public send() {
+  public submit() {
+    this.send(this.formGroup.value);
+  }
+
+  public resetForm() {
+    
+  }
+
+  private send(data: any) {
+    this.state = 'running';
     this.orderSvc.postOrder({
       order_constraints: {
         quakeledger: {
@@ -75,7 +101,8 @@ export class OrderViewComponent implements OnInit {
         }
       }
     }).subscribe(success => {
-      this.response = "Successfully posted order."
+      console.log("success: ", success);
+      this.state = 'done';
     })
   }
 

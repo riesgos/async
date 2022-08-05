@@ -1,13 +1,67 @@
 <app-login></app-login>
 
 <main class="content-area">
-  <p [innerText]="response"></p>
+
+  <form clrForm [formGroup]="formGroup">
+
+    <clr-accordion>
+
+      <clr-accordion-panel>
+        <clr-accordion-title>Base product</clr-accordion-title>
+        <clr-accordion-content *clrIfExpanded>
+          <table class="table table-vertical">
+            <tbody>
+              <tr>
+                <th>Product-Id</th>
+                <td>1</td>
+              </tr>
+            </tbody>
+          </table>
+        </clr-accordion-content>
+      </clr-accordion-panel>
+
+      <clr-accordion-panel *ngFor="let step of model | keyvalue" [formGroupName]="step.key">
+        <clr-accordion-title>{{ step.key }}</clr-accordion-title>
+
+        <clr-accordion-content *clrIfExpanded>
+          <clr-control-container *ngFor="let para of step.value | keyvalue">
+            <label>{{ para.key }}</label>
+            <select clrControl [formControlName]="para.key">
+              <option [ngValue]="null">...</option>
+              <option *ngFor="let option of para.value" [ngValue]="option">{{ option }}</option>
+            </select>
+          </clr-control-container>
+        </clr-accordion-content>
+      </clr-accordion-panel>
+
+    </clr-accordion>
+
+
+    <div [ngSwitch]="state">
+      <div *ngSwitchCase="'ready'">
+        <button class="btn btn-primary" type="submit" (click)="submit()">Submit</button>
+        <button class="btn" type="button" (click)="resetForm()">Reset</button>
+      </div>
+      <div *ngSwitchCase="'running'">
+        <span class="spinner spinner-inline">
+          Processing order ...
+        </span>
+      </div>
+      <div *ngSwitchCase="'done'">
+        <div class="alert alert-success" role="alert">
+          <div class="alert-items">
+            <div class="alert-item static">
+              <div class="alert-icon-wrapper">
+                <clr-icon class="alert-icon" shape="check-circle"></clr-icon>
+              </div>
+              <span class="alert-text">Order successfully placed!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngSwitchDefault>Uh oh! Somethings wrong</div>
+    </div>
+
+  </form>
+
 </main>
-
-<!-- <clr-vertical-nav class="right">
-  </clr-vertical-nav> -->
-
-<nav class="sidenav">
-  <input clrInput type="text" [(ngModel)]="messageInput" />
-  <button class="btn btn-primary" (click)="send()">Send</button>
-</nav>
