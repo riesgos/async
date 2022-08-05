@@ -118,6 +118,10 @@ class Order(OrderBase):
         orm_mode = True
 
 
+class OrderPost(BaseModel):
+    order_constraints: dict
+
+
 class OrderJobRefBase(BaseModel):
     order_id: int
     job_id: int
@@ -162,3 +166,14 @@ class Product(BaseModel):
     id: int
     product_type_id: int
     name: str
+
+
+class UserCredentials(BaseModel):
+    email: str
+    password: str
+
+
+class UserSelfInformation(BaseModel):
+    id: int
+    email: str
+    apikey: str
