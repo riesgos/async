@@ -3,6 +3,9 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ClarityModule } from "@clr/angular";
 import { HttpClientModule } from '@angular/common/http';
+import { MapOlModule } from '@dlr-eoc/map-ol';
+import { LayerControlModule } from '@dlr-eoc/layer-control';
+
 import { AppComponent } from "./app.component";
 import { HeaderComponent } from './components/header/header.component';
 import { GlobalAlertComponent } from './components/global-alert/global-alert.component';
@@ -33,7 +36,9 @@ import { OrderViewComponent } from './views/order-view/order-view.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    UkisRoutingModule
+    UkisRoutingModule,
+    MapOlModule,
+    LayerControlModule
   ],
   providers: [
     AlertService,
