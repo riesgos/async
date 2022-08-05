@@ -1,11 +1,10 @@
 package org.n.riesgos.asyncwrapper.process.wps
 
 import org.n.riesgos.asyncwrapper.process.*
+import org.n.riesgos.asyncwrapper.process.Process
 import org.n52.geoprocessing.wps.client.ExecuteRequestBuilder
 import org.n52.geoprocessing.wps.client.WPSClientSession
-import org.n52.geoprocessing.wps.client.model.ResponseMode
-import org.n52.geoprocessing.wps.client.model.StatusInfo
-import org.n52.geoprocessing.wps.client.model.TransmissionMode
+import org.n52.geoprocessing.wps.client.model.*
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import org.n52.geoprocessing.wps.client.model.execution.ExecutionMode
 
@@ -19,13 +18,21 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
 
         // create the request, add literal input
         val executeBuilder = ExecuteRequestBuilder(processDescription)
-        val parameterIn = "literalInput"
-
-        executeBuilder.addLiteralData(parameterIn, input.inlineParameters[parameterIn]!!.value, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
+        processDescription.inputs.forEach {
+            val parameterIn = it.id
+            if(!input.inlineParameters.containsKey(parameterIn)){
+                return@forEach
+            }
+            if(it is ComplexInputDescription){
+                executeBuilder.addComplexData(parameterIn, input.inlineParameters[parameterIn]!!.value, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
+            }else if(it is LiteralInputDescription){
+                executeBuilder.addLiteralData(parameterIn, input.inlineParameters[parameterIn]!!.value, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
+            }else if(it is BoundingBoxInputDescription){
+                executeBuilder.addBoundingBoxData(parameterIn, input.inlineParameters[parameterIn]!!.value, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
+            }
+        }
         val parameterOut = "literalOutput"
         executeBuilder.setResponseDocument(parameterOut, null, null, "text/xml")
-
-        // build and send the request document
 
         // build and send the request document
 
