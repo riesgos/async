@@ -49,6 +49,7 @@ class ComplexInputRepo (val jdbcTemplate: JdbcTemplate) {
         if (complexInput.id == null) {
             val sqlInsert = """
                 insert into complex_inputs (job_id, wps_identifier, link, mime_type, xmlschema, encoding) values (?, ?, ?, ?, ?, ?)
+                returning id
             """.trimIndent()
 
             val key = GeneratedKeyHolder()

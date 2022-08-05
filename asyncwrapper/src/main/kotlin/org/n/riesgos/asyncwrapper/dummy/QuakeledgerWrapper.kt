@@ -84,15 +84,15 @@ class QuakeledgerWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig:
         val minLengthTConstraints = Math.min(tlatConstraints.size, tlonConstraints.size)
 
 
-        for (iZConstraints in 0..minLenthZConstraints) {
+        for (iZConstraints in 0 until minLenthZConstraints) {
             val zMinConstraint = zminConstraints.get(iZConstraints)
             val zMaxConstraint = zmaxConstraints.get(iZConstraints)
 
-            for (iMConstraints in 0..minLengthMConstraints) {
+            for (iMConstraints in 0 until minLengthMConstraints) {
                 val mMinConstraint = mminConstraints.get(iMConstraints)
                 val mMaxConstraint = mmaxConstraints.get(iMConstraints)
 
-                for (iTConstraints in 0..minLengthTConstraints) {
+                for (iTConstraints in 0 until minLengthTConstraints) {
                     val tlatConstraint = tlatConstraints.get(iTConstraints)
                     val tlonConstraint = tlonConstraints.get(iTConstraints)
 

@@ -30,7 +30,7 @@ services:
       pulsar.failureTopic: 'deus-failure'
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
-      wps.wpsprocess: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
   assetmaster_wrapper:
     image: spring-boot-image
     build:
@@ -56,7 +56,7 @@ services:
       pulsar.failureTopic: 'assetmaster-failure'
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
-      wps.wpsprocess: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess'
   modelprop_wrapper:
     image: spring-boot-image
     build:
@@ -82,7 +82,7 @@ services:
       pulsar.failureTopic: 'modelprop-failure'
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
-      wps.wpsprocess: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
 
   shakyground_wrapper:
     image: spring-boot-image
@@ -109,7 +109,7 @@ services:
       pulsar.failureTopic: 'shakyground-failure'
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
-      wps.wpsprocess: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
   quakeledger_wrapper:
     image: spring-boot-image
     build:
@@ -135,7 +135,7 @@ services:
       pulsar.failureTopic: 'quakeledger-failure'
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
-      wps.wpsProcess: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess'
 
   backend:
     image: async-backend

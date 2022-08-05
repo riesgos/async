@@ -52,6 +52,7 @@ class BboxInputRepo (val jdbcTemplate: JdbcTemplate) {
             val sqlInsert = """
                 insert into bbox_inputs (job_id, wps_identifier, lower_corner_x, lower_corner_y, upper_corner_x, upper_corner_y, crs)
                 values (?, ?, ?, ?, ?, ?, ?)
+                returning id
             """.trimIndent()
             val key = GeneratedKeyHolder()
             val preparedStatementCreator = PreparedStatementCreator { con: Connection ->
