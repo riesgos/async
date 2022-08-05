@@ -14,7 +14,6 @@ import { GlobalProgressComponent } from './components/global-progress/global-pro
 import { ProgressService } from './components/global-progress/progress.service';
 import { OrderService } from './services/order.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { UkisRoutingModule } from "./app-routing.module";
 import { CatalogViewComponent } from './views/catalog-view/catalog-view.component';
 import { OrderViewComponent } from './views/order-view/order-view.component';

@@ -66,23 +66,14 @@ export class DbService {
     return this.http.post(`${this.dbUrl}/orders/`, order, { headers });
   }
   
-  public getProducts(serviceId: string): Observable<Product[]> {
-    let url = `${this.dbUrl}${serviceId}`
-    if (serviceId.includes('http')) {
-      url = serviceId;
-    }
-    return this.http.get<Product[]>(url);
+  public getProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.dbUrl}/products/`);
   }
 
-  public getProductsTypes(serviceId: string): Observable<ProductType[]> {
+  public getProductsTypes(): Observable<ProductType[]> {
     // https://medium.com/dailyjs/how-to-remove-array-duplicates-in-es6-5daa8789641c
     // return this.http.get<IProduct[]>(url).pipe(map(a => Array.from(new Set(a.map(p => p.wps_identifier)))));
-
-    let url = `${this.dbUrl}${serviceId}`
-    if (serviceId.includes('http')) {
-      url = serviceId;
-    }
-    return this.http.get<ProductType[]>(url);
+    return this.http.get<ProductType[]>(`${this.dbUrl}/product-types/`);
   }
 
   public getProductsDerivedFrom(product: Product): Observable<Product[]> {

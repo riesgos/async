@@ -31,8 +31,8 @@ export class CatalogViewComponent implements OnInit {
       scaleLine: true
     }
 
-    this.productTypes$ = this.dbSvc.getProductsTypes('/api/product-types');
-    this.products$ = this.dbSvc.getProducts('/api/products');
+    this.productTypes$ = this.dbSvc.getProductsTypes();
+    this.products$ = this.dbSvc.getProducts();
   }
 
   ngOnInit(): void {
