@@ -1,15 +1,16 @@
 package org.n.riesgos.asyncwrapper.process.wps
 
+import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.process.*
 import org.n.riesgos.asyncwrapper.process.Process
 import org.n52.geoprocessing.wps.client.ExecuteRequestBuilder
 import org.n52.geoprocessing.wps.client.WPSClientSession
 import org.n52.geoprocessing.wps.client.model.*
 import org.n52.geoprocessing.wps.client.model.execution.Data
-import org.n52.geoprocessing.wps.client.model.execution.ExecutionMode
+import java.sql.Ref
 
 
-class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: String) : Process {
+class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: String, private val expectedOutputs : List<WPSOutputDefinition>) : Process {
 
     override fun runProcess(input: ProcessInput): ProcessOutput {
 
@@ -31,8 +32,10 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
                 executeBuilder.addBoundingBoxData(parameterIn, input.bboxParameters[parameterIn]!!.bbox, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
             }
         }
-        val parameterOut = "literalOutput"
-        executeBuilder.setResponseDocument(parameterOut, null, null, "text/xml")
+
+        for (parameterOut in expectedOutputs) { //set expected output parameters
+            executeBuilder.setResponseDocument(parameterOut.identifier, null, null, parameterOut.mimeType) //schema and encoding necessary?
+        }
 
         // build and send the request document
 
@@ -51,15 +54,45 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
             println(result)
             val outputs: List<Data> = result.outputs
             println(outputs)
-            println(outputs[0])
-            val stringOutput = outputs[0].asLiteralData()
-            var literalOutput = InlineParameter(parameterOut, stringOutput.value.toString(), "text/xml")
-            var processOut = ProcessOutput(processID, mapOf(parameterOut to literalOutput), HashMap<String, List<ReferenceParameter>>())
+            var refOutputs = HashMap<String, List<ReferenceParameter>>()
+
+            for(expectedOutput in expectedOutputs){
+                val output = getOutputById(expectedOutput.identifier, outputs)
+                if(output != null){
+                    val complexOutput = output.asComplexReferenceData()
+                    val outputParam = ReferenceParameter(complexOutput.id, complexOutput.reference.href.toString(), complexOutput.format.mimeType, complexOutput.format.encoding, complexOutput.format.schema)
+                    if(!refOutputs.containsKey(complexOutput.id)){
+                        refOutputs[complexOutput.id] = mutableListOf(outputParam)
+                    }else{
+                        //TODO add to list
+                    }
+                }else{
+                    println("did not find expected outut parameter ${expectedOutput.identifier} in wps result")
+                    throw java.lang.IllegalArgumentException("unknown wps output parameter ${expectedOutput.identifier}")
+                }
+            }
+
+
+            var processOut = ProcessOutput(
+                processID,
+                HashMap<String, InlineParameter>(),
+                refOutputs
+            )
             return processOut
         }catch (e : Exception){
             println(e.message)
             print(e.stackTrace)
             throw e
         }
+    }
+
+    fun getOutputById(outputId : String, outputs : List<Data> ) : Data? {
+        for(output in outputs){
+            if(output.id == outputId){
+                return output
+            }
+        }
+
+        return null;
     }
 }

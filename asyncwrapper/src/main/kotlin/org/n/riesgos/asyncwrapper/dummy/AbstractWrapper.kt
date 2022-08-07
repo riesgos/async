@@ -19,7 +19,7 @@ import java.util.logging.Logger
  * This is an abstract wrapper. We are going to overwrite some of the abstract
  * functions in order to make it work with an concrete wps process.
  */
-abstract class AbstractWrapper(val publisher : PulsarPublisher) {
+abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfiguration: WPSConfiguration) {
 
     /**
      * Some of the constants that we can reuse.
@@ -302,8 +302,8 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher) {
         val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, literalInputs, bboxInputs)
         // TODO: Extract the version from the implementations themselves
         try {
-            val wpsClientService = WPSClientService(WPSConfiguration(getWpsUrl(), getWpsIdentifier(), "2.0.0"))
-            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0")
+            val wpsClientService = WPSClientService(wpsConfiguration)
+            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", wpsConfiguration.outputs)
             LOGGER.info("Start calling the wps itself")
             val wpsOutputs = wpsProcess.runProcess(wpsInputs)
             LOGGER.info("Finished calling the wps itself")

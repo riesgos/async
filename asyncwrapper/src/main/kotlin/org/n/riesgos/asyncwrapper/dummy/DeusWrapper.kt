@@ -17,7 +17,7 @@ import java.util.stream.Collectors
 
 
 class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, publisher: PulsarPublisher) : AbstractWrapper(
-    publisher
+    publisher, wpsConfig
 ) {
 
 

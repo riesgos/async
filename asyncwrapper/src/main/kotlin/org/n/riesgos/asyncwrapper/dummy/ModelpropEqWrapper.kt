@@ -12,7 +12,7 @@ import java.util.*
 
 class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration,
                           publisher: PulsarPublisher
-): AbstractWrapper(publisher) {
+): AbstractWrapper(publisher, wpsConfig) {
 
     private val wpsURL = wpsConfig.wpsURL
     private val wpsProcessIdentifier = wpsConfig.process
