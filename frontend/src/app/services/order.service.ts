@@ -10,9 +10,7 @@ import { Producer } from './pulsar';
 })
 export class OrderService {
 
-  private pulsarProducer = new Producer('ws', 'tramiel.eoc.dlr.de', 8080, 'non-persistent', 'public', 'default', 'riesgos');
-  // private pulsarProducer = new Producer('ws', 'localhost', 8080, 'non-persistent', 'public', 'default', 'riesgos');
-  // private pulsarProducer = new Producer('ws', 'rz-vm154.gfz-potsdam.de', 8081, 'non-persistent', 'public', 'digital-earth', 'riesgos');
+  private pulsarProducer = new Producer('ws://tramiel.eoc.dlr.de:8080/ws/v2/producer/non-persistent/public/default/riesgos');
 
   constructor(private db: DbService) { }
 

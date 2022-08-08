@@ -5,22 +5,8 @@ export class Producer {
 
     private ws: WebSocket;
 
-    constructor(
-        protocol: Protocol = "ws",
-        domain: string = "localhost",
-        port: number = 8080,
-        storageType: StorageType = "non-persistent",
-        tenant = "public",
-        namespace = "default",
-        topic: string = "riesgos") {
-
-        // @TODO: producer.accessmode.shared
-        // @TODO: jwt-tokens
-        // @TODO: log-level
-        // @TODO: consumer, auto-ack
-        const clientType: ClientType = "producer";
-
-        this.ws = new WebSocket(`${protocol}://${domain}:${port}/ws/v2/${clientType}/${storageType}/${tenant === "" ? "" : tenant + "/"}${namespace}/${topic}`);
+    constructor(url: string) {
+        this.ws = new WebSocket(url);
     }
 
     public postMessage(body: string, properties?: { [key: string]: string }, context?: string): Observable<Response> {
