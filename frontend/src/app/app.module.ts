@@ -18,6 +18,7 @@ import { UkisRoutingModule } from "./app-routing.module";
 import { CatalogViewComponent } from './views/catalog-view/catalog-view.component';
 import { OrderViewComponent } from './views/order-view/order-view.component';
 import { LoginComponent } from './components/login/login.component';
+import { CurrentStateComponent } from './views/current-state/current-state.component';
 
 
 
@@ -29,7 +30,8 @@ import { LoginComponent } from './components/login/login.component';
     GlobalProgressComponent,
     CatalogViewComponent,
     OrderViewComponent,
-    LoginComponent
+    LoginComponent,
+    CurrentStateComponent
   ],
   imports: [
     BrowserModule,

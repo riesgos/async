@@ -37,7 +37,7 @@ export class OrderViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.dbSvc.login('user@mail.com', '1234').subscribe((result: any) => {
-      this.dbSvc.setApiKey(result.apikey);
+      console.log(result);
     })
   }
 

@@ -10,11 +10,11 @@ import { Producer } from './pulsar';
 })
 export class OrderService {
 
-  private pulsarProducer = new Producer('ws://tramiel.eoc.dlr.de:8080/ws/v2/producer/non-persistent/public/default/riesgos');
+  private pulsarProducer = new Producer('ws://tramiel.eoc.dlr.de:8080/ws/v2/producer/non-persistent/public/default/new-order');
 
   constructor(private db: DbService) { }
 
-  public postOrder(order: Order): Observable<boolean> {
+  public postOrder(order: UserOrder): Observable<boolean> {
     return this.db.postOrder(order).pipe(
       switchMap(completeOrder => {
         const orderString = JSON.stringify(completeOrder);
@@ -29,7 +29,7 @@ export class OrderService {
   }
 }
 
-export interface Order {
+export interface UserOrder {
   order_constraints: ServiceConstraints
 }
 
