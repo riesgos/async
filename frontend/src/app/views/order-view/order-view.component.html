@@ -28,7 +28,7 @@
             <label>{{ para.key }}</label>
             <select clrControl [formControlName]="para.key">
               <option [ngValue]="null">...</option>
-              <option *ngFor="let option of para.value" [ngValue]="option">{{ option }}</option>
+              <option *ngFor="let option of para.value | keyvalue" [ngValue]="option.value">{{ option.key }}</option>
             </select>
           </clr-control-container>
         </clr-accordion-content>

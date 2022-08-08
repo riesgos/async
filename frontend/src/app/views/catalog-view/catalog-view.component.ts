@@ -38,12 +38,12 @@ export class CatalogViewComponent implements OnInit {
   ngOnInit(): void {
     this.addBaselayers();
     this.mapStateSvc.setExtent([-73.361, -34.120, -70.636, -31.826]);
-    this.layerSvc.addLayer(new VectorLayer({
-      id: 'quakeledger',
-      name: 'quakeledger',
-      type: 'geojson',
-      url: `http://localhost:4200/assets/data/quakeledger.json`
-    }));
+    // this.layerSvc.addLayer(new VectorLayer({
+    //   id: 'quakeledger',
+    //   name: 'quakeledger',
+    //   type: 'geojson',
+    //   url: `http://localhost:4200/assets/data/quakeledger.json`
+    // }));
   }
 
   addBaselayers() {

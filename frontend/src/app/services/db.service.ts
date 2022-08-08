@@ -17,7 +17,7 @@ export class DbService {
   private dbUrl = 'http://tramiel.eoc.dlr.de:8000/api/v1';
   private apiKey = '';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   setApiKey(key: string) {
     this.apiKey = key;

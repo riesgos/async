@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
+import { DbService } from 'src/app/services/db.service';
 import { LoginService } from 'src/app/services/login.service';
+import { OrderService } from 'src/app/services/order.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +18,9 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private loginSvc: LoginService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private dbSvc: DbService,
+    private orderSvc: OrderService
   ) {
     this.loginForm = this.formBuilder.group({
       email: new FormControl('', [Validators.required, Validators.email]),

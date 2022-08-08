@@ -1,10 +1,12 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import './components/icons/ukis';
 
 import { AlertService, IAlert } from './components/global-alert/alert.service';
 import { ProgressService, IProgress } from './components/global-progress/progress.service';
 import { Subscription } from 'rxjs';
+import { OrderService } from './services/order.service';
+import { DbService } from './services/db.service';
 
 interface IUi {
   floating: boolean;
@@ -19,7 +21,7 @@ interface IUi {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnInit, OnDestroy {
   title = '';
   shortTitle = '';
 
@@ -35,6 +37,7 @@ export class AppComponent implements OnDestroy {
     private alertService: AlertService,
     private progressService: ProgressService
   ) {
+
     const meta = this.getHtmlMeta(['title', 'version', 'description', 'short-title']);
     if (meta['title']) {
       this.title = meta['title'];
@@ -44,6 +47,8 @@ export class AppComponent implements OnDestroy {
     }
     this.ui.subs = this.sub2AlertAndProgress();
   }
+
+  ngOnInit(): void {}
 
   /**
    *  returns an object with the keys from the input array
