@@ -1,7 +1,7 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { DbService } from 'src/app/services/db.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { OrderService } from 'src/app/services/order.service';
+import { PulsarService } from 'src/app/services/pulsar.service';
 import { model } from '../../services/model';
 
 @Component({
@@ -18,8 +18,7 @@ export class OrderViewComponent implements OnInit {
 
 
   constructor(
-    private orderSvc: OrderService,
-    private dbSvc: DbService,
+    private orderSvc: PulsarService,
     private fb: FormBuilder,
   ) {
     const formData: any = {};
@@ -35,11 +34,7 @@ export class OrderViewComponent implements OnInit {
     this.formGroup.valueChanges.subscribe(val => console.log(val));
   }
 
-  ngOnInit(): void {
-    this.dbSvc.login('user@mail.com', '1234').subscribe((result: any) => {
-      console.log(result);
-    })
-  }
+  ngOnInit(): void {}
 
   public submit() {
     this.send(this.formGroup.value);

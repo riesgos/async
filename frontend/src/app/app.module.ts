@@ -12,7 +12,7 @@ import { GlobalAlertComponent } from './components/global-alert/global-alert.com
 import { AlertService } from './components/global-alert/alert.service';
 import { GlobalProgressComponent } from './components/global-progress/global-progress.component';
 import { ProgressService } from './components/global-progress/progress.service';
-import { OrderService } from './services/order.service';
+import { PulsarService } from './services/pulsar.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UkisRoutingModule } from "./app-routing.module";
 import { CatalogViewComponent } from './views/catalog-view/catalog-view.component';
@@ -48,7 +48,7 @@ import { CurrentStateComponent } from './views/current-state/current-state.compo
   providers: [
     AlertService,
     ProgressService,
-    OrderService
+    PulsarService
   ],
   bootstrap: [AppComponent]
 })

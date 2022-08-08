@@ -5,7 +5,7 @@ import './components/icons/ukis';
 import { AlertService, IAlert } from './components/global-alert/alert.service';
 import { ProgressService, IProgress } from './components/global-progress/progress.service';
 import { Subscription } from 'rxjs';
-import { OrderService } from './services/order.service';
+import { PulsarService } from './services/pulsar.service';
 import { DbService } from './services/db.service';
 
 interface IUi {

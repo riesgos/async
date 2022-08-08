@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { UserOrder } from './order.service';
+import { UserOrder } from './pulsar.service';
 import { Product, ProductType } from '../../../../node-test-wss/fastAPI-Types/index';
 import { map, tap } from 'rxjs/operators';
 
@@ -15,7 +15,7 @@ import { map, tap } from 'rxjs/operators';
 })
 export class DbService {
 
-  private dbUrl = 'http://tramiel.eoc.dlr.de:8000/api/v1';
+  private dbUrl = 'http://localhost:8000/api/v1';
   private apiKey = '';
   userId = 0;
 
@@ -69,6 +69,10 @@ export class DbService {
     return this.get<Order[]>(`orders`);
   }
 
+  getProcesses(): Observable<Process[]> {
+    return this.get<Process[]>(`processes`);
+  }
+
   postOrder(order: UserOrder): Observable<any> {
     return this.post(`orders`, order);
   }
@@ -116,8 +120,8 @@ export interface User {
 
 export interface Job {
   id: number,
-  wps_identifier: string,
-  state: string
+  process_id: string,
+  status: string
 };
 
 
@@ -127,4 +131,8 @@ export interface Order {
   order_constraints: any
 };
 
-
+export interface Process {
+  id: number;
+  wps_url: string;
+  wps_identifier: string;
+};

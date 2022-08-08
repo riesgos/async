@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { DbService } from 'src/app/services/db.service';
 import { LoginService } from 'src/app/services/login.service';
-import { OrderService } from 'src/app/services/order.service';
+import { PulsarService } from 'src/app/services/pulsar.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
     private loginSvc: LoginService,
     private formBuilder: FormBuilder,
     private dbSvc: DbService,
-    private orderSvc: OrderService
+    private orderSvc: PulsarService
   ) {
     this.loginForm = this.formBuilder.group({
       email: new FormControl('', [Validators.required, Validators.email]),
