@@ -13,6 +13,8 @@ export class Consumer {
         return new Observable(subscriber => {
             this.ws.onmessage = function (response: MessageEvent<string>) {
                 const data: Response = JSON.parse(response.data);
+                const messageId = data.messageId;
+                this.send(JSON.stringify({ messageId }));  // ACK
                 if (data.errorCode !== 0) {
                     subscriber.error(data);
                 } else {

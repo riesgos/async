@@ -54,7 +54,7 @@ export class OrderViewComponent implements OnInit {
             vsgrid: "FromSeismogeotechnicsMicrozonation"
           },
           complex_inputs: {
-            quakeMlFile: {
+            quakeMLFile: {
               "features": [
                 {
                   "geometry": {

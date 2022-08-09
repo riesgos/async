@@ -10,9 +10,12 @@ import { Consumer, Producer } from './pulsar';
 })
 export class PulsarService {
 
+  // https://pulsar.apache.org/docs/next/client-libraries-websocket/
+  // ws://broker-service-url:8080/ws/v2/producer/persistent/:tenant/:namespace/:topic
+  // ws://broker-service-url:8080/ws/v2/consumer/persistent/:tenant/:namespace/:topic/:subscription
   private orders = new Producer('ws://tramiel.eoc.dlr.de:8080/ws/v2/producer/persistent/public/default/new-order');
-  private shakygroundErrors = new Consumer('ws://tramiel.eoc.dlr.de:8080/ws/v2/consumer/persistent/public/default/shakyground-failure');
-  private deusErrors = new Consumer('ws://tramiel.eoc.dlr.de:8080/ws/v2/consumer/persistent/public/default/deus-failure');
+  private shakygroundErrors = new Consumer('ws://tramiel.eoc.dlr.de:8080/ws/v2/consumer/persistent/public/default/shakyground-failure/shared');
+  private deusErrors = new Consumer('ws://tramiel.eoc.dlr.de:8080/ws/v2/consumer/persistent/public/default/deus-failure/shared');
 
   constructor(private db: DbService) {
     this.shakygroundErrors.readMessages().subscribe(data => console.log(`Shakyground-Errors: `, data));
