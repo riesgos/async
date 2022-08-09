@@ -9,7 +9,14 @@ import { DbService } from './db.service';
 })
 export class LoginService implements CanActivate {
 
-  constructor(private db: DbService) { }
+  private userId: number = 0;
+
+  constructor(private db: DbService) {
+    const storedApiKey = localStorage.getItem('apikey');
+    if (storedApiKey) this.db.setApiKey(storedApiKey);
+    const storedUserId = localStorage.getItem('userid');
+    if (storedUserId) this.userId = +storedUserId;
+  }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
     return this.isLoggedIn();
@@ -17,17 +24,25 @@ export class LoginService implements CanActivate {
 
   public login(email: string, password: string) {
     return this.db.login(email, password).pipe(map((userData: any) => {
+      localStorage.setItem('apikey', userData.apikey);
+      localStorage.setItem('userid', userData.id);
       return true;
     }));
   }
 
   public register(email: string, password: string) {
     return this.db.register(email, password).pipe(map((userData: any) => {
+      localStorage.setItem('apikey', userData.apikey);
+      localStorage.setItem('userid', userData.id);
       return true;
     }));
   }
 
   public isLoggedIn(): boolean {
-    return this.db.getApiKey() !== '';
+    return localStorage.getItem('apikey') !== null;
+  }
+
+  public getUserId(): number {
+    return this.userId;
   }
 }

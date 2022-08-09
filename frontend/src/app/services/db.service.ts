@@ -15,14 +15,18 @@ import { map, tap } from 'rxjs/operators';
 })
 export class DbService {
 
-  private dbUrl = 'http://localhost:8000/api/v1';
+  private dbUrl = 'http://tramiel.eoc.dlr.de:8000/api/v1';
   private apiKey = '';
-  userId = 0;
 
   constructor(private http: HttpClient) {}
 
   getApiKey(): string {
     return this.apiKey;
+  }
+
+  
+  setApiKey(apiKey: string) {
+    this.apiKey = apiKey;
   }
 
   register(email: string, password: string) {
@@ -37,7 +41,6 @@ export class DbService {
       }
     ).pipe(tap((user: any) => {
       this.apiKey = user.apikey;
-      this.userId = user.id;
     }));
   }
 
@@ -53,12 +56,11 @@ export class DbService {
       }
     ).pipe(tap((user: any) => {
       this.apiKey = user.apikey;
-      this.userId = user.id;
     }));
   }
 
-  getUser(): Observable<User> {
-    return this.get<User>(`users/${this.userId}`);
+  getUser(id: number): Observable<User> {
+    return this.get<User>(`users/${id}`);
   }
 
   getJobs(): Observable<Job[]> {

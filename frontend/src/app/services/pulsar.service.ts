@@ -10,9 +10,9 @@ import { Consumer, Producer } from './pulsar';
 })
 export class PulsarService {
 
-  private orders = new Producer('ws://localhost:8080/ws/v2/producer/persistent/public/default/new-order');
-  private shakygroundErrors = new Consumer('ws://localhost:8080/ws/v2/producer/persistent/public/default/shakyground-failure');
-  private deusErrors = new Consumer('ws://localhost:8080/ws/v2/producer/persistent/public/default/deus-failure');
+  private orders = new Producer('ws://tramiel.eoc.dlr.de:8080/ws/v2/producer/persistent/public/default/new-order');
+  private shakygroundErrors = new Consumer('ws://tramiel.eoc.dlr.de:8080/ws/v2/consumer/persistent/public/default/shakyground-failure');
+  private deusErrors = new Consumer('ws://tramiel.eoc.dlr.de:8080/ws/v2/consumer/persistent/public/default/deus-failure');
 
   constructor(private db: DbService) {
     this.shakygroundErrors.readMessages().subscribe(data => console.log(`Shakyground-Errors: `, data));

@@ -1,6 +1,7 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DbService, Job, Order, Process, User } from 'src/app/services/db.service';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-current-state',
@@ -14,11 +15,15 @@ export class CurrentStateComponent implements OnInit {
   public orders$: Observable<Order[]> | null = null;
   public processes$: Observable<Process[]> | null = null;
 
-  constructor(private db: DbService) {
+  constructor(
+    private db: DbService,
+    private login: LoginService
+    ) {
   }
   
   ngOnInit(): void {
-    this.user$ = this.db.getUser();
+    const userId = this.login.getUserId();
+    this.user$ = this.db.getUser(userId);
     this.jobs$ = this.db.getJobs();
     this.orders$ = this.db.getOrders();
     this.processes$ = this.db.getProcesses();
