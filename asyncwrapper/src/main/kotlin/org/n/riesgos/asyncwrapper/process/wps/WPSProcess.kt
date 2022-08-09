@@ -26,20 +26,29 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
         val executeBuilder = ExecuteRequestBuilder(processDescription)
         processDescription.inputs.forEach {
             val parameterIn = it.id
-            if(!input.inlineParameters.containsKey(parameterIn)){
-                return@forEach
-            }
-
 
             if(it is ComplexInputDescription){
-                val data = input.inlineParameters[parameterIn]!!
-                executeBuilder.addComplexData(parameterIn, data.value, data.schema, data.encoding, data.mimeType)
+                if (input.inlineParameters.containsKey(parameterIn)) {
+                    val data = input.inlineParameters[parameterIn]!!
+                    executeBuilder.addComplexData(parameterIn, data.value, data.schema, data.encoding, data.mimeType)
+                } else if (input.referenceParameters.containsKey(parameterIn)) {
+                    val data = input.referenceParameters[parameterIn]!!
+                    // Seem to be the case that our riesgos wps server doesn't allow to set the schema, nor the encoding for the
+                    // complex reference inputs.
+                    // (It complains about the mime type then & that it doesn't find generators for it).
+                    // Maybe this is just a weird setting of our very own server.
+                    executeBuilder.addComplexDataReference(parameterIn, data.link, null, null, data.mimeType)
+                }
             }else if(it is LiteralInputDescription){
-                val data = input.inlineParameters[parameterIn]!!
-                executeBuilder.addLiteralData(parameterIn, data.value, data.schema, data.encoding, data.mimeType)
-            }else if(it is BoundingBoxInputDescription){
-                val data = input.bboxParameters[parameterIn]!!
-                executeBuilder.addBoundingBoxData(parameterIn, data.bbox, "", "", "")
+                if (input.inlineParameters.containsKey(parameterIn)) {
+                    val data = input.inlineParameters[parameterIn]!!
+                    executeBuilder.addLiteralData(parameterIn, data.value, data.schema, data.encoding, data.mimeType)
+                }
+            }else if(it is BoundingBoxInputDescription) {
+                if (input.bboxParameters.containsKey(parameterIn)) {
+                    val data = input.bboxParameters[parameterIn]!!
+                    executeBuilder.addBoundingBoxData(parameterIn, data.bbox, "", "", "")
+                }
             }
         }
 

@@ -59,6 +59,23 @@ class ComplexOutputRepo (val jdbcTemplate: JdbcTemplate){
         }
     }
 
+    fun findByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType (orderId: Long, processWpsIdentifier: String, outputWpsIdentifier: String, mimeType: String) : List<ComplexOutput> {
+        val sql = """
+            select distinct complex_outputs.*
+            from complex_outputs
+            join jobs on jobs.id = complex_outputs.job_id
+            join order_job_refs on order_job_refs.job_id = jobs.id
+            join processes on processes.id = jobs.process_id
+            where order_job_refs.order_id = ?
+            and processes.wps_identifier = ?
+            and complex_outputs.wps_identifier = ?
+            and complex_outputs.mime_type = ?
+        """.trimIndent()
+        return jdbcTemplate.query(sql, ComplexOutputRowMapper(), orderId, processWpsIdentifier, outputWpsIdentifier, mimeType)
+    }
+
+
+
 
 
     fun persist (complexOutput: ComplexOutput): ComplexOutput {

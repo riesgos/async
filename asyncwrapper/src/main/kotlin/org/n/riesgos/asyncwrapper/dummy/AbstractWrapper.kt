@@ -267,15 +267,16 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         }
 
         val complexInputs = ArrayList<ComplexInput>()
+        val complexOutputsAsInputs = ArrayList<ComplexOutputAsInput>()
         val complexInputsAsValues = ArrayList<ComplexInputAsValue>()
         for (inputKey in jobInput.complexConstraints.keys) {
             val inputValue = jobInput.complexConstraints.get(inputKey)!!
 
 
             if (inputValue.link != null) {
-                val optionalComplexOutputId = datamanagementRepo().findOptionalExistingComplexOutputToUseAsInput(inputValue)
-                if (optionalComplexOutputId != null ) {
-                    complexInputs.add(datamanagementRepo().insertComplexOutputAsInput(jobId, optionalComplexOutputId, inputKey))
+                val optionalComplexOutput = datamanagementRepo().findOptionalExistingComplexOutputToUseAsInput(inputValue)
+                if (optionalComplexOutput != null ) {
+                    complexOutputsAsInputs.add(datamanagementRepo().insertComplexOutputAsInput(jobId, optionalComplexOutput, inputKey))
                     LOGGER.info("Added complex input (as reference to existing output) for " + inputKey)
                 } else {
                     // nothing found, insert as we got
@@ -298,7 +299,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
 
         LOGGER.info("Start mapping to wps inputs")
         val wpsInputMapper = InputMapper(getWpsIdentifier())
-        val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, literalInputs, bboxInputs)
+        val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, complexOutputsAsInputs, literalInputs, bboxInputs)
         // TODO: Extract the version from the implementations themselves
         try {
             val wpsClientService = WPSClientService(wpsConfiguration)

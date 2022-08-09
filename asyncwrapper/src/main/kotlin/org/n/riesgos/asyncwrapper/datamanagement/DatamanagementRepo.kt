@@ -64,6 +64,10 @@ class DatamanagementRepo (
         orderJobRefRepo.persist(OrderJobRef(null, orderId, jobId))
     }
 
+
+    fun findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType (orderId: Long, processWpsIdentifier: String, outputWpsIdentifier: String, mimeType: String): List<ComplexOutput> {
+        return complexOutputRepo.findByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(orderId, processWpsIdentifier, outputWpsIdentifier, mimeType)
+    }
     /**
      * Return the list of complex outputs for a given order, a wps process identifier (for example shakyground)
      * and an wps output identifier (for example shakemap).
@@ -385,13 +389,8 @@ class DatamanagementRepo (
      *
      * Returns the id of the complex output or null.
      */
-    fun findOptionalExistingComplexOutputToUseAsInput (complexInputConstraint: ComplexInputConstraint): Long? {
-        val optionalComplexOutput = complexOutputRepo.findOptionalFirstByLinkMimetypeXmlschemaAndEncoding(complexInputConstraint.link, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding)
-
-        if (optionalComplexOutput != null) {
-            return optionalComplexOutput.id
-        }
-        return null
+    fun findOptionalExistingComplexOutputToUseAsInput (complexInputConstraint: ComplexInputConstraint): ComplexOutput? {
+        return complexOutputRepo.findOptionalFirstByLinkMimetypeXmlschemaAndEncoding(complexInputConstraint.link, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding)
     }
 
     /**
@@ -399,43 +398,8 @@ class DatamanagementRepo (
      * This reuses the link & format but also provides information about which
      * existing products where used to calculate new products.
      */
-    fun insertComplexOutputAsInput (jobId: Long, complexOutputId: Long, wpsIdentifier: String): ComplexInput {
-        val sqlInsert = """
-            insert into complex_outputs_as_inputs (job_id, complex_output_id, wps_identifier)
-            values (?, ?, ?)
-            returning id
-        """.trimIndent()
-
-        val key = GeneratedKeyHolder()
-
-        val preparedStatementCreator = PreparedStatementCreator { con: Connection ->
-            val ps = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)
-            ps.setLong(1, jobId)
-            ps.setLong(2, complexOutputId)
-            ps.setString(3, wpsIdentifier)
-            ps
-        }
-
-        jdbcTemplate.update(preparedStatementCreator, key)
-
-        val newId = key.getKey()!!.toLong()
-
-        // And with the new entry we return the object with links, mimetype, etc.
-        val sqlSelect = """
-            select 
-              complex_outputs_as_inputs.id,
-              complex_outputs_as_inputs.job_id,
-              complex_outputs_as_inputs.wps_identifier,
-              complex_outputs.link,
-              complex_outputs.mime_type,
-              complex_outputs.xmlschema,
-              complex_outputs.encoding
-            from complex_outputs_as_inputs
-            join complex_outputs on complex_outputs.id = complex_outputs_as_inputs.complex_output_id
-            where complex_outputs_as_inputs.id = ?
-        """.trimIndent()
-
-        return jdbcTemplate.queryForObject(sqlSelect, ComplexInputRowMapper(), newId)!!
+    fun insertComplexOutputAsInput (jobId: Long, complexOutput: ComplexOutput, wpsIdentifier: String): ComplexOutputAsInput {
+        return complexOutputAsInputRepo.persist(ComplexOutputAsInput(null, jobId, wpsIdentifier, complexOutput))
     }
 
     /**
@@ -468,7 +432,6 @@ class DatamanagementRepo (
             and complex_outputs.xmlschema = ?
             and complex_outputs.encoding = ?
             and literal_inputs.wps_identifier = ?
-            and literal_inputs.input_value = ?
        """.trimIndent()
         return jdbcTemplate.query(
                 sqlLiteralInputs,
