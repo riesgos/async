@@ -10,8 +10,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class ComplexOutputAsInputRepo (val jdbcTemplate: JdbcTemplate) {
-    fun findByProcessWpsIdentifierInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding (
+    fun findByProcessWpsIdentifierJobStatusInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding (
             wpsProcessIdentifier: String,
+            jobStatus: String,
             wpsInputIdentifier: String,
             link: String?,
             mimetype: String,
@@ -28,6 +29,7 @@ class ComplexOutputAsInputRepo (val jdbcTemplate: JdbcTemplate) {
             join jobs on jobs.id = complex_outputs_as_inputs.job_id
             join processes on processes.id = jobs.process_id
             where processes.wps_identifier = ?
+            and jobs.status = ?
             and complex_outputs_as_inputs.wps_identifier = ?
             and complex_outputs.link = ?
             and complex_outputs.mime_type = ?
@@ -41,6 +43,7 @@ class ComplexOutputAsInputRepo (val jdbcTemplate: JdbcTemplate) {
                 // the exsting output).
                 ComplexInputRowMapper(),
                 wpsProcessIdentifier,
+                jobStatus,
                 wpsInputIdentifier,
                 link,
                 mimetype,

@@ -2,6 +2,7 @@ package org.n.riesgos.asyncwrapper.dummy
 
 import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
+import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.*
 import org.n.riesgos.asyncwrapper.datamanagement.utils.getStringOrDefault
@@ -95,11 +96,8 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
      */
     abstract fun getWpsUrl(): String
 
-    /**
-     * Method to make the wps call itself.
-     * TODO Replace with generic version. (Currently mocked)
-     */
-    abstract fun runWpsItself (): List<Data>
+
+    abstract fun getRequestedOutputs(): List<WPSOutputDefinition>
 
     /**
      * Parse the constraints.
@@ -233,7 +231,8 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         for (jobInput in jobInputs) {
             hasAtLeastOneRun = true
             LOGGER.info("Process job")
-            if (datamanagementRepo().hasAlreadyProcessed(getWpsIdentifier(), jobInput.complexConstraints, jobInput.literalConstraints, jobInput.bboxConstraints)) {
+            // TODO: Extract job id or filter for a process that is not failed.
+            if (datamanagementRepo().hasAlreadyProcessed(getWpsIdentifier(), WPS_JOB_STATUS_SUCCEEDED, jobInput.complexConstraints, jobInput.literalConstraints, jobInput.bboxConstraints)) {
                 LOGGER.info("Inputs already processed")
                 sendSuccess(orderId)
             } else {
@@ -303,7 +302,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         // TODO: Extract the version from the implementations themselves
         try {
             val wpsClientService = WPSClientService(wpsConfiguration)
-            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", wpsConfiguration.outputs)
+            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs())
             LOGGER.info("Start calling the wps itself")
             val wpsOutputs = wpsProcess.runProcess(wpsInputs)
             LOGGER.info("Finished calling the wps itself")
@@ -333,7 +332,8 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
             LOGGER.info("WPS call failed")
             e.printStackTrace()
             datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_FAILED)
-            throw e
+            // => without the re-raise we would be able to run the loop & don't
+            // have to stop when one call has an exception from the WPS itself.
         }
     }
 

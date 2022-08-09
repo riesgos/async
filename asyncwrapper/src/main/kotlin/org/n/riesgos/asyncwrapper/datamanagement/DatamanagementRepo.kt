@@ -92,6 +92,7 @@ class DatamanagementRepo (
     // TODO maybe this should be synchronized (but how to do that in Kotlin?)
     fun hasAlreadyProcessed(
             processIdentifier: String,
+            jobStatus: String,
             complexInputs: Map<String, ComplexInputConstraint>,
             literalInputs: Map<String, String>,
             bboxInputs: Map<String, BBoxInputConstraint>
@@ -101,8 +102,9 @@ class DatamanagementRepo (
         var jobIdSetNotSetYet = true
         for (complexInputKey in complexInputs.keys) {
             val complexInput = complexInputs.get(complexInputKey) as ComplexInputConstraint
-            val searchForThisComplexInput = complexInputRepo.findByProcessWpsIdentifierInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding(
+            val searchForThisComplexInput = complexInputRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding(
                     processIdentifier,
+                    jobStatus,
                     complexInputKey,
                     complexInput.link,
                     complexInput.mimeType,
@@ -110,8 +112,9 @@ class DatamanagementRepo (
                     complexInput.encoding
             )
 
-            val searchForThisComplexOutputAsInput = complexOutputAsInputRepo.findByProcessWpsIdentifierInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding(
+            val searchForThisComplexOutputAsInput = complexOutputAsInputRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding(
                     processIdentifier,
+                    jobStatus,
                     complexInputKey,
                     complexInput.link,
                     complexInput.mimeType,
@@ -119,8 +122,9 @@ class DatamanagementRepo (
                     complexInput.encoding
                     )
 
-            val searchForThisComplexInputAsValue = complexInputAsValueRepo.findByProcessWpsIdentifierInputWpsIdentifierInputValueMimetypeXmlSchemaAndEncoding(
+            val searchForThisComplexInputAsValue = complexInputAsValueRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierInputValueMimetypeXmlSchemaAndEncoding(
                     processIdentifier,
+                    jobStatus,
                     complexInputKey,
                     complexInput.inputValue,
                     complexInput.mimeType,
@@ -156,7 +160,7 @@ class DatamanagementRepo (
         // same question for the literal inputs
         for (literalInputKey in literalInputs.keys) {
             val literalInput = literalInputs.get(literalInputKey)
-            val searchForThisLiteralInput = literalInputRepo.findByProcessWpsIdentifierInputWpsIdentifierAndValue(processIdentifier, literalInputKey, literalInput!!)
+            val searchForThisLiteralInput = literalInputRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierAndValue(processIdentifier, jobStatus, literalInputKey, literalInput!!)
 
             if (searchForThisLiteralInput.isEmpty()) {
                 return false
@@ -175,8 +179,9 @@ class DatamanagementRepo (
         // same for the bbox inputs
         for (bboxInputKey in bboxInputs.keys) {
             val bboxInput = bboxInputs.get(bboxInputKey)
-            val searchForThisBboxInput = bboxInputRepo.findByProcessWpsIdentifierInputWpsIdentifierCornersAndCrs(
+            val searchForThisBboxInput = bboxInputRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierCornersAndCrs(
                     processIdentifier,
+                    jobStatus,
                     bboxInputKey,
                     bboxInput!!.lowerCornerY,
                     bboxInput.lowerCornerY,
@@ -209,24 +214,31 @@ class DatamanagementRepo (
             ),
             cte_input_identifier as (
                 select complex_inputs.wps_identifier
+                from complex_inputs
                 join cte_job on cte_job.id = complex_inputs.job_id
                 
                 union all
                 
                 select complex_inputs_as_values.wps_identifier
+                from complex_inputs_as_values
                 join cte_job on cte_job.id = complex_inputs_as_values.job_id
                 
                 union all
                 
                 select literal_inputs.wps_identifier
+                from literal_inputs
                 join cte_job on cte_job.id = literal_inputs.job_id
                 
                 union all
                 
                 select complex_outputs_as_inputs.wps_identifier
+                from complex_outputs_as_inputs
                 join cte_job on cte_job.id = complex_outputs_as_inputs.job_id
                 
+                union all
+                
                 select bbox_inputs.wps_identifier
+                from bbox_inputs
                 join cte_job on cte_job.id = bbox_inputs.job_id
             )
             select distinct wps_identifier
@@ -238,6 +250,7 @@ class DatamanagementRepo (
         // Now we are going to check if those used other additional parameters
         // that would have influence on the result
         for (jobId in jobIdSet) {
+            // todo check that the job itself was sucessful.
             // now we extract the input identifiers from the query
             val usedWpsIdentifiersInThatJob = HashSet(jdbcTemplate.query(sqlJobWpsIdentifier, StringRowMapper("wps_identifier"), jobId) as List<String>)
             // and remove the input identifiers we got from the method call.

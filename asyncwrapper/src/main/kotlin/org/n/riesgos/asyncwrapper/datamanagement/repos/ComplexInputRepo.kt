@@ -13,8 +13,9 @@ import java.sql.Statement
 
 @Component
 class ComplexInputRepo (val jdbcTemplate: JdbcTemplate) {
-    fun findByProcessWpsIdentifierInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding (
+    fun findByProcessWpsIdentifierJobStatusInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding (
             wpsProcessIdentifier: String,
+            jobStatus: String,
             wpsInputIdentifier: String,
             link: String?,
             mimetype: String,
@@ -27,6 +28,7 @@ class ComplexInputRepo (val jdbcTemplate: JdbcTemplate) {
             join jobs on jobs.id = complex_inputs.job_id
             join processes on processes.id = jobs.process_id
             where processes.wps_identifier = ?
+            and jobs.status = ?
             and complex_inputs.wps_identifier = ?
             and complex_inputs.link = ?
             and complex_inputs.mime_type = ?
@@ -37,6 +39,7 @@ class ComplexInputRepo (val jdbcTemplate: JdbcTemplate) {
                 sqlLiteralInputs,
                 ComplexInputRowMapper(),
                 wpsProcessIdentifier,
+                jobStatus,
                 wpsInputIdentifier,
                 link,
                 mimetype,
