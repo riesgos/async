@@ -30,7 +30,7 @@ services:
   queue:
     image: apachepulsar/pulsar-standalone
     environment:
-      - LOG4J_FORMAT_MSG_NO_LOOKUPS: 'true'
+      LOG4J_FORMAT_MSG_NO_LOOKUPS:  'true'
     ports:
       - 80:80
       - 8080:8080

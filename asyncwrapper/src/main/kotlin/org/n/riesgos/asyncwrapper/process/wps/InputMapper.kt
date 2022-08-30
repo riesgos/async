@@ -1,9 +1,6 @@
 package org.n.riesgos.asyncwrapper.process.wps
 
-import org.n.riesgos.asyncwrapper.datamanagement.models.BboxInput
-import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInput
-import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputAsValue
-import org.n.riesgos.asyncwrapper.datamanagement.models.LiteralInput
+import org.n.riesgos.asyncwrapper.datamanagement.models.*
 import org.n.riesgos.asyncwrapper.process.BboxParameter
 import org.n.riesgos.asyncwrapper.process.InlineParameter
 import org.n.riesgos.asyncwrapper.process.ProcessInput
@@ -14,7 +11,7 @@ class InputMapper (var wpsProcessIdentifier : String) {
 
     private val defaultTextMimeType = "text/xml"
 
-    fun mapInputs(complexRefInputs: List<ComplexInput>, complexValInputs: List<ComplexInputAsValue>, literalInputs: List<LiteralInput>, bboxInputs: List<BboxInput>) : ProcessInput {
+    fun mapInputs(complexRefInputs: List<ComplexInput>, complexValInputs: List<ComplexInputAsValue>, complexOutputsAsInputs: List<ComplexOutputAsInput>, literalInputs: List<LiteralInput>, bboxInputs: List<BboxInput>) : ProcessInput {
         val referenceInputParams = HashMap<String, ReferenceParameter>()
         val inlineInputParams = HashMap<String, InlineParameter>()
         val bboxParams = HashMap<String, BboxParameter>()
@@ -22,6 +19,11 @@ class InputMapper (var wpsProcessIdentifier : String) {
         for(refInput in complexRefInputs){
             referenceInputParams[refInput.wpsIdentifier] =
                 ReferenceParameter(refInput.wpsIdentifier, refInput.link, refInput.mimeType, refInput.encoding, refInput.xmlschema)
+        }
+
+        for (refInput in complexOutputsAsInputs) {
+            referenceInputParams[refInput.wpsIdentifier] =
+                    ReferenceParameter(refInput.wpsIdentifier, refInput.complexOutput.link, refInput.complexOutput.mimeType, refInput.complexOutput.encoding, refInput.complexOutput.xmlschema)
         }
 
         for(litInput in literalInputs){

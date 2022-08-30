@@ -4,7 +4,11 @@ import org.n.riesgos.asyncwrapper.datamanagement.mapper.ComplexOutputRowMapper
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexOutput
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.jdbc.core.PreparedStatementCreator
+import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.stereotype.Component
+import java.sql.Connection
+import java.sql.Statement
 
 @Component
 class ComplexOutputRepo (val jdbcTemplate: JdbcTemplate){
@@ -55,17 +59,51 @@ class ComplexOutputRepo (val jdbcTemplate: JdbcTemplate){
         }
     }
 
+    fun findByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType (orderId: Long, processWpsIdentifier: String, outputWpsIdentifier: String, mimeType: String) : List<ComplexOutput> {
+        val sql = """
+            select distinct complex_outputs.*
+            from complex_outputs
+            join jobs on jobs.id = complex_outputs.job_id
+            join order_job_refs on order_job_refs.job_id = jobs.id
+            join processes on processes.id = jobs.process_id
+            where order_job_refs.order_id = ?
+            and processes.wps_identifier = ?
+            and complex_outputs.wps_identifier = ?
+            and complex_outputs.mime_type = ?
+        """.trimIndent()
+        return jdbcTemplate.query(sql, ComplexOutputRowMapper(), orderId, processWpsIdentifier, outputWpsIdentifier, mimeType)
+    }
 
 
-    fun persist (complexOutput: ComplexOutput) {
+
+
+
+    fun persist (complexOutput: ComplexOutput): ComplexOutput {
         if (complexOutput.id == null) {
             val sqlInsert = """
                 insert into complex_outputs (job_id, wps_identifier, link, mime_type, xmlschema, encoding) values (?, ?, ?, ?, ?, ?)
                 returning id
             """.trimIndent()
-            jdbcTemplate.update(sqlInsert, complexOutput.jobId, complexOutput.wpsIdentifier,
-                    complexOutput.link, complexOutput.mimeType, complexOutput.xmlschema, complexOutput.encoding)
-            // Doesn't extract the id at the moment.
+
+            val key = GeneratedKeyHolder()
+            val preparedStatementCreator = PreparedStatementCreator { con: Connection ->
+                val ps = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)
+                ps.setLong(1, complexOutput.jobId)
+                ps.setString(2, complexOutput.wpsIdentifier)
+                ps.setString(3, complexOutput.link)
+                ps.setString(4, complexOutput.mimeType)
+                ps.setString(5, complexOutput.xmlschema)
+                ps.setString(6, complexOutput.encoding)
+                ps
+            }
+
+            jdbcTemplate.update(preparedStatementCreator, key)
+
+            val newId = key.getKey()!!.toLong()
+
+            return ComplexOutput(newId, complexOutput.jobId, complexOutput.wpsIdentifier, complexOutput.link, complexOutput.mimeType, complexOutput.xmlschema, complexOutput.encoding)
+
+
         } else {
             val sqlUpdate = """
                 update complex_outputs set 
@@ -78,6 +116,7 @@ class ComplexOutputRepo (val jdbcTemplate: JdbcTemplate){
                 where id = ?
             """.trimIndent()
             jdbcTemplate.update(sqlUpdate, complexOutput.jobId, complexOutput.wpsIdentifier, complexOutput.link, complexOutput.mimeType, complexOutput.xmlschema, complexOutput.encoding, complexOutput.id)
+            return complexOutput
         }
     }
 }

@@ -5,13 +5,18 @@ import org.n.riesgos.asyncwrapper.process.*
 import org.n.riesgos.asyncwrapper.process.Process
 import org.n52.geoprocessing.wps.client.ExecuteRequestBuilder
 import org.n52.geoprocessing.wps.client.WPSClientSession
+import org.n52.geoprocessing.wps.client.encoder.WPS20ExecuteEncoder
 import org.n52.geoprocessing.wps.client.model.*
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.sql.Ref
+import java.util.logging.Logger
 
 
 class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: String, private val expectedOutputs : List<WPSOutputDefinition>) : Process {
 
+    companion object {
+        val LOGGER = Logger.getLogger("WPSProcess")
+    }
     override fun runProcess(input: ProcessInput): ProcessOutput {
 
         // take a look at the process description
@@ -21,26 +26,44 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
         val executeBuilder = ExecuteRequestBuilder(processDescription)
         processDescription.inputs.forEach {
             val parameterIn = it.id
-            if(!input.inlineParameters.containsKey(parameterIn)){
-                return@forEach
-            }
+
             if(it is ComplexInputDescription){
-                executeBuilder.addComplexData(parameterIn, input.inlineParameters[parameterIn]!!.value, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
+                if (input.inlineParameters.containsKey(parameterIn)) {
+                    val data = input.inlineParameters[parameterIn]!!
+                    executeBuilder.addComplexData(parameterIn, data.value, data.schema, data.encoding, data.mimeType)
+                } else if (input.referenceParameters.containsKey(parameterIn)) {
+                    val data = input.referenceParameters[parameterIn]!!
+                    // Seem to be the case that our riesgos wps server doesn't allow to set the schema, nor the encoding for the
+                    // complex reference inputs.
+                    // (It complains about the mime type then & that it doesn't find generators for it).
+                    // Maybe this is just a weird setting of our very own server.
+                    executeBuilder.addComplexDataReference(parameterIn, data.link, null, null, data.mimeType)
+                }
             }else if(it is LiteralInputDescription){
-                executeBuilder.addLiteralData(parameterIn, input.inlineParameters[parameterIn]!!.value, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
-            }else if(it is BoundingBoxInputDescription){
-                executeBuilder.addBoundingBoxData(parameterIn, input.bboxParameters[parameterIn]!!.bbox, wpsVersion, "", input.inlineParameters[parameterIn]!!.mimeType)
+                if (input.inlineParameters.containsKey(parameterIn)) {
+                    val data = input.inlineParameters[parameterIn]!!
+                    executeBuilder.addLiteralData(parameterIn, data.value, data.schema, data.encoding, data.mimeType)
+                }
+            }else if(it is BoundingBoxInputDescription) {
+                if (input.bboxParameters.containsKey(parameterIn)) {
+                    val data = input.bboxParameters[parameterIn]!!
+                    executeBuilder.addBoundingBoxData(parameterIn, data.bbox, "", "", "")
+                }
             }
         }
 
         for (parameterOut in expectedOutputs) { //set expected output parameters
-            executeBuilder.setResponseDocument(parameterOut.identifier, null, null, parameterOut.mimeType) //schema and encoding necessary?
+            executeBuilder.setResponseDocument(parameterOut.wpsIdentifier, parameterOut.xmlschema, parameterOut.encoding, parameterOut.mimeType)
+            executeBuilder.setAsReference(parameterOut.wpsIdentifier, true)
         }
 
         // build and send the request document
 
         try {
             val executeRequest = executeBuilder.execute
+            // Print the text out
+            val requestText = WPS20ExecuteEncoder.encode(executeRequest)
+            LOGGER.info(requestText)
 
             val output = wpsClient.execute(url, executeRequest, wpsVersion)
 
@@ -54,21 +77,25 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
             println(result)
             val outputs: List<Data> = result.outputs
             println(outputs)
-            var refOutputs = HashMap<String, List<ReferenceParameter>>()
+            var refOutputs = HashMap<String, MutableList<ReferenceParameter>>()
 
+            LOGGER.info("Start extracting results from the wps")
             for(expectedOutput in expectedOutputs){
-                val output = getOutputById(expectedOutput.identifier, outputs)
+                val output = getOutputById(expectedOutput.wpsIdentifier, outputs)
                 if(output != null){
                     val complexOutput = output.asComplexReferenceData()
-                    val outputParam = ReferenceParameter(complexOutput.id, complexOutput.reference.href.toString(), complexOutput.format.mimeType, complexOutput.format.encoding, complexOutput.format.schema)
+                    val format = complexOutput.format
+                    val schema = emptyStringIfNull(format.schema)
+                    val outputParam = ReferenceParameter(complexOutput.id, complexOutput.reference.href.toString(), format.mimeType, format.encoding, schema)
                     if(!refOutputs.containsKey(complexOutput.id)){
                         refOutputs[complexOutput.id] = mutableListOf(outputParam)
                     }else{
-                        //TODO add to list
+                        refOutputs[complexOutput.id]!!.add(outputParam)
                     }
+                    LOGGER.info("Stored result for " + complexOutput.id)
                 }else{
-                    println("did not find expected outut parameter ${expectedOutput.identifier} in wps result")
-                    throw java.lang.IllegalArgumentException("unknown wps output parameter ${expectedOutput.identifier}")
+                    println("did not find expected outut parameter ${expectedOutput.wpsIdentifier} in wps result")
+                    throw java.lang.IllegalArgumentException("Not found wps output parameter ${expectedOutput.wpsIdentifier}")
                 }
             }
 
@@ -94,5 +121,12 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
         }
 
         return null;
+    }
+
+    fun emptyStringIfNull (nullableString: String?): String {
+        if (nullableString == null) {
+            return ""
+        }
+        return nullableString
     }
 }

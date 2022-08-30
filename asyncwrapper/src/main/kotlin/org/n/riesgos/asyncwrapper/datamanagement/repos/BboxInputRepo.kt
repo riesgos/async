@@ -13,8 +13,9 @@ import java.sql.Statement
 
 @Component
 class BboxInputRepo (val jdbcTemplate: JdbcTemplate) {
-    fun findByProcessWpsIdentifierInputWpsIdentifierCornersAndCrs (
-            wpsProcessIdentifier: String, wpsInputIdentifier: String,
+    fun findByProcessWpsIdentifierJobStatusInputWpsIdentifierCornersAndCrs (
+            wpsProcessIdentifier: String, jobStatus: String,
+            wpsInputIdentifier: String,
             lowerCornerX: Double,
             lowerCornerY: Double,
             upperCornerX: Double,
@@ -27,6 +28,7 @@ class BboxInputRepo (val jdbcTemplate: JdbcTemplate) {
             join jobs on jobs.id = bbox_inputs.job_id
             join processes on processes.id = jobs.process_id
             where processes.wps_identifier = ?
+            and jobs.status = ?
             and bbox_inputs.wps_identifier = ?
             and bbox_inputs.lower_corner_x = ?
             and bbox_inputs.lower_corner_y = ?
@@ -38,6 +40,7 @@ class BboxInputRepo (val jdbcTemplate: JdbcTemplate) {
                 sqlBboxInputs,
                 BboxInputRowMapper(),
                 wpsProcessIdentifier,
+                jobStatus,
                 wpsInputIdentifier,
                 lowerCornerX,
                 lowerCornerY,

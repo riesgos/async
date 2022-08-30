@@ -5,4 +5,4 @@ import org.springframework.boot.context.properties.ConstructorBinding
 
 @ConstructorBinding
 @ConfigurationProperties(prefix = "wps")
-data class WPSConfiguration(val wpsURL: String, val process: String, val wpsVersion : String, val outputs : List<WPSOutputDefinition>)
+data class WPSConfiguration(val wpsURL: String, val process: String, val wpsVersion : String)
