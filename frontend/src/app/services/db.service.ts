@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { UserOrder } from './pulsar.service';
-import { Product, ProductType } from '../../../../node-test-wss/fastAPI-Types/index';
+import { ComplexOutput, Product, ProductType } from '../../../../node-test-wss/fastAPI-Types/index';
 import { map, tap } from 'rxjs/operators';
 
 
@@ -85,6 +85,19 @@ export class DbService {
 
   public getProductsTypes(): Observable<ProductType[]> {
     return this.get<ProductType[]>(`product-types`);
+  }
+
+
+  public getOutputsFromProduct(serviceId: string, productId: Product['id']): Observable<ComplexOutput[]> {
+    throw new Error(`Method not implemented`)
+    // // id -> job_id https://github.com/riesgos/async/blob/main/backend/tests/test_routes/test_products.py#L32
+    // const jobId = productId;
+
+    // let url = `${this.base}${serviceId}`
+    // if (serviceId.includes('http')) {
+    //   url = serviceId;
+    // }
+    // return this.http.get<ComplexOutput[]>(`${url}?job_id=${jobId}`);
   }
 
   public getProductsDerivedFrom(product: Product): Observable<Product[]> {

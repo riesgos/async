@@ -2,8 +2,10 @@
   <ukis-map-ol [layersSvc]="layerSvc" [mapState]="mapStateSvc" [controls]="controls"></ukis-map-ol>
 </main>
 
-<clr-vertical-nav class="left" [clrVerticalNavCollapsible]="true" [clrVerticalNavCollapsed]="false">
-
+<clr-vertical-nav class="left" appNavResize [width]="nav.leftWidth" (widthChange)="nav.leftWidth = $event;"
+  [clrVerticalNavCollapsible]="true" [clrVerticalNavCollapsed]="false">
+  <app-vertical-nav-resize [width]="nav.leftWidth" (widthChange)="nav.leftWidth = $event;">
+  </app-vertical-nav-resize>
 
   <ng-container *ngFor="let pType of productTypes$ | async">
     <!--     <div *ngIf="navGroups[pType]? navGroups[pType] = true: navGroups[pType] = false;"></div> -->
@@ -12,13 +14,28 @@
       {{pType.name}}
       <clr-icon shape="bolt" clrVerticalNavIcon></clr-icon>
       <clr-vertical-nav-group-children>
-        <ng-container *ngFor="let p of products$ | async">
-          <a clrVerticalNavLink *ngIf="p.product_type_id === pType.id">
-            {{p.name}}
-            <clr-icon shape="ellipsis-horizontal"></clr-icon>
-          </a>
 
+        <ng-container *ngIf="products$ | filterOnId: pType.id | async as products">
+          <clr-datagrid>
+
+            <clr-dg-column>id</clr-dg-column>
+            <clr-dg-column>Name</clr-dg-column>
+
+            <clr-dg-row *clrDgItems="let p of products" [clrDgItem]="p">
+              <clr-dg-cell>{{p.id}}</clr-dg-cell>
+              <clr-dg-cell>{{p.name}}</clr-dg-cell>
+            </clr-dg-row>
+
+            <clr-dg-detail *clrIfDetail="let detail">
+              <clr-dg-detail-header>{{detail.name}}</clr-dg-detail-header>
+            </clr-dg-detail>
+
+
+            <clr-dg-footer>{{products.length}} products</clr-dg-footer>
+          </clr-datagrid>
         </ng-container>
+
+
       </clr-vertical-nav-group-children>
     </clr-vertical-nav-group>
   </ng-container>

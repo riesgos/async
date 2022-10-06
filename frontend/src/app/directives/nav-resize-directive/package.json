@@ -1,0 +1,20 @@
+{
+  "name": "nav-resize-directive",
+  "version": "1.0.0",
+  "description": "Resize directive for Clr-Vertical-Nav and vertical-nav-resize",
+  "main": "nav-resize-directive.directive.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.dlr.de/ukis-frontend/frontend-ui-components.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "peerDependencies": {
+    "@angular/common": "^12.2.5",
+    "@angular/core": "^12.2.5"
+  }
+}

@@ -15,12 +15,17 @@ import { ProgressService } from './components/global-progress/progress.service';
 import { PulsarService } from './services/pulsar.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UkisRoutingModule } from "./app-routing.module";
-import { CatalogViewComponent } from './views/catalog-view/catalog-view.component';
+import { CatalogViewComponent, FilterOnIdPipe } from './views/catalog-view/catalog-view.component';
 import { OrderViewComponent } from './views/order-view/order-view.component';
 import { LoginComponent } from './components/login/login.component';
 import { CurrentStateComponent } from './views/current-state/current-state.component';
 
+import { VerticalNavResizeComponent } from './components/vertical-nav-resize/vertical-nav-resize.component';
+import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
 
+// loading an icon from the "core set" now must be done manually
+import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from "@cds/core/icon";
+ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
 @NgModule({
   declarations: [
@@ -30,6 +35,9 @@ import { CurrentStateComponent } from './views/current-state/current-state.compo
     GlobalProgressComponent,
     CatalogViewComponent,
     OrderViewComponent,
+    VerticalNavResizeComponent,
+    NavResizeDirectiveDirective,
+    FilterOnIdPipe,
     LoginComponent,
     CurrentStateComponent
   ],
