@@ -2,7 +2,7 @@ import { Component, HostBinding, OnInit, Pipe, PipeTransform } from '@angular/co
 import { Observable } from 'rxjs';
 import { DbService } from 'src/app/services/db.service';
 
-import { LayersService } from '@dlr-eoc/services-layers';
+import { LayersService, VectorLayer } from '@dlr-eoc/services-layers';
 import { MapStateService } from '@dlr-eoc/services-map-state';
 import { IMapControls } from '@dlr-eoc/map-ol';
 
@@ -47,13 +47,19 @@ export class CatalogViewComponent implements OnInit {
       scaleLine: true
     }
 
-    this.productTypes$ = this.dbSvc.getProductsTypes('/api/product-types');
-    this.products$ = this.dbSvc.getProducts('/api/products');
+    this.productTypes$ = this.dbSvc.getProductsTypes();
+    this.products$ = this.dbSvc.getProducts();
   }
 
   ngOnInit(): void {
-    // console.log(this.navGroups)
     this.addBaselayers();
+    this.mapStateSvc.setExtent([-73.361, -34.120, -70.636, -31.826]);
+    // this.layerSvc.addLayer(new VectorLayer({
+    //   id: 'quakeledger',
+    //   name: 'quakeledger',
+    //   type: 'geojson',
+    //   url: `http://localhost:4200/assets/data/quakeledger.json`
+    // }));
   }
 
   addBaselayers() {

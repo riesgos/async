@@ -1,0 +1,54 @@
+<main class="content-area map-view content">
+    
+
+    <h2>User</h2>
+
+    <clr-datagrid *ngIf="user$ | async as user">
+        <clr-dg-column>Id</clr-dg-column>
+        <clr-dg-column>Email</clr-dg-column>
+        <clr-dg-row>
+            <clr-dg-cell>{{user.id}}</clr-dg-cell>
+            <clr-dg-cell>{{user.email}}</clr-dg-cell>
+        </clr-dg-row>
+    </clr-datagrid>
+
+    <h2>Jobs</h2>
+
+    <clr-datagrid *ngIf="jobs$ | async as jobs">
+        <clr-dg-column>Id</clr-dg-column>
+        <clr-dg-column>WPS identifier</clr-dg-column>
+        <clr-dg-column>State</clr-dg-column>
+        <clr-dg-row *ngFor="let job of jobs">
+            <clr-dg-cell>{{job.id}}</clr-dg-cell>
+            <clr-dg-cell>{{job.process_id}}</clr-dg-cell>
+            <clr-dg-cell>{{job.status}}</clr-dg-cell>
+        </clr-dg-row>
+    </clr-datagrid>
+
+    <h2>Orders</h2>
+
+    <clr-datagrid *ngIf="orders$ | async as orders">
+        <clr-dg-column>Id</clr-dg-column>
+        <clr-dg-column>User-Id</clr-dg-column>
+        <clr-dg-column>Constraints</clr-dg-column>
+        <clr-dg-row *ngFor="let order of orders">
+            <clr-dg-cell>{{order.id}}</clr-dg-cell>
+            <clr-dg-cell>{{order.user_id}}</clr-dg-cell>
+            <clr-dg-cell>{{order.order_constraints | json }}</clr-dg-cell>
+        </clr-dg-row>
+    </clr-datagrid>
+
+
+    <h2>Processes</h2>
+
+    <clr-datagrid *ngIf="processes$ | async as processes">
+        <clr-dg-column>Id</clr-dg-column>
+        <clr-dg-column>WPS Identifier</clr-dg-column>
+        <clr-dg-column>WPS url</clr-dg-column>
+        <clr-dg-row *ngFor="let process of processes">
+            <clr-dg-cell>{{process.id}}</clr-dg-cell>
+            <clr-dg-cell>{{process.wps_identifier}}</clr-dg-cell>
+            <clr-dg-cell>{{process.wps_url }}</clr-dg-cell>
+        </clr-dg-row>
+    </clr-datagrid>
+</main>

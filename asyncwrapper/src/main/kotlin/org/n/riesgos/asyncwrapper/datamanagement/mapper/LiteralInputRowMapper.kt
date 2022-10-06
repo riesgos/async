@@ -12,7 +12,7 @@ class LiteralInputRowMapper : RowMapper<LiteralInput> {
                 rs.getLong("id"),
                 rs.getLong("job_id"),
                 rs.getString("wps_identifier"),
-                rs.getString("inputValue")
+                rs.getString("input_value")
         )
     }
 }

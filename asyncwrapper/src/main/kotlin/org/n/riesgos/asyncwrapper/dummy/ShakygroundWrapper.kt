@@ -1,6 +1,7 @@
 package org.n.riesgos.asyncwrapper.dummy
 
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
+import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
@@ -9,11 +10,12 @@ import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
+import java.util.logging.Logger
 
 
 class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration,
                           publisher: PulsarPublisher
-) : AbstractWrapper(publisher) {
+) : AbstractWrapper(publisher, wpsConfig) {
 
     private val wpsURL = wpsConfig.wpsURL
     private val wpsShakygroundProcessIdentifier = wpsConfig.process
@@ -36,6 +38,8 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         // Exp. Damage computation for earthquake damage (eqdeus) vs tsunami damage
         // (tsdeus).
         val WRAPPER_NAME_SHAKYGROUND = "shakyground"
+
+        val LOGGER = Logger.getLogger("ShakygroundWrapper")
     }
 
 
@@ -112,23 +116,10 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         return result
     }
 
-    override fun runWpsItself(): List<Data> {
-        fun createFakeData(id: String, mimeType: String, schema: String, encoding: String, link: String): Data {
-            val data = Data()
-            data.id = id
-            val format = Format()
-            format.mimeType = mimeType
-            format.schema = schema
-            format.encoding = encoding
-            data.format = format
-            data.value = link
-            return data
-
-        }
-        val outputs = Arrays.asList(
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE, "text/xml", "http://earthquake.usgs.gov/eqcenter/shakemap", "UTF-8", "https://somewhere"),
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE, "appliation/WMS", "", "UTF-8", "https://somewhere/else")
+    override fun getRequestedOutputs(): List<WPSOutputDefinition> {
+        return Arrays.asList(
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE, "text/xml", "http://earthquake.usgs.gov/eqcenter/shakemap", "UTF-8"),
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE, "application/WMS", "", "UTF-8")
         )
-        return outputs
     }
 }

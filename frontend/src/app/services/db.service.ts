@@ -1,8 +1,9 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-// import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
-import { Product, ProductType, ComplexOutput } from '../../../../node-test-wss/fastAPI-Types/index';
+import { UserOrder } from './pulsar.service';
+import { ComplexOutput, Product, ProductType } from '../../../../node-test-wss/fastAPI-Types/index';
+import { map, tap } from 'rxjs/operators';
 
 
 
@@ -13,42 +14,140 @@ import { Product, ProductType, ComplexOutput } from '../../../../node-test-wss/f
   providedIn: 'root'
 })
 export class DbService {
-  port = 8080;
-  base = `http://localhost:${this.port}`;
-  constructor(private http: HttpClient) { }
 
-  public getProducts(serviceId: string): Observable<Product[]> {
-    let url = `${this.base}${serviceId}`
-    if (serviceId.includes('http')) {
-      url = serviceId;
-    }
-    return this.http.get<Product[]>(url);
+  private dbUrl = 'http://tramiel.eoc.dlr.de:8000/api/v1';
+  private apiKey = '';
+
+  constructor(private http: HttpClient) {}
+
+  getApiKey(): string {
+    return this.apiKey;
   }
 
-  public getProductsTypes(serviceId: string): Observable<ProductType[]> {
-    // https://medium.com/dailyjs/how-to-remove-array-duplicates-in-es6-5daa8789641c
-    // return this.http.get<IProduct[]>(url).pipe(map(a => Array.from(new Set(a.map(p => p.wps_identifier)))));
+  
+  setApiKey(apiKey: string) {
+    this.apiKey = apiKey;
+  }
 
-    let url = `${this.base}${serviceId}`
-    if (serviceId.includes('http')) {
-      url = serviceId;
-    }
-    return this.http.get<ProductType[]>(url);
+  register(email: string, password: string) {
+    return this.http.post<User>(
+      `${this.dbUrl}/users/register`,
+      { email, password },
+      {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+    ).pipe(tap((user: any) => {
+      this.apiKey = user.apikey;
+    }));
+  }
+
+  login(email: string, password: string) {
+    return this.http.post<User>(
+      `${this.dbUrl}/users/login`,
+      { email, password },
+      {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+    ).pipe(tap((user: any) => {
+      this.apiKey = user.apikey;
+    }));
+  }
+
+  getUser(id: number): Observable<User> {
+    return this.get<User>(`users/${id}`);
+  }
+
+  getJobs(): Observable<Job[]> {
+    return this.get<Job[]>(`jobs`);
+  }
+
+  getOrders(): Observable<Order[]> {
+    return this.get<Order[]>(`orders`);
+  }
+
+  getProcesses(): Observable<Process[]> {
+    return this.get<Process[]>(`processes`);
+  }
+
+  postOrder(order: UserOrder): Observable<any> {
+    return this.post(`orders`, order);
+  }
+  
+  public getProducts(): Observable<Product[]> {
+    return this.get<Product[]>(`products`);
+  }
+
+  public getProductsTypes(): Observable<ProductType[]> {
+    return this.get<ProductType[]>(`product-types`);
   }
 
 
   public getOutputsFromProduct(serviceId: string, productId: Product['id']): Observable<ComplexOutput[]> {
-    // id -> job_id https://github.com/riesgos/async/blob/main/backend/tests/test_routes/test_products.py#L32
-    const jobId = productId;
+    throw new Error(`Method not implemented`)
+    // // id -> job_id https://github.com/riesgos/async/blob/main/backend/tests/test_routes/test_products.py#L32
+    // const jobId = productId;
 
-    let url = `${this.base}${serviceId}`
-    if (serviceId.includes('http')) {
-      url = serviceId;
-    }
-    return this.http.get<ComplexOutput[]>(`${url}?job_id=${jobId}`);
+    // let url = `${this.base}${serviceId}`
+    // if (serviceId.includes('http')) {
+    //   url = serviceId;
+    // }
+    // return this.http.get<ComplexOutput[]>(`${url}?job_id=${jobId}`);
   }
 
   public getProductsDerivedFrom(product: Product): Observable<Product[]> {
     return of([]);
   }
+
+  private get<T>(path: string): Observable<T> {
+    if (!this.apiKey) throw new Error(`Need to sign in first`);
+    const headers: HttpHeaders = new HttpHeaders({
+      'accept': 'application/json',
+      'Content-Type': 'application/json',
+      'X-APIKEY': this.apiKey
+    });
+    return this.http.get<T>(`${this.dbUrl}/${path}`, { headers });
+  }
+
+  private post<T>(path: string, body: any): Observable<T> {
+    if (!this.apiKey) throw new Error(`Need to sign in first`);
+    const headers: HttpHeaders = new HttpHeaders({
+      'accept': 'application/json',
+      'Content-Type': 'application/json',
+      'X-APIKEY': this.apiKey
+    });
+    return this.http.post<T>(`${this.dbUrl}/${path}`, body, { headers });
+  }
 }
+
+
+export interface User {
+  id: number,
+  email: string,
+  apikey: string
+};
+
+
+export interface Job {
+  id: number,
+  process_id: string,
+  status: string
+};
+
+
+export interface Order {
+  id: number,
+  user_id: number,
+  order_constraints: any
+};
+
+export interface Process {
+  id: number;
+  wps_url: string;
+  wps_identifier: string;
+};

@@ -1,6 +1,7 @@
 package org.n.riesgos.asyncwrapper.dummy
 
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
+import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
@@ -17,7 +18,7 @@ import java.util.stream.Collectors
 
 
 class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, publisher: PulsarPublisher) : AbstractWrapper(
-    publisher
+    publisher, wpsConfig
 ) {
 
 
@@ -85,28 +86,44 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
 
         val result = HashMap<String, MutableList<ComplexInputConstraint>>()
         // We can only handle those that give us the xml output
-        val existingShakemapOutputs = datamanagementRepo.complexOutputs(
+        val existingShakemapOutputs = datamanagementRepo.findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(
                 orderId,
                 WPS_PROCESS_IDENTIFIER_SHAKYGROUND,
-                WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE
-        ).stream().filter({x -> x.mimeType == "text/xml"}).collect(Collectors.toList())
-        val existingModelpropOutputs = datamanagementRepo.complexOutputs(
+                WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE,
+                "text/xml"
+        )
+        val existingModelpropOutputs = datamanagementRepo.findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(
                 orderId,
                 WPS_PROCESS_IDENTIFIER_MODELPROP,
-                WPS_PROCESS_OUTPUT_IDENTIFIER_MODELPROP_SELECTEDROWS
-        ).stream()
-                .filter({ x -> createdWithLiteralInput(x,
-                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA,
-                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS)
-                }).collect(Collectors.toList())
-        val existingAssetmasterOutputs = datamanagementRepo.complexOutputs(orderId, WPS_PROCESS_IDENTIFIER_ASSETMASTER, WPS_PROCESS_OUTPUT_IDENTIFIER_ASSETMASTER_SELECTEDROWSGEOJSON).stream().filter({x -> x.mimeType == "application/json"}).filter({ x -> createdWithLiteralInput(x, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS)}).collect(Collectors.toList())
+                WPS_PROCESS_OUTPUT_IDENTIFIER_MODELPROP_SELECTEDROWS,
+                "application/json"
+        )
+                .stream()
+                // it doesn't make a real difference at the moment
+                // but we want to run this deus wrapper only for exposure models that
+                // were created for the earthquake setting.
+                .filter({x -> createdWithLiteralInput(x, WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS)})
+                .collect(Collectors.toList())
+        val existingAssetmasterOutputs = datamanagementRepo.findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(
+                orderId,
+                WPS_PROCESS_IDENTIFIER_ASSETMASTER,
+                WPS_PROCESS_OUTPUT_IDENTIFIER_ASSETMASTER_SELECTEDROWSGEOJSON,
+                "application/json"
+        )
+                .stream()
+                .filter({x -> createdWithLiteralInput(x, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS)})
+                .collect(Collectors.toList())
 
 
-        result.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_INTENSITY, existingShakemapOutputs.stream().map { x -> ComplexInputConstraint(x.link, null, x.mimeType, x.xmlschema, x.encoding) }.collect(Collectors.toList()))
-        result.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_FRAGILITY, existingModelpropOutputs.stream().map { x -> ComplexInputConstraint(x.link, null, x.mimeType, x.xmlschema, x.encoding) }.collect(Collectors.toList()))
-        result.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_EXPOSURE, existingAssetmasterOutputs.stream().map { x -> ComplexInputConstraint(x.link, null, x.mimeType, x.xmlschema, x.encoding) }.collect(Collectors.toList()))
+        result.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_INTENSITY, toComplexInputConstraints(existingShakemapOutputs))
+        result.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_FRAGILITY, toComplexInputConstraints(existingModelpropOutputs))
+        result.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_EXPOSURE, toComplexInputConstraints(existingAssetmasterOutputs))
 
         return result
+    }
+
+    private fun toComplexInputConstraints (outputs: List<ComplexOutput>): MutableList<ComplexInputConstraint> {
+        return outputs.stream().map({x -> ComplexInputConstraint(x.link, null, x.mimeType, x.xmlschema, x.encoding) }).collect(Collectors.toList())
     }
 
 
@@ -154,24 +171,11 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
         return result
     }
 
-    override fun runWpsItself(): List<Data> {
-        fun createFakeData(id: String, mimeType: String, schema: String, encoding: String, link: String): Data {
-            val data = Data()
-            data.id = id
-            val format = Format()
-            format.mimeType = mimeType
-            format.schema = schema
-            format.encoding = encoding
-            data.format = format
-            data.value = link
-            return data
-
-        }
-        val outputs = Arrays.asList(
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_DEUS_MERGEDOUTPUT, "application/json", "", "UTF-8", "https://somewhere/deus/mergedoutput"),
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_DEUS_SHAPEFILESUMMARY, "appliation/WMS", "", "UTF-8", "https://somewhere/deus/shapefile"),
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_DEUS_METASUMMARY, "appliation/json", "", "UTF-8", "https://somewhere/deus/metasummary")
+    override fun getRequestedOutputs(): List<WPSOutputDefinition> {
+        return Arrays.asList(
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_DEUS_MERGEDOUTPUT, "application/json", "", "UTF-8"),
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_DEUS_SHAPEFILESUMMARY, "application/WMS", "", "UTF-8"),
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_DEUS_METASUMMARY, "application/json", "", "UTF-8")
         )
-        return outputs
     }
 }

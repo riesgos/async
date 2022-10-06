@@ -11,13 +11,14 @@ import java.sql.Statement
 
 @Component
 class LiteralInputRepo (val jdbcTemplate: JdbcTemplate) {
-    fun findByProcessWpsIdentifierInputWpsIdentifierAndValue (wpsProcessIdentifier: String, wpsInputIdentifier: String, inputValue: String): List<LiteralInput> {
+    fun findByProcessWpsIdentifierJobStatusInputWpsIdentifierAndValue (wpsProcessIdentifier: String, jobStatus: String, wpsInputIdentifier: String, inputValue: String): List<LiteralInput> {
         val sqlLiteralInputs = """
             select literal_inputs.*
             from literal_inputs
             join jobs on jobs.id = literal_inputs.job_id
             join processes on processes.id = jobs.process_id
             where processes.wps_identifier = ?
+            and jobs.status = ?
             and literal_inputs.wps_identifier = ?
             and literal_inputs.input_value = ?
        """.trimIndent()
@@ -25,6 +26,7 @@ class LiteralInputRepo (val jdbcTemplate: JdbcTemplate) {
                 sqlLiteralInputs,
                 LiteralInputRowMapper(),
                 wpsProcessIdentifier,
+                jobStatus,
                 wpsInputIdentifier,
                 inputValue
         )
@@ -34,6 +36,7 @@ class LiteralInputRepo (val jdbcTemplate: JdbcTemplate) {
         if (literalInput.id == null) {
             val sqlInsert = """
                 insert into literal_inputs (job_id, wps_identifier, input_value) values (?, ?, ?)
+                returning id
             """.trimIndent()
 
             val key = GeneratedKeyHolder()

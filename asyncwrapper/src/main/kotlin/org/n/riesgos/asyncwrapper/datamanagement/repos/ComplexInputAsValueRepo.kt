@@ -11,8 +11,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class ComplexInputAsValueRepo (val jdbcTemplate: JdbcTemplate) {
-    fun findByProcessWpsIdentifierInputWpsIdentifierInputValueMimetypeXmlSchemaAndEncoding (
+    fun findByProcessWpsIdentifierJobStatusInputWpsIdentifierInputValueMimetypeXmlSchemaAndEncoding (
             wpsProcessIdentifier: String,
+            jobStatus: String,
             wpsInputIdentifier: String,
             inputValue: String?,
             mimetype: String,
@@ -25,6 +26,7 @@ class ComplexInputAsValueRepo (val jdbcTemplate: JdbcTemplate) {
             join jobs on jobs.id = complex_inputs_as_values.job_id
             join processes on processes.id = jobs.process_id
             where processes.wps_identifier = ?
+            and jobs.status = ?
             and complex_inputs_as_values.wps_identifier = ?
             and complex_inputs_as_values.input_value = ?
             and complex_inputs_as_values.mime_type = ?
@@ -35,6 +37,7 @@ class ComplexInputAsValueRepo (val jdbcTemplate: JdbcTemplate) {
                 sqlComplexInputsAsValues,
                 ComplexInputAsValueRowMapper(),
                 wpsProcessIdentifier,
+                jobStatus,
                 wpsInputIdentifier,
                 inputValue,
                 mimetype,

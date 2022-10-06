@@ -1,6 +1,7 @@
 package org.n.riesgos.asyncwrapper.dummy
 
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
+import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
@@ -12,7 +13,7 @@ import java.util.*
 
 class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration,
                           publisher: PulsarPublisher
-): AbstractWrapper(publisher) {
+): AbstractWrapper(publisher, wpsConfig) {
 
     private val wpsURL = wpsConfig.wpsURL
     private val wpsProcessIdentifier = wpsConfig.process
@@ -92,17 +93,35 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         val latmins = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMIN, ArrayList())
         val latmaxs = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_LATMAX, ArrayList())
 
+        LOGGER.info("Lonmins: " + lonmins.toString())
+        LOGGER.info("Lonmaxs: " + lonmaxs.toString())
+        LOGGER.info("Latmins: " + latmins.toString())
+        LOGGER.info("Latmaxs: " + latmaxs.toString())
+
         val minLength = Math.min(lonmins.size, Math.min(lonmaxs.size, Math.min(latmins.size, latmaxs.size)))
-        for (i in 0..minLength) {
+
+
+
+        val schemas = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, ArrayList())
+        val assetTypes = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_ASSETTYPE, ArrayList())
+        val queryModes = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_QUERYMODE, ArrayList())
+        val models = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_MODEL, ArrayList())
+
+        LOGGER.info("schemas: " + schemas.toString())
+        LOGGER.info("assetTypes: " + assetTypes.toString())
+        LOGGER.info("queryModes: " + queryModes.toString())
+        LOGGER.info("models: " + models.toString())
+
+        for (i in 0 until minLength) {
             val lonminConstraint = lonmins.get(i)
             val lonmaxConstraint = lonmaxs.get(i)
             val latminConstraint = latmins.get(i)
             val latmaxConstraint = latmaxs.get(i)
 
-            for (schemaConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, ArrayList())) {
-                for (assetTypeConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_ASSETTYPE, ArrayList())) {
-                    for (queryModeConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_QUERYMODE, ArrayList())) {
-                        for (modelConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_MODEL, ArrayList())) {
+            for (schemaConstraint in schemas) {
+                for (assetTypeConstraint in assetTypes) {
+                    for (queryModeConstraint in queryModes) {
+                        for (modelConstraint in models) {
                             val literalInputValues = HashMap<String, String>()
                             literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, schemaConstraint)
                             literalInputValues.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_ASSETTYPE, assetTypeConstraint)
@@ -117,6 +136,7 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
                             val complexInputValues = HashMap<String, ComplexInputConstraint>()
                             val bboxInputValues = HashMap<String, BBoxInputConstraint>()
 
+                            LOGGER.info("Added concrete parameterized job")
                             result.add(JobConstraints(literalInputValues, complexInputValues, bboxInputValues))
                         }
                     }
@@ -125,27 +145,13 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         }
 
 
+        LOGGER.info("" + result.size.toString() + " parameterized jobs extracted")
         return result
     }
 
-    override fun runWpsItself(): List<Data> {
-        // TODO Remove, as we talk now with the real wps
-        fun createFakeData(id: String, mimeType: String, schema: String, encoding: String, link: String): Data {
-            val data = Data()
-            data.id = id
-            val format = Format()
-            format.mimeType = mimeType
-            format.schema = schema
-            format.encoding = encoding
-            data.format = format
-            data.value = link
-            return data
-
-        }
-
-        val outputs = Arrays.asList(
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_ASSETMASTER_SELECTEDROWSGEOJSON, "application/json", "", "UTF-8", "https://somewhere/assetmaster")
+    override fun getRequestedOutputs(): List<WPSOutputDefinition> {
+        return Arrays.asList(
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_ASSETMASTER_SELECTEDROWSGEOJSON, "application/json", "", "UTF-8")
         )
-        return outputs
     }
 }

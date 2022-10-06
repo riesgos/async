@@ -1,6 +1,7 @@
 package org.n.riesgos.asyncwrapper.dummy
 
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
+import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
@@ -12,7 +13,7 @@ import java.util.*
 
 class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration,
                           publisher: PulsarPublisher
-): AbstractWrapper(publisher) {
+): AbstractWrapper(publisher, wpsConfig) {
 
     private val wpsURL = wpsConfig.wpsURL
     private val wpsProcessIdentifier = wpsConfig.process
@@ -97,22 +98,9 @@ class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         return result
     }
 
-    override fun runWpsItself(): List<Data> {
-        fun createFakeData(id: String, mimeType: String, schema: String, encoding: String, link: String): Data {
-            val data = Data()
-            data.id = id
-            val format = Format()
-            format.mimeType = mimeType
-            format.schema = schema
-            format.encoding = encoding
-            data.format = format
-            data.value = link
-            return data
-
-        }
-        val outputs = Arrays.asList(
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_MODELPROP_SELECTEDROWS, "application/json", "", "UTF-8", "https://somewhere/modelprop")
+    override fun getRequestedOutputs(): List<WPSOutputDefinition> {
+        return Arrays.asList(
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_MODELPROP_SELECTEDROWS, "application/json", "", "UTF-8")
         )
-        return outputs
     }
 }
