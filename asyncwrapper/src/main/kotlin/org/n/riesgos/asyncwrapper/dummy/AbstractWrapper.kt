@@ -2,6 +2,7 @@ package org.n.riesgos.asyncwrapper.dummy
 
 import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
+import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.*
 import org.n.riesgos.asyncwrapper.datamanagement.utils.getStringOrDefault
@@ -9,14 +10,17 @@ import org.n.riesgos.asyncwrapper.process.wps.InputMapper
 import org.n.riesgos.asyncwrapper.process.wps.OutputMapper
 import org.n.riesgos.asyncwrapper.process.wps.WPSClientService
 import org.n.riesgos.asyncwrapper.process.wps.WPSProcess
+import org.n.riesgos.asyncwrapper.pulsar.MessageParser
+import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
+import java.util.logging.Logger
 
 /**
  * This is an abstract wrapper. We are going to overwrite some of the abstract
  * functions in order to make it work with an concrete wps process.
  */
-abstract class AbstractWrapper {
+abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfiguration: WPSConfiguration) {
 
     /**
      * Some of the constants that we can reuse.
@@ -25,6 +29,9 @@ abstract class AbstractWrapper {
         val WPS_JOB_STATUS_ACCEPTED = "Accepted"
         val WPS_JOB_STATUS_RUNNING = "Running"
         val WPS_JOB_STATUS_SUCCEEDED = "Succeeded"
+        val WPS_JOB_STATUS_FAILED = "Failed"
+
+        val LOGGER = Logger.getLogger("AbstractWrapper")
     }
 
 
@@ -32,12 +39,18 @@ abstract class AbstractWrapper {
      * Parse the contraints & run what is possible & necessary.
      */
     fun run (orderId: Long) {
+        LOGGER.info("Got new order to handle with wrapper " + orderId.toString())
         val constraints = getOrderConstraints(orderId)
+
+        LOGGER.info("Parsed constraints")
 
         when (constraints) {
             is JobIdConstraintResult -> return addJobIdToOrderAndSendSuccess(constraints.jobId, orderId)
             is OrderConstraintsResult -> return fillConstraintsAndRun(constraints, orderId)
-            else -> return
+            else -> {
+                LOGGER.info("No valid constraints object")
+                return
+            }
         }
 
     }
@@ -83,11 +96,8 @@ abstract class AbstractWrapper {
      */
     abstract fun getWpsUrl(): String
 
-    /**
-     * Method to make the wps call itself.
-     * TODO Replace with generic version. (Currently mocked)
-     */
-    abstract fun runWpsItself (): List<Data>
+
+    abstract fun getRequestedOutputs(): List<WPSOutputDefinition>
 
     /**
      * Parse the constraints.
@@ -99,7 +109,7 @@ abstract class AbstractWrapper {
         }
         val wrapperName = getWrapperName()
         if (!jsonObject.has(wrapperName)) {
-            return null
+            return OrderConstraintsResult(HashMap(), HashMap(), HashMap())
         }
         val wrapperRawConstraints = jsonObject.getJSONObject(wrapperName)
 
@@ -117,7 +127,10 @@ abstract class AbstractWrapper {
             for (key in literalInputConstraints.keySet()) {
                 val constraintArray = literalInputConstraints.getJSONArray(key)
                 for (constraintValue in constraintArray) {
-                    literalConstraints.getOrDefault(key, ArrayList()).add(constraintValue as String)
+                    val existingList = literalConstraints.getOrDefault(key, ArrayList())
+                    existingList.add(constraintValue as String)
+                    literalConstraints.put(key, existingList)
+                    LOGGER.info("Added literal input constraint for " + wrapperName + " " + key + ": " + constraintValue.toString())
                 }
             }
         }
@@ -127,15 +140,18 @@ abstract class AbstractWrapper {
                 val constraintArray = complexInputConstraints.getJSONArray(key)
                 for (constraintValue in constraintArray) {
                     val constraintObject = constraintValue as JSONObject
-                    complexConstraints.getOrDefault(key, ArrayList()).add(
-                            ComplexInputConstraint(
-                                constraintObject.getStringOrDefault("link", null),
-                                constraintObject.getStringOrDefault("inputValue", null),
-                                constraintObject.getString("mime_type"),
-                                constraintObject.getString("xmlschema"),
-                                constraintObject.getString("encoding")
-                            )
+                    val existingList = complexConstraints.getOrDefault(key, ArrayList())
+                    existingList.add(
+                        ComplexInputConstraint(
+                            constraintObject.getStringOrDefault("link", null),
+                            constraintObject.getStringOrDefault("input_value", null),
+                            constraintObject.getString("mime_type"),
+                            constraintObject.getString("xmlschema"),
+                            constraintObject.getString("encoding")
                         )
+                    )
+                    complexConstraints.put(key, existingList)
+                    LOGGER.info("Added complex input constraint for " + wrapperName + " " + key)
                 }
             }
         }
@@ -145,7 +161,8 @@ abstract class AbstractWrapper {
                 val constraintArray = bboxInputConstraints.getJSONArray(key)
                 for (constraintValue in constraintArray) {
                     val constraintObject = constraintValue as JSONObject
-                    bboxConstraints.getOrDefault(key, ArrayList()).add(
+                    val existingList = bboxConstraints.getOrDefault(key, ArrayList())
+                    existingList.add(
                             BBoxInputConstraint(
                                     constraintObject.getDouble("lower_corner_x"),
                                     constraintObject.getDouble("lower_corner_y"),
@@ -154,6 +171,8 @@ abstract class AbstractWrapper {
                                     constraintObject.getString("crs")
                             )
                     )
+                    bboxConstraints.put(key, existingList)
+                    LOGGER.info("Added bbox input constraint for " + wrapperName + " " + key)
                 }
             }
         }
@@ -168,16 +187,24 @@ abstract class AbstractWrapper {
      * and send a success.
      */
     private fun addJobIdToOrderAndSendSuccess (jobId: Long, orderId: Long) {
+        LOGGER.info("We found a jobId "+ jobId.toString())
         datamanagementRepo().addJobToOrder(jobId, orderId)
-        sendSuccess()
+        LOGGER.info("We added it to the order")
+        sendSuccess(orderId)
     }
 
 
     /**
      * Just send a success out.
      */
-    private fun sendSuccess () {
-        // TODO
+    private fun sendSuccess (orderId : Long) {
+        val msgParser = MessageParser()
+        val msg = msgParser.buildMessageForOrderId(orderId)
+
+        LOGGER.info("Start sending success")
+        publisher.publishSuccessMessage(msg)
+        LOGGER.info("Finished sending success")
+
     }
 
 
@@ -185,16 +212,36 @@ abstract class AbstractWrapper {
      * Work with the constraints that we got & run the processes with our parametrizations.
      */
     private fun fillConstraintsAndRun(orderConstraints: OrderConstraintsResult, orderId: Long) {
+        LOGGER.info("Define the literal constraints for the jobs")
         val filledLiteralConstraints = mergeConstraintsWithDefaults(orderConstraints.literalConstraints, getDefaultLiteralConstraints())
+        LOGGER.info("Define the complex constraints for the jobs")
         val filledComplexConstraints = mergeConstraintsWithDefaults(orderConstraints.complexConstraints, getDefaultComplexConstraints(orderId))
+        LOGGER.info("Define the bbox constraints for the jobs")
         val filledBBoxConstraints = mergeConstraintsWithDefaults(orderConstraints.bboxConstraints, getDefaultBBoxConstraints(orderId))
 
-        for (jobInput in getJobInputs(filledLiteralConstraints, filledComplexConstraints, filledBBoxConstraints)) {
-            if (datamanagementRepo().hasAlreadyProcessed(getWpsIdentifier(), jobInput.complexConstraints, jobInput.literalConstraints, jobInput.bboxConstraints)) {
-                sendSuccess()
+        var jobInputs: List<JobConstraints> = ArrayList<JobConstraints>()
+        try {
+            jobInputs = getJobInputs(filledLiteralConstraints, filledComplexConstraints, filledBBoxConstraints)
+        } catch (e: Exception) {
+            LOGGER.info("Problem on parameterization for concrete jobs")
+            e.printStackTrace()
+            throw e
+        }
+        var hasAtLeastOneRun = false
+        for (jobInput in jobInputs) {
+            hasAtLeastOneRun = true
+            LOGGER.info("Process job")
+            // TODO: Extract job id or filter for a process that is not failed.
+            if (datamanagementRepo().hasAlreadyProcessed(getWpsIdentifier(), WPS_JOB_STATUS_SUCCEEDED, jobInput.complexConstraints, jobInput.literalConstraints, jobInput.bboxConstraints)) {
+                LOGGER.info("Inputs already processed")
+                sendSuccess(orderId)
             } else {
                 runOneJob(jobInput, orderId)
             }
+        }
+
+        if (!hasAtLeastOneRun) {
+            LOGGER.info("No job executed")
         }
     }
 
@@ -202,84 +249,105 @@ abstract class AbstractWrapper {
      * Run one job with one exact set of parametrization.
      */
     fun runOneJob (jobInput: JobConstraints, orderId: Long) {
+        LOGGER.info("Lookup the process id")
         val processId = datamanagementRepo().findProcessIdOrInsert(getWpsUrl(), getWpsIdentifier())
+        LOGGER.info("Got the procss id "+ processId.toString())
         val jobId = datamanagementRepo().createJob(processId, WPS_JOB_STATUS_ACCEPTED)
+        LOGGER.info("Created one job")
 
         val literalInputs = ArrayList<LiteralInput>()
         for (inputKey in jobInput.literalConstraints.keys) {
             literalInputs.add(datamanagementRepo().insertLiteralInput(jobId, inputKey, jobInput.literalConstraints.get(inputKey)!!))
+            LOGGER.info("Added literal input for "+ inputKey + ": " + jobInput.literalConstraints.get(inputKey))
         }
         val bboxInputs = ArrayList<BboxInput>()
         for (innerKey in jobInput.bboxConstraints.keys) {
             bboxInputs.add(datamanagementRepo().insertBboxInput(jobId, innerKey, jobInput.bboxConstraints.get(innerKey)!!))
+            LOGGER.info("Added bbox input for " + innerKey)
         }
 
         val complexInputs = ArrayList<ComplexInput>()
+        val complexOutputsAsInputs = ArrayList<ComplexOutputAsInput>()
         val complexInputsAsValues = ArrayList<ComplexInputAsValue>()
         for (inputKey in jobInput.complexConstraints.keys) {
             val inputValue = jobInput.complexConstraints.get(inputKey)!!
 
 
             if (inputValue.link != null) {
-                val optionalComplexOutputId = datamanagementRepo().findOptionalExistingComplexOutputToUseAsInput(inputValue)
-                if (optionalComplexOutputId != null ) {
-                    complexInputs.add(datamanagementRepo().insertComplexOutputAsInput(jobId, optionalComplexOutputId, inputKey))
+                val optionalComplexOutput = datamanagementRepo().findOptionalExistingComplexOutputToUseAsInput(inputValue)
+                if (optionalComplexOutput != null ) {
+                    complexOutputsAsInputs.add(datamanagementRepo().insertComplexOutputAsInput(jobId, optionalComplexOutput, inputKey))
+                    LOGGER.info("Added complex input (as reference to existing output) for " + inputKey)
                 } else {
                     // nothing found, insert as we got
                     complexInputs.add(datamanagementRepo().insertComplexInput(jobId, inputKey, inputValue))
+                    LOGGER.info("Added complex input (as reference link) for " + inputKey)
                 }
 
             } else {
                 // input as value, insert as we got it
                 complexInputsAsValues.add(datamanagementRepo().insertComplexInputAsValue(jobId, inputKey, inputValue))
+                LOGGER.info("Added complex input (as value) for " + inputKey)
             }
         }
 
         // add the reference of the job to that order
         datamanagementRepo().addJobToOrder(jobId, orderId)
+        LOGGER.info("Added job to order")
 
         datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_RUNNING) // maybe not needed to set it to running
 
+        LOGGER.info("Start mapping to wps inputs")
         val wpsInputMapper = InputMapper(getWpsIdentifier())
-        val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, literalInputs, bboxInputs)
+        val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, complexOutputsAsInputs, literalInputs, bboxInputs)
         // TODO: Extract the version from the implementations themselves
-        val wpsClientService = WPSClientService(WPSConfiguration(getWpsUrl(), getWpsIdentifier(), "2.0.0"))
-        val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0")
-        val wpsOutputs = wpsProcess.runProcess(wpsInputs)
-        val wpsOutputMapper = OutputMapper(jobId, wpsOutputs)
-        val complexOutputs = wpsOutputMapper.mapOutputs()
+        try {
+            val wpsClientService = WPSClientService(wpsConfiguration)
+            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs())
+            LOGGER.info("Start calling the wps itself")
+            val wpsOutputs = wpsProcess.runProcess(wpsInputs)
+            LOGGER.info("Finished calling the wps itself")
+            val wpsOutputMapper = OutputMapper(jobId, wpsOutputs)
+            val complexOutputs = wpsOutputMapper.mapOutputs()
+            LOGGER.info("Finished mapping the outputs")
 
 
-        for (output in complexOutputs) {
+            for (output in complexOutputs) {
 
-            datamanagementRepo().insertComplexOutput(
-                    output.jobId,
-                    output.wpsIdentifier,
-                    output.link,
-                    output.mimeType,
-                    output.xmlschema,
-                    output.encoding
-            )
+                datamanagementRepo().insertComplexOutput(
+                        output.jobId,
+                        output.wpsIdentifier,
+                        output.link,
+                        output.mimeType,
+                        output.xmlschema,
+                        output.encoding
+                )
+                LOGGER.info("Stored output for " + output.wpsIdentifier)
+            }
+
+            datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_SUCCEEDED)
+            LOGGER.info("Job succeeded")
+
+            sendSuccess(orderId)
+        } catch (e: Exception) {
+            LOGGER.info("WPS call failed")
+            e.printStackTrace()
+            datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_FAILED)
+            // => without the re-raise we would be able to run the loop & don't
+            // have to stop when one call has an exception from the WPS itself.
         }
-
-        datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_SUCCEEDED)
-        // TODO: What if failed?
-
-        sendSuccess()
     }
 
     /**
      * Helper method to merge maps of constraints.
      */
     private fun <T> mergeConstraintsWithDefaults (orderConstraints: Map<String, List<T>>, defaultConstraints: Map<String, List<T>>): Map<String, List<T>> {
-        val literalInputKeys = HashSet<String>(orderConstraints.keys)
-        literalInputKeys.addAll(defaultConstraints.keys)
-
-
-
         val filledLiteralConstraints = HashMap<String, List<T>>()
-        for (literalInputKey in literalInputKeys) {
-            filledLiteralConstraints.put(literalInputKey, orderConstraints.getOrDefault(literalInputKey, defaultConstraints.getOrDefault(literalInputKey, ArrayList())))
+        for (defaultConstraintKey in defaultConstraints.keys) {
+            filledLiteralConstraints.put(defaultConstraintKey, defaultConstraints.get(defaultConstraintKey)!!)
+        }
+        for (orderConstraintKey in orderConstraints.keys) {
+            filledLiteralConstraints.put(orderConstraintKey, orderConstraints.get(orderConstraintKey)!!)
         }
         return filledLiteralConstraints
     }

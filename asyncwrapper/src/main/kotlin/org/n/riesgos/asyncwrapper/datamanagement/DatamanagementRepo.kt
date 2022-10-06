@@ -64,6 +64,10 @@ class DatamanagementRepo (
         orderJobRefRepo.persist(OrderJobRef(null, orderId, jobId))
     }
 
+
+    fun findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType (orderId: Long, processWpsIdentifier: String, outputWpsIdentifier: String, mimeType: String): List<ComplexOutput> {
+        return complexOutputRepo.findByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(orderId, processWpsIdentifier, outputWpsIdentifier, mimeType)
+    }
     /**
      * Return the list of complex outputs for a given order, a wps process identifier (for example shakyground)
      * and an wps output identifier (for example shakemap).
@@ -92,6 +96,7 @@ class DatamanagementRepo (
     // TODO maybe this should be synchronized (but how to do that in Kotlin?)
     fun hasAlreadyProcessed(
             processIdentifier: String,
+            jobStatus: String,
             complexInputs: Map<String, ComplexInputConstraint>,
             literalInputs: Map<String, String>,
             bboxInputs: Map<String, BBoxInputConstraint>
@@ -101,8 +106,9 @@ class DatamanagementRepo (
         var jobIdSetNotSetYet = true
         for (complexInputKey in complexInputs.keys) {
             val complexInput = complexInputs.get(complexInputKey) as ComplexInputConstraint
-            val searchForThisComplexInput = complexInputRepo.findByProcessWpsIdentifierInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding(
+            val searchForThisComplexInput = complexInputRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding(
                     processIdentifier,
+                    jobStatus,
                     complexInputKey,
                     complexInput.link,
                     complexInput.mimeType,
@@ -110,8 +116,9 @@ class DatamanagementRepo (
                     complexInput.encoding
             )
 
-            val searchForThisComplexOutputAsInput = complexOutputAsInputRepo.findByProcessWpsIdentifierInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding(
+            val searchForThisComplexOutputAsInput = complexOutputAsInputRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierLinkMimetypeXmlSchemaAndEncoding(
                     processIdentifier,
+                    jobStatus,
                     complexInputKey,
                     complexInput.link,
                     complexInput.mimeType,
@@ -119,8 +126,9 @@ class DatamanagementRepo (
                     complexInput.encoding
                     )
 
-            val searchForThisComplexInputAsValue = complexInputAsValueRepo.findByProcessWpsIdentifierInputWpsIdentifierInputValueMimetypeXmlSchemaAndEncoding(
+            val searchForThisComplexInputAsValue = complexInputAsValueRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierInputValueMimetypeXmlSchemaAndEncoding(
                     processIdentifier,
+                    jobStatus,
                     complexInputKey,
                     complexInput.inputValue,
                     complexInput.mimeType,
@@ -156,7 +164,7 @@ class DatamanagementRepo (
         // same question for the literal inputs
         for (literalInputKey in literalInputs.keys) {
             val literalInput = literalInputs.get(literalInputKey)
-            val searchForThisLiteralInput = literalInputRepo.findByProcessWpsIdentifierInputWpsIdentifierAndValue(processIdentifier, literalInputKey, literalInput!!)
+            val searchForThisLiteralInput = literalInputRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierAndValue(processIdentifier, jobStatus, literalInputKey, literalInput!!)
 
             if (searchForThisLiteralInput.isEmpty()) {
                 return false
@@ -175,8 +183,9 @@ class DatamanagementRepo (
         // same for the bbox inputs
         for (bboxInputKey in bboxInputs.keys) {
             val bboxInput = bboxInputs.get(bboxInputKey)
-            val searchForThisBboxInput = bboxInputRepo.findByProcessWpsIdentifierInputWpsIdentifierCornersAndCrs(
+            val searchForThisBboxInput = bboxInputRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierCornersAndCrs(
                     processIdentifier,
+                    jobStatus,
                     bboxInputKey,
                     bboxInput!!.lowerCornerY,
                     bboxInput.lowerCornerY,
@@ -209,24 +218,31 @@ class DatamanagementRepo (
             ),
             cte_input_identifier as (
                 select complex_inputs.wps_identifier
+                from complex_inputs
                 join cte_job on cte_job.id = complex_inputs.job_id
                 
                 union all
                 
                 select complex_inputs_as_values.wps_identifier
+                from complex_inputs_as_values
                 join cte_job on cte_job.id = complex_inputs_as_values.job_id
                 
                 union all
                 
                 select literal_inputs.wps_identifier
+                from literal_inputs
                 join cte_job on cte_job.id = literal_inputs.job_id
                 
                 union all
                 
                 select complex_outputs_as_inputs.wps_identifier
+                from complex_outputs_as_inputs
                 join cte_job on cte_job.id = complex_outputs_as_inputs.job_id
                 
+                union all
+                
                 select bbox_inputs.wps_identifier
+                from bbox_inputs
                 join cte_job on cte_job.id = bbox_inputs.job_id
             )
             select distinct wps_identifier
@@ -238,6 +254,7 @@ class DatamanagementRepo (
         // Now we are going to check if those used other additional parameters
         // that would have influence on the result
         for (jobId in jobIdSet) {
+            // todo check that the job itself was sucessful.
             // now we extract the input identifiers from the query
             val usedWpsIdentifiersInThatJob = HashSet(jdbcTemplate.query(sqlJobWpsIdentifier, StringRowMapper("wps_identifier"), jobId) as List<String>)
             // and remove the input identifiers we got from the method call.
@@ -291,6 +308,7 @@ class DatamanagementRepo (
         // https://www.developinjava.com/spring/retrieve-auto-generated-key/
         val sqlInsert = """
             insert into jobs (process_id, status) values (?, ?)
+            returning id
         """.trimIndent()
 
         val key = GeneratedKeyHolder()
@@ -338,6 +356,7 @@ class DatamanagementRepo (
     fun insertComplexInputAsValue(jobId: Long, wpsIdentifier: String, complexInputConstraint: ComplexInputConstraint): ComplexInputAsValue {
         val sqlInsert = """
             insert into complex_inputs_as_values (job_id, wps_identifier, input_value, mime_type, xmlschema, encoding) values (?, ?, ?, ?, ?, ?)
+            returning id
         """.trimIndent()
 
         val key = GeneratedKeyHolder()
@@ -370,13 +389,8 @@ class DatamanagementRepo (
      *
      * Returns the id of the complex output or null.
      */
-    fun findOptionalExistingComplexOutputToUseAsInput (complexInputConstraint: ComplexInputConstraint): Long? {
-        val optionalComplexOutput = complexOutputRepo.findOptionalFirstByLinkMimetypeXmlschemaAndEncoding(complexInputConstraint.link, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding)
-
-        if (optionalComplexOutput != null) {
-            return optionalComplexOutput.id
-        }
-        return null
+    fun findOptionalExistingComplexOutputToUseAsInput (complexInputConstraint: ComplexInputConstraint): ComplexOutput? {
+        return complexOutputRepo.findOptionalFirstByLinkMimetypeXmlschemaAndEncoding(complexInputConstraint.link, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding)
     }
 
     /**
@@ -384,42 +398,8 @@ class DatamanagementRepo (
      * This reuses the link & format but also provides information about which
      * existing products where used to calculate new products.
      */
-    fun insertComplexOutputAsInput (jobId: Long, complexOutputId: Long, wpsIdentifier: String): ComplexInput {
-        val sqlInsert = """
-            insert into complex_outputs_as_inputs (job_id, complex_output_id, wps_identifier)
-            values (?, ?, ?)
-        """.trimIndent()
-
-        val key = GeneratedKeyHolder()
-
-        val preparedStatementCreator = PreparedStatementCreator { con: Connection ->
-            val ps = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)
-            ps.setLong(1, jobId)
-            ps.setLong(2, complexOutputId)
-            ps.setString(3, wpsIdentifier)
-            ps
-        }
-
-        jdbcTemplate.update(preparedStatementCreator, key)
-
-        val newId = key.getKey()!!.toLong()
-
-        // And with the new entry we return the object with links, mimetype, etc.
-        val sqlSelect = """
-            select 
-              complex_outputs_as_inputs.id,
-              complex_outputs_as_inputs.job_id,
-              complex_outputs_as_inputs.wps_identifier,
-              complex_outputs.link,
-              complex_outputs.mime_type,
-              complex_outputs.xmlschema,
-              complex_outputs.encoding
-            from complex_outputs_as_inputs
-            join complex_outputs on complex_outputs.id = complex_outputs_as_inputs.complex_output_id
-            where complex_outputs_as_inputs.id = ?
-        """.trimIndent()
-
-        return jdbcTemplate.queryForObject(sqlSelect, ComplexInputRowMapper(), newId)!!
+    fun insertComplexOutputAsInput (jobId: Long, complexOutput: ComplexOutput, wpsIdentifier: String): ComplexOutputAsInput {
+        return complexOutputAsInputRepo.persist(ComplexOutputAsInput(null, jobId, wpsIdentifier, complexOutput))
     }
 
     /**
@@ -452,7 +432,6 @@ class DatamanagementRepo (
             and complex_outputs.xmlschema = ?
             and complex_outputs.encoding = ?
             and literal_inputs.wps_identifier = ?
-            and literal_inputs.input_value = ?
        """.trimIndent()
         return jdbcTemplate.query(
                 sqlLiteralInputs,

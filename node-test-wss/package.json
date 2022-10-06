@@ -5,16 +5,19 @@
   "main": "index.ts",
   "scripts": {
     "start": "npx ts-node index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "fast-api": "npx fastapi -c ./fastapi.config.js",
+    "get-api-types": "npx openapi -o fastAPI-Types -i http://tramiel.eoc.dlr.de:8000/api/v1/openapi.json"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/ws": "^8.5.3",
+    "openapi-typescript-codegen": "^0.23.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "fastapi": "^0.0.8",
     "ws": "^8.8.1"
   }
 }

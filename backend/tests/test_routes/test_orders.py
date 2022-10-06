@@ -97,6 +97,17 @@ def test_create_order_no_auth(client):
     assert response.status_code == 401
 
 
+def test_create_order_wrong_auth(client):
+    response = client.post(
+        f"{ROOT_PATH}/orders/",
+        json={
+            "order_constraints": {"gmpe": ["Abrahamson"]},
+        },
+        headers={"X-APIKEY": "123"},
+    )
+    assert response.status_code == 401
+
+
 def test_create_order_auth(client, session):
     user = User(email="abc@def", apikey="123")
     session.add(user)

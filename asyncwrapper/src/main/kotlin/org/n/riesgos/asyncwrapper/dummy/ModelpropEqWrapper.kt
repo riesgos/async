@@ -1,19 +1,24 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.WPSConfiguration
+import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
+import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
-class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo): AbstractWrapper() {
+class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration,
+                          publisher: PulsarPublisher
+): AbstractWrapper(publisher, wpsConfig) {
+
+    private val wpsURL = wpsConfig.wpsURL
+    private val wpsProcessIdentifier = wpsConfig.process
+
     companion object {
-        val WPS_URL = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService"
-
-        val WPS_PROCESS_IDENTIFIER_MODELPROP = "org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess"
-
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA = "schema"
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_ASSETCATEGORY = "assetcategory"
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_LOSSCATEGORY = "losscategory"
@@ -43,11 +48,11 @@ class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
     }
 
     override fun getWpsIdentifier(): String {
-        return WPS_PROCESS_IDENTIFIER_MODELPROP
+        return wpsProcessIdentifier
     }
 
     override fun getWpsUrl(): String {
-        return WPS_URL
+        return wpsURL
     }
 
     override fun getDefaultLiteralConstraints (): Map<String, List<String>> {
@@ -93,22 +98,9 @@ class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
         return result
     }
 
-    override fun runWpsItself(): List<Data> {
-        fun createFakeData(id: String, mimeType: String, schema: String, encoding: String, link: String): Data {
-            val data = Data()
-            data.id = id
-            val format = Format()
-            format.mimeType = mimeType
-            format.schema = schema
-            format.encoding = encoding
-            data.format = format
-            data.value = link
-            return data
-
-        }
-        val outputs = Arrays.asList(
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_MODELPROP_SELECTEDROWS, "application/json", "", "UTF-8", "https://somewhere/modelprop")
+    override fun getRequestedOutputs(): List<WPSOutputDefinition> {
+        return Arrays.asList(
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_MODELPROP_SELECTEDROWS, "application/json", "", "UTF-8")
         )
-        return outputs
     }
 }

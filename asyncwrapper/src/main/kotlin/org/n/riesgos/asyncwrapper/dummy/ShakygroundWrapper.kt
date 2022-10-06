@@ -1,23 +1,28 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.WPSConfiguration
+import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
+import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
+import java.util.logging.Logger
 
 
-class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo) : AbstractWrapper() {
+class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration,
+                          publisher: PulsarPublisher
+) : AbstractWrapper(publisher, wpsConfig) {
+
+    private val wpsURL = wpsConfig.wpsURL
+    private val wpsShakygroundProcessIdentifier = wpsConfig.process
 
     companion object {
-        val WPS_URL = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService"
-
         val WPS_PROCESS_IDENTIFIER_QUAKELEDGER = "org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess"
         val WPS_PROCESS_OUTPUT_IDENTIFIER_QUAKELEDGER_QUAKEML = "selectedRows"
-
-        val WPS_PROCESS_IDENTIFIER_SHAKYGROUND = "org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess"
 
         val WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_GMPE = "gmpe"
         val WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_VSGRID = "vsgrid"
@@ -33,6 +38,8 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo) : Abstract
         // Exp. Damage computation for earthquake damage (eqdeus) vs tsunami damage
         // (tsdeus).
         val WRAPPER_NAME_SHAKYGROUND = "shakyground"
+
+        val LOGGER = Logger.getLogger("ShakygroundWrapper")
     }
 
 
@@ -45,11 +52,11 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo) : Abstract
     }
 
     override fun getWpsIdentifier(): String {
-        return WPS_PROCESS_IDENTIFIER_SHAKYGROUND
+        return wpsShakygroundProcessIdentifier
     }
 
     override fun getWpsUrl(): String {
-        return WPS_URL
+        return wpsURL
     }
 
     override fun getDefaultLiteralConstraints (): Map<String, List<String>> {
@@ -109,23 +116,10 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo) : Abstract
         return result
     }
 
-    override fun runWpsItself(): List<Data> {
-        fun createFakeData(id: String, mimeType: String, schema: String, encoding: String, link: String): Data {
-            val data = Data()
-            data.id = id
-            val format = Format()
-            format.mimeType = mimeType
-            format.schema = schema
-            format.encoding = encoding
-            data.format = format
-            data.value = link
-            return data
-
-        }
-        val outputs = Arrays.asList(
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE, "text/xml", "http://earthquake.usgs.gov/eqcenter/shakemap", "UTF-8", "https://somewhere"),
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE, "appliation/WMS", "", "UTF-8", "https://somewhere/else")
+    override fun getRequestedOutputs(): List<WPSOutputDefinition> {
+        return Arrays.asList(
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE, "text/xml", "http://earthquake.usgs.gov/eqcenter/shakemap", "UTF-8"),
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE, "application/WMS", "", "UTF-8")
         )
-        return outputs
     }
 }

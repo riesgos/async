@@ -1,27 +1,41 @@
 import { Observable } from "rxjs";
 
 
+export class Consumer {
+
+    private ws: WebSocket;
+
+    constructor(url: string) {
+        this.ws = new WebSocket(url);
+    }
+
+    public readMessages(): Observable<any> {
+        return new Observable(subscriber => {
+            this.ws.onmessage = function (response: MessageEvent<string>) {
+                const data: Response = JSON.parse(response.data);
+                const messageId = data.messageId;
+                this.send(JSON.stringify({ messageId }));  // ACK
+                if (data.errorCode !== 0) {
+                    subscriber.error(data);
+                } else {
+                    subscriber.next(data);
+                }
+            }
+        });
+    }
+
+    public close() {
+        this.ws.close();
+    }
+}
+
+
 export class Producer {
 
     private ws: WebSocket;
 
-    constructor(
-        protocol: Protocol = "ws",
-        domain: string = "localhost",
-        port: number = 8080,
-        storageType: StorageType = "non-persistent",
-        tenant = "public",
-        clusterRegion = "standalone",
-        namespace = "default",
-        topic: string = "riesgos") {
-
-        // @TODO: producer.accessmode.shared
-        // @TODO: jwt-tokens
-        // @TODO: log-level
-        // @TODO: consumer, auto-ack
-        const clientType: ClientType = "producer";
-
-        this.ws = new WebSocket(`${protocol}://${domain}:${port}/ws/v2/${clientType}/${storageType}/${tenant}/${clusterRegion}/${namespace}/${topic}`);
+    constructor(url: string) {
+        this.ws = new WebSocket(url);
     }
 
     public postMessage(body: string, properties?: { [key: string]: string }, context?: string): Observable<Response> {
@@ -54,7 +68,7 @@ type ClientType = 'producer' | 'consumer';
 type StorageType = 'persistent' | 'non-persistent';
 
 export interface Response {
-    result: 'ok',
+    result: 'ok' | string,
     messageId: string,
     errorCode: number,
     schemaVersion: number

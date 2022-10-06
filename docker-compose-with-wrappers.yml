@@ -1,0 +1,199 @@
+version: "3.3"
+
+# Please note: This docker-compose file needs to have the
+# jar for the wrappers in place on
+# ./asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar
+# If it is not, please run `mvn package` before.
+services:
+  deus_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'deus-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: 'shakyground-success,assetmaster-success,modelprop-success'
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'deus-success'
+      pulsar.failureTopic: 'deus-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
+  assetmaster_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'assetmaster-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: ''
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'assetmaster-success'
+      pulsar.failureTopic: 'assetmaster-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess'
+  modelprop_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'modelprop-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: ''
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'modelprop-success'
+      pulsar.failureTopic: 'modelprop-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
+
+  shakyground_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'shakyground-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ShakygroundWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: 'quakeledger-success'
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'shakyground-success'
+      pulsar.failureTopic: 'shakyground-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
+  quakeledger_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'quakeledger-asyncwrapper'
+      wrapperclass: 'org.n.riesgos.asyncwrapper.dummy.QuakeledgerWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: ''
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'quakeledger-success'
+      pulsar.failureTopic: 'quakeledger-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess'
+
+  backend:
+    image: async-backend
+    build:
+      context: backend
+    volumes:
+      - './backend:/usr/src/app'
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    networks:
+      - db
+    environment:
+      ROOT_PATH: '/api/v1'
+      SQLALCHEMY_DATABASE_URL: 'postgresql://postgres:postgres@db:5432/postgres'
+
+  backend_migrations:
+    image: flyway/flyway
+    volumes:
+      - ./backend/migrations:/flyway/sql
+    networks:
+      - db
+    depends_on:
+      - db
+    command: -url=jdbc:postgresql://db:5432/postgres -schemas=public -user=postgres -password=postgres -connectRetries=60 migrate
+
+  queue:
+    image: apachepulsar/pulsar-standalone
+    ports:
+      - 80:80
+      - 8080:8080
+      - 6650:6650
+    networks:
+      - queue
+    volumes:
+      - pulsardata:/pulsar/data
+      - pulsarconf:/pulsar/conf
+    environment:
+      LOG4J_FORMAT_MSG_NO_LOOKUPS: 'true'
+
+  db:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    networks:
+      - db
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+
+volumes:
+  postgresdata:
+  pulsardata:
+  pulsarconf:
+
+networks:
+  db:
+  queue:

@@ -14,7 +14,11 @@ pulsar:
 wps:
     wpsURL : https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
     wpsVersion : 2.0.0
-    process : org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess
+    process : org.n52.wps.server.algorithm.test.EchoProcess
+    outputs:
+        -
+            identifier: complexOutput
+            mimeType: text/xml
 spring:
     datasource:
         url: jdbc:postgresql://localhost:5432/postgres

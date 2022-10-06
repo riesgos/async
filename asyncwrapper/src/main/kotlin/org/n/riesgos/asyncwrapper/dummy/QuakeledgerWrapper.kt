@@ -1,19 +1,23 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.WPSConfiguration
+import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
+import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.Format
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
-class QuakeledgerWrapper (val datamanagementRepo: DatamanagementRepo): AbstractWrapper() {
+class QuakeledgerWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig: WPSConfiguration,
+                          publisher: PulsarPublisher
+): AbstractWrapper(publisher, wpsConfig) {
+
+    private val wpsURL = wpsConfig.wpsURL
+    private val wpsProcessIdentifier = wpsConfig.process
     companion object {
-        val WPS_URL = "https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService"
-
-        val WPS_PROCESS_IDENTIFIER_QUAKELEDGER = "org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess"
-
         val WPS_PROCESS_INPUT_IDENTIFIER_QUAKELEDGER_INPUTBOUDINGBOX = "lonmin"
         val WPS_PROCESS_INPUT_IDENTIFIER_QUAKELEDGER_MMIN = "mmin"
         val WPS_PROCESS_INPUT_IDENTIFIER_QUAKELEDGER_MMAX = "mmax"
@@ -45,11 +49,11 @@ class QuakeledgerWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
     }
 
     override fun getWpsIdentifier(): String {
-        return WPS_PROCESS_IDENTIFIER_QUAKELEDGER
+        return wpsProcessIdentifier
     }
 
     override fun getWpsUrl(): String {
-        return WPS_URL
+        return wpsURL
     }
 
     override fun getDefaultLiteralConstraints(): Map<String, List<String>> {
@@ -81,15 +85,15 @@ class QuakeledgerWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
         val minLengthTConstraints = Math.min(tlatConstraints.size, tlonConstraints.size)
 
 
-        for (iZConstraints in 0..minLenthZConstraints) {
+        for (iZConstraints in 0 until minLenthZConstraints) {
             val zMinConstraint = zminConstraints.get(iZConstraints)
             val zMaxConstraint = zmaxConstraints.get(iZConstraints)
 
-            for (iMConstraints in 0..minLengthMConstraints) {
+            for (iMConstraints in 0 until minLengthMConstraints) {
                 val mMinConstraint = mminConstraints.get(iMConstraints)
                 val mMaxConstraint = mmaxConstraints.get(iMConstraints)
 
-                for (iTConstraints in 0..minLengthTConstraints) {
+                for (iTConstraints in 0 until minLengthTConstraints) {
                     val tlatConstraint = tlatConstraints.get(iTConstraints)
                     val tlonConstraint = tlonConstraints.get(iTConstraints)
 
@@ -121,25 +125,11 @@ class QuakeledgerWrapper (val datamanagementRepo: DatamanagementRepo): AbstractW
         return result
     }
 
-    override fun runWpsItself(): List<Data> {
-        fun createFakeData(id: String, mimeType: String, schema: String, encoding: String, link: String): Data {
-            val data = Data()
-            data.id = id
-            val format = Format()
-            format.mimeType = mimeType
-            format.schema = schema
-            format.encoding = encoding
-            data.format = format
-            data.value = link
-            return data
-
-        }
-
-        val outputs = Arrays.asList(
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_QUAKELEDGER_QUAKEML, "text/xml", "http://quakeml.org/xmlns/quakeml/1.2/QuakeML-1.2.xsd", "UTF-8", "https://somewhere/quakeledger"),
-                createFakeData(WPS_PROCESS_OUTPUT_IDENTIFIER_QUAKELEDGER_QUAKEML, "application/vnd.geo+json", "", "UTF-8", "https://somewhere/quakeledger/geojson")
+    override fun getRequestedOutputs(): List<WPSOutputDefinition> {
+        return Arrays.asList(
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_QUAKELEDGER_QUAKEML, "text/xml", "http://quakeml.org/xmlns/quakeml/1.2/QuakeML-1.2.xsd", "UTF-8"),
+                WPSOutputDefinition(WPS_PROCESS_OUTPUT_IDENTIFIER_QUAKELEDGER_QUAKEML, "application/vnd.geo+json", "", "UTF-8")
         )
-        return outputs
     }
 }
 
