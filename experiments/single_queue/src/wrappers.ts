@@ -48,6 +48,7 @@ export class Wrapper {
 
     constructor(protected name: string, protected mb: MessageBus, protected wps: Wps) {
 
+        // loop that handles all queued up tasks to be run by this processor.
         const loop = () => {
             const entry = this.parameterComboQueue.dequeue();
             // if nothing to do, try again in a little while
@@ -70,9 +71,12 @@ export class Wrapper {
             }
         };
         
-        
+        // subscription to message-bus that puts relevant tasks on the queue
         this.mb.subscribe('posts', async (post: Post) => {
+
+            // if post already handled, not relevant anymore.
             if (post.processors.includes(this.name)) return;
+            
             const parameters = post.data;
             const relevantParameters = this.getRelevantParameters(parameters);
             const irrelevantParameters = this.getIrrelevantParameters(parameters);

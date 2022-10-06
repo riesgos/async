@@ -15,7 +15,6 @@ test('check that all possible parameter combinations are obtained', async () => 
 
 
     const messageBus = new MessageBus();
-    const database = new Database();
 
     const abWrapper = new Wrapper('ab', messageBus, new Ab());
     const oneTwoWrapper = new Wrapper('12', messageBus, new OneTwo());
@@ -27,14 +26,18 @@ test('check that all possible parameter combinations are obtained', async () => 
     };
     
     
-    messageBus.write("posts", userRequest);
-
+    
     const outputs = await new Promise<any[]>(resolve => {
+
         const outputs: any[] = [];
+        
         messageBus.subscribe("posts", async (post: Post) => {
             outputs.push(post);
             if (outputs.length === 4) resolve(outputs);
-        })
+        });
+        
+        
+        messageBus.write("posts", userRequest);
     });
 
 
@@ -64,17 +67,21 @@ test('check that deus runs all possible para-combos', async () => {
     };
     
     
-    messageBus.write("posts", userRequest);
-
+    
     const deusOutputs = await new Promise<any[]>(resolve => {
+
         const deusOutputs: any[] = [];
+        
         messageBus.subscribe("posts", async (post: Post) => {
             const deusOutput = post.data.find(p => p.name === 'eqDamage');
             if (deusOutput) {
                 deusOutputs.push(deusOutput);
                 if (deusOutputs.length === 4) resolve(deusOutputs);
             }
-        })
+        });
+        
+        
+        messageBus.write("posts", userRequest);
     });
 
 
