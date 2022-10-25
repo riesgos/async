@@ -1,11 +1,16 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import io.minio.MinioClient
+import io.minio.PutObjectArgs
+import okio.utf8Size
 import org.json.JSONObject
+import org.n.riesgos.asyncwrapper.config.FilestorageConfig
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.*
 import org.n.riesgos.asyncwrapper.datamanagement.utils.getStringOrDefault
+import org.n.riesgos.asyncwrapper.filestorage.FileStorage
 import org.n.riesgos.asyncwrapper.process.wps.InputMapper
 import org.n.riesgos.asyncwrapper.process.wps.OutputMapper
 import org.n.riesgos.asyncwrapper.process.wps.WPSClientService
@@ -13,6 +18,14 @@ import org.n.riesgos.asyncwrapper.process.wps.WPSProcess
 import org.n.riesgos.asyncwrapper.pulsar.MessageParser
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n52.geoprocessing.wps.client.model.execution.Data
+import java.io.*
+import java.net.URI
+import java.net.URL
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.nio.charset.Charset
+import java.security.MessageDigest
 import java.util.*
 import java.util.logging.Logger
 
@@ -20,7 +33,7 @@ import java.util.logging.Logger
  * This is an abstract wrapper. We are going to overwrite some of the abstract
  * functions in order to make it work with an concrete wps process.
  */
-abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfiguration: WPSConfiguration) {
+abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfiguration: WPSConfiguration, val filestorageConfig: FilestorageConfig) {
 
     /**
      * Some of the constants that we can reuse.
@@ -36,7 +49,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
 
 
     /**
-     * Parse the contraints & run what is possible & necessary.
+     * Parse the constraints & run what is possible & necessary.
      */
     fun run (orderId: Long) {
         LOGGER.info("Got new order to handle with wrapper " + orderId.toString())
@@ -209,7 +222,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
 
 
     /**
-     * Work with the constraints that we got & run the processes with our parametrizations.
+     * Work with the constraints that we got & run the processes with our parametrization.
      */
     private fun fillConstraintsAndRun(orderConstraints: OrderConstraintsResult, orderId: Long) {
         LOGGER.info("Define the literal constraints for the jobs")
@@ -228,15 +241,27 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
             throw e
         }
         var hasAtLeastOneRun = false
-        for (jobInput in jobInputs) {
+        for (jobInputWithoutStoredInputLinks in jobInputs) {
+            // For jobs that we actually want to run, we are going to replace
+            // the links for the complex input references.
+            // So that we can be sure that we stored them on the file storage
+            // and can check with what data it run originally.
+            val jobInputWithStoredInputLinks = storeInputLinks(jobInputWithoutStoredInputLinks)
             hasAtLeastOneRun = true
             LOGGER.info("Process job")
             // TODO: Extract job id or filter for a process that is not failed.
-            if (datamanagementRepo().hasAlreadyProcessed(getWpsIdentifier(), WPS_JOB_STATUS_SUCCEEDED, jobInput.complexConstraints, jobInput.literalConstraints, jobInput.bboxConstraints)) {
+            if (datamanagementRepo().hasAlreadyProcessed(
+                            getWpsIdentifier(),
+                            WPS_JOB_STATUS_SUCCEEDED,
+                            jobInputWithStoredInputLinks.complexConstraints,
+                            jobInputWithStoredInputLinks.literalConstraints,
+                            jobInputWithStoredInputLinks.bboxConstraints
+                    )
+            ) {
                 LOGGER.info("Inputs already processed")
                 sendSuccess(orderId)
             } else {
-                runOneJob(jobInput, orderId)
+                runOneJob(jobInputWithStoredInputLinks, orderId)
             }
         }
 
@@ -313,11 +338,15 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
 
 
             for (output in complexOutputs) {
+                // after we have our output links here, we want to save them
+                // to the file storage, so that we can use those files later
+                // for additional post-processing & statistics
+                val outputLink = ensureStoredLink(output.link, output.mimeType) as String
 
                 datamanagementRepo().insertComplexOutput(
                         output.jobId,
                         output.wpsIdentifier,
-                        output.link,
+                        outputLink,
                         output.mimeType,
                         output.xmlschema,
                         output.encoding
@@ -350,6 +379,113 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
             filledLiteralConstraints.put(orderConstraintKey, orderConstraints.get(orderConstraintKey)!!)
         }
         return filledLiteralConstraints
+    }
+
+    /**
+     * Helper method to make sure that we stored the file for a url on the file
+     * storage.
+     *
+     * It will also check if we already saved the exact file (name & checksum).
+     */
+    private fun ensureStoredLink(originalLink: String?, mimeType: String?): String? {
+        // If we don't got a valid link, we will just return the input value.
+        if (originalLink == null || originalLink.length == 0) {
+            return originalLink
+        }
+        // If we got a valid link, we check first if the link we got is actually
+        // a link to a file that we already stored on the file storage.
+        // If so, we can just return that link.
+        val storedLinkRepo = datamanagementRepo().storedLinkRepo
+        val possiblyAlreadyStoredLinks = storedLinkRepo.findByStoredLink(originalLink)
+        if (!possiblyAlreadyStoredLinks.isEmpty()) {
+            return possiblyAlreadyStoredLinks.get(0).storedLink
+        }
+
+        // Now we know, it is not a link to our file storage.
+        // But maybe it is a link for that we created the file storage link.
+        // But for that we want to check the checksum - just to make sure
+        // that we have the very same content.
+        // For creating the checksum, we must fetch the content...
+        val content = fetchContent(originalLink)
+        val checksum = computeChecksum(content)
+        val possiblyStoredLinks = storedLinkRepo.findByOriginalLinkAndChecksum(originalLink, checksum)
+        if (!possiblyStoredLinks.isEmpty()) {
+            return possiblyStoredLinks.get(0).storedLink
+        }
+
+        // Now, we know that we haven't found any existing link for it.
+        // so we are going to upload it.
+        val fileStorage = FileStorage(filestorageConfig.endpoint, filestorageConfig.user, filestorageConfig.password)
+        fileStorage.upload(filestorageConfig.bucketName, checksum, content, mimeType)
+        val accessLink = filestorageConfig.access + checksum
+
+        // As Uploading takes time, we still want to check if we have an entry for that in the db now.
+        // As we name the objects based on their checksum, the output name would be identical
+        // to what we have as accessLink.
+        if (!storedLinkRepo.findByStoredLink(accessLink).isEmpty()) {
+            // We have an entry - no need to store an additional row in the db table.
+            return accessLink
+        }
+        // And here we need to store it on the db.
+        val storedLink = StoredLink(null, originalLink, checksum, accessLink)
+        val saved = storedLinkRepo.persist(storedLink)
+        return saved.storedLink
+    }
+
+    /**
+     * Helper function to fetch the content of an url as byte array.
+     */
+    private fun fetchContent(link: String): ByteArray {
+        val client = HttpClient.newBuilder().build()
+        val request = HttpRequest.newBuilder().uri(URI.create(link)).build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofByteArray())
+        return response.body()
+    }
+
+    /**
+     * Helper function to compute a checksum for the file content.
+     */
+    private fun computeChecksum(content: ByteArray): String {
+        val digest = MessageDigest.getInstance("SHA-1")
+        val hashed = digest.digest(content)
+        val stringBuilder = StringBuilder()
+        for (b in hashed) {
+            stringBuilder.append(String.format("%02X", b))
+        }
+        return stringBuilder.toString()
+    }
+
+    /**
+     * Helper function to go through the job constraints & store every complex input link
+     * on our file storage.
+     * Returns the same constraints but with changed links.
+     */
+    private fun storeInputLinks(jobInputWithoutStoredInputLinks: JobConstraints): JobConstraints {
+        val literalConstraints = jobInputWithoutStoredInputLinks.literalConstraints
+        val bboxConstraints = jobInputWithoutStoredInputLinks.bboxConstraints
+        val complexConstraints = HashMap<String, ComplexInputConstraint>()
+
+        for (constraintKey in jobInputWithoutStoredInputLinks.complexConstraints.keys) {
+            val constraintValue = jobInputWithoutStoredInputLinks.complexConstraints.get(constraintKey)
+            if (constraintValue != null) {
+                if (constraintValue.link != null && !constraintValue.link.isEmpty()) {
+                    val storedConstraintValue = ComplexInputConstraint(
+                            ensureStoredLink(constraintValue.link, constraintValue.mimeType),
+                            constraintValue.inputValue,
+                            constraintValue.mimeType,
+                            constraintValue.xmlschema,
+                            constraintValue.encoding
+                    )
+                    complexConstraints.put(constraintKey, storedConstraintValue)
+                } else {
+                    complexConstraints.put(constraintKey, constraintValue)
+                }
+            }
+
+
+        }
+
+        return JobConstraints(literalConstraints, complexConstraints, bboxConstraints)
     }
 }
 

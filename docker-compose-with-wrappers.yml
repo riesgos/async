@@ -32,6 +32,11 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
+      filestorage.endpoint: http://filestorage:9000
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://localhost/api/v1/files/
 
   assetmaster_wrapper:
     image: spring-boot-image
@@ -60,6 +65,11 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess'
+      filestorage.endpoint: http://filestorage:9000
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://localhost/api/v1/files/
 
   modelprop_wrapper:
     image: spring-boot-image
@@ -88,6 +98,11 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
+      filestorage.endpoint: http://filestorage:9000
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://localhost/api/v1/files/
 
   shakyground_wrapper:
     image: spring-boot-image
@@ -116,6 +131,11 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
+      filestorage.endpoint: http://filestorage:9000
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://localhost/api/v1/files/
 
   quakeledger_wrapper:
     image: spring-boot-image
@@ -144,6 +164,11 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess'
+      filestorage.endpoint: http://filestorage:9000
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://localhost/api/v1/files/
 
   backend:
     image: async-backend
