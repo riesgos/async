@@ -40,13 +40,18 @@ export class Producer {
 
     public postMessage(body: string, properties?: { [key: string]: string }, context?: string): Observable<Response> {
         return new Observable(subscriber => {
+
+            // 1. create message
             const message: Message = {
                 payload: btoa(body),
                 properties,
                 context
             }
+
+            // 3. react to responses
             this.ws.onmessage = function (response: MessageEvent<string>) {
                 const data: Response = JSON.parse(response.data);
+                console.log("WS got data:", data)
                 if (data.errorCode !== 0) {
                     subscriber.error(data);
                 } else {
@@ -54,6 +59,9 @@ export class Producer {
                 }
                 subscriber.complete();
             }
+
+            // 2. send message
+            console.log(`Sending message through websocket: `, body, message);
             this.ws.send(JSON.stringify(message));
         });
     }

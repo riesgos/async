@@ -83,7 +83,6 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
-
   shakyground_wrapper:
     image: spring-boot-image
     build:

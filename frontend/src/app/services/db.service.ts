@@ -15,7 +15,7 @@ import { map, tap } from 'rxjs/operators';
 })
 export class DbService {
 
-  private dbUrl = 'http://tramiel.eoc.dlr.de:8000/api/v1';
+  private dbUrl = 'http://localhost:8000/api/v1';
   private apiKey = '';
 
   constructor(private http: HttpClient) {}
