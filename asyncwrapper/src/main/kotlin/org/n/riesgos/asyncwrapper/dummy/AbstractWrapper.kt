@@ -1,8 +1,5 @@
 package org.n.riesgos.asyncwrapper.dummy
 
-import io.minio.MinioClient
-import io.minio.PutObjectArgs
-import okio.utf8Size
 import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.config.FilestorageConfig
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
@@ -17,14 +14,10 @@ import org.n.riesgos.asyncwrapper.process.wps.WPSClientService
 import org.n.riesgos.asyncwrapper.process.wps.WPSProcess
 import org.n.riesgos.asyncwrapper.pulsar.MessageParser
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
-import org.n52.geoprocessing.wps.client.model.execution.Data
-import java.io.*
 import java.net.URI
-import java.net.URL
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import java.nio.charset.Charset
 import java.security.MessageDigest
 import java.util.*
 import java.util.logging.Logger
