@@ -20,6 +20,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.security.MessageDigest
 import java.util.*
+import java.util.logging.Level
 import java.util.logging.Logger
 
 /**
@@ -239,22 +240,29 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
             // the links for the complex input references.
             // So that we can be sure that we stored them on the file storage
             // and can check with what data it run originally.
-            val jobInputWithStoredInputLinks = storeInputLinks(jobInputWithoutStoredInputLinks)
-            hasAtLeastOneRun = true
-            LOGGER.info("Process job")
-            // TODO: Extract job id or filter for a process that is not failed.
-            if (datamanagementRepo().hasAlreadyProcessed(
-                            getWpsIdentifier(),
-                            WPS_JOB_STATUS_SUCCEEDED,
-                            jobInputWithStoredInputLinks.complexConstraints,
-                            jobInputWithStoredInputLinks.literalConstraints,
-                            jobInputWithStoredInputLinks.bboxConstraints
-                    )
-            ) {
-                LOGGER.info("Inputs already processed")
-                sendSuccess(orderId)
-            } else {
-                runOneJob(jobInputWithStoredInputLinks, orderId)
+            try {
+                val jobInputWithStoredInputLinks = storeInputLinks(jobInputWithoutStoredInputLinks)
+                hasAtLeastOneRun = true
+                LOGGER.info("Process job")
+                // TODO: Extract job id or filter for a process that is not failed.
+                if (datamanagementRepo().hasAlreadyProcessed(
+                                getWpsIdentifier(),
+                                WPS_JOB_STATUS_SUCCEEDED,
+                                jobInputWithStoredInputLinks.complexConstraints,
+                                jobInputWithStoredInputLinks.literalConstraints,
+                                jobInputWithStoredInputLinks.bboxConstraints
+                        )
+                ) {
+                    LOGGER.info("Inputs already processed")
+                    sendSuccess(orderId)
+                } else {
+                    runOneJob(jobInputWithStoredInputLinks, orderId)
+                }
+            } catch (exception: Exception) {
+                // TODO: Check for more specific exceptions
+                LOGGER.severe("Something went wrong when storing the links on the file storage or running the wps itself.")
+                LOGGER.log(Level.SEVERE, exception.message, exception)
+                LOGGER.severe("Job is skipped")
             }
         }
 
