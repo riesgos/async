@@ -4,6 +4,7 @@ import { forkJoin, merge, Observable, of, zip } from 'rxjs';
 import { UserOrder } from './pulsar.service';
 import { ComplexOutput, Product, ProductType } from '../../../../node-test-wss/fastAPI-Types/index';
 import { map, mergeAll, switchMap, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 
 
@@ -15,7 +16,7 @@ import { map, mergeAll, switchMap, tap } from 'rxjs/operators';
 })
 export class DbService {
 
-  private dbUrl = 'http://localhost:8000/api/v1';
+  private dbUrl = environment.backend + '/api/v1';
   private apiKey = '';
 
   constructor(private http: HttpClient) {}

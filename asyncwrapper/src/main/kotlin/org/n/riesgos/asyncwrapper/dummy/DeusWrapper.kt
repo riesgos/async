@@ -1,5 +1,6 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.FilestorageConfig
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
@@ -17,8 +18,8 @@ import java.util.*
 import java.util.stream.Collectors
 
 
-class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, publisher: PulsarPublisher) : AbstractWrapper(
-    publisher, wpsConfig
+class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, publisher: PulsarPublisher, filestorageConfig: FilestorageConfig) : AbstractWrapper(
+    publisher, wpsConfig, filestorageConfig
 ) {
 
 
