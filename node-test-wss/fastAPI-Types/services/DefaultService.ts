@@ -27,21 +27,21 @@ export class DefaultService {
     /**
      * Read List
      * Return the list of bbox inputs.
-     * @param skip 
-     * @param limit 
-     * @param wpsIdentifier 
-     * @param jobId 
-     * @param processId 
+     * @param skip
+     * @param limit
+     * @param wpsIdentifier
+     * @param jobId
+     * @param processId
      * @returns BboxInput Successful Response
      * @throws ApiError
      */
     public static readListApiV1BboxInputsGet(
-skip?: number,
-limit: number = 100,
-wpsIdentifier?: string,
-jobId?: string,
-processId?: string,
-): CancelablePromise<Array<BboxInput>> {
+        skip?: number,
+        limit: number = 100,
+        wpsIdentifier?: string,
+        jobId?: string,
+        processId?: string,
+    ): CancelablePromise<Array<BboxInput>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/bbox-inputs/',
@@ -61,13 +61,13 @@ processId?: string,
     /**
      * Read Detail
      * Return the bbox input with the given bbox input id or raise 404.
-     * @param bboxInputId 
+     * @param bboxInputId
      * @returns BboxInput Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1BboxInputsBboxInputIdGet(
-bboxInputId: number,
-): CancelablePromise<BboxInput> {
+        bboxInputId: number,
+    ): CancelablePromise<BboxInput> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/bbox-inputs/{bbox_input_id}',
@@ -83,21 +83,21 @@ bboxInputId: number,
     /**
      * Read List
      * Return the list of complex inputs.
-     * @param skip 
-     * @param limit 
-     * @param wpsIdentifier 
-     * @param jobId 
-     * @param processId 
+     * @param skip
+     * @param limit
+     * @param wpsIdentifier
+     * @param jobId
+     * @param processId
      * @returns ComplexInput Successful Response
      * @throws ApiError
      */
     public static readListApiV1ComplexInputsGet(
-skip?: number,
-limit: number = 100,
-wpsIdentifier?: string,
-jobId?: number,
-processId?: number,
-): CancelablePromise<Array<ComplexInput>> {
+        skip?: number,
+        limit: number = 100,
+        wpsIdentifier?: string,
+        jobId?: number,
+        processId?: number,
+    ): CancelablePromise<Array<ComplexInput>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/complex-inputs/',
@@ -117,13 +117,13 @@ processId?: number,
     /**
      * Read Detail
      * Return the complex input with the given complex input id or raise 404.
-     * @param complexInputId 
+     * @param complexInputId
      * @returns ComplexInput Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1ComplexInputsComplexInputIdGet(
-complexInputId: number,
-): CancelablePromise<ComplexInput> {
+        complexInputId: number,
+    ): CancelablePromise<ComplexInput> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/complex-inputs/{complex_input_id}',
@@ -139,21 +139,21 @@ complexInputId: number,
     /**
      * Read List
      * Return the list of complex inputs.
-     * @param skip 
-     * @param limit 
-     * @param wpsIdentifier 
-     * @param jobId 
-     * @param processId 
+     * @param skip
+     * @param limit
+     * @param wpsIdentifier
+     * @param jobId
+     * @param processId
      * @returns ComplexInputAsValue Successful Response
      * @throws ApiError
      */
     public static readListApiV1ComplexInputsAsValuesGet(
-skip?: number,
-limit: number = 100,
-wpsIdentifier?: string,
-jobId?: number,
-processId?: number,
-): CancelablePromise<Array<ComplexInputAsValue>> {
+        skip?: number,
+        limit: number = 100,
+        wpsIdentifier?: string,
+        jobId?: number,
+        processId?: number,
+    ): CancelablePromise<Array<ComplexInputAsValue>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/complex-inputs-as-values/',
@@ -173,13 +173,13 @@ processId?: number,
     /**
      * Read Detail
      * Return the complex input with the given complex input id or raise 404.
-     * @param complexInputAsValueId 
+     * @param complexInputAsValueId
      * @returns ComplexInputAsValue Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1ComplexInputsAsValuesComplexInputAsValueIdGet(
-complexInputAsValueId: number,
-): CancelablePromise<ComplexInputAsValue> {
+        complexInputAsValueId: number,
+    ): CancelablePromise<ComplexInputAsValue> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/complex-inputs-as-values/{complex_input_as_value_id}',
@@ -195,23 +195,23 @@ complexInputAsValueId: number,
     /**
      * Read List
      * Return the list of complex outputs.
-     * @param skip 
-     * @param limit 
-     * @param wpsIdentifier 
-     * @param jobId 
-     * @param processId 
-     * @param mimeType 
+     * @param skip
+     * @param limit
+     * @param wpsIdentifier
+     * @param jobId
+     * @param processId
+     * @param mimeType
      * @returns ComplexOutput Successful Response
      * @throws ApiError
      */
     public static readListApiV1ComplexOutputsGet(
-skip?: number,
-limit: number = 100,
-wpsIdentifier?: string,
-jobId?: number,
-processId?: number,
-mimeType?: string,
-): CancelablePromise<Array<ComplexOutput>> {
+        skip?: number,
+        limit: number = 100,
+        wpsIdentifier?: string,
+        jobId?: number,
+        processId?: number,
+        mimeType?: string,
+    ): CancelablePromise<Array<ComplexOutput>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/complex-outputs/',
@@ -232,13 +232,13 @@ mimeType?: string,
     /**
      * Read Detail
      * Return the complex output with the given complex output id or raise 404.
-     * @param complexOutputId 
+     * @param complexOutputId
      * @returns ComplexOutput Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1ComplexOutputsComplexOutputIdGet(
-complexOutputId: number,
-): CancelablePromise<ComplexOutput> {
+        complexOutputId: number,
+    ): CancelablePromise<ComplexOutput> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/complex-outputs/{complex_output_id}',
@@ -254,21 +254,21 @@ complexOutputId: number,
     /**
      * Read List
      * Return the list of complex outputs as inputs.
-     * @param skip 
-     * @param limit 
-     * @param wpsIdentifier 
-     * @param jobId 
-     * @param processId 
+     * @param skip
+     * @param limit
+     * @param wpsIdentifier
+     * @param jobId
+     * @param processId
      * @returns ComplexOutputAsInput Successful Response
      * @throws ApiError
      */
     public static readListApiV1ComplexOutputsAsInputsGet(
-skip?: number,
-limit: number = 100,
-wpsIdentifier?: string,
-jobId?: number,
-processId?: number,
-): CancelablePromise<Array<ComplexOutputAsInput>> {
+        skip?: number,
+        limit: number = 100,
+        wpsIdentifier?: string,
+        jobId?: number,
+        processId?: number,
+    ): CancelablePromise<Array<ComplexOutputAsInput>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/complex-outputs-as-inputs/',
@@ -288,13 +288,13 @@ processId?: number,
     /**
      * Read Detail
      * Return the complex output with the given complex output as input id or raise 404.
-     * @param complexOutputAsInputId 
+     * @param complexOutputAsInputId
      * @returns ComplexOutputAsInput Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1ComplexOutputsAsInputsComplexOutputAsInputIdGet(
-complexOutputAsInputId: number,
-): CancelablePromise<ComplexOutputAsInput> {
+        complexOutputAsInputId: number,
+    ): CancelablePromise<ComplexOutputAsInput> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/complex-outputs-as-inputs/{complex_output_as_input_id}',
@@ -310,21 +310,21 @@ complexOutputAsInputId: number,
     /**
      * Read List
      * Return the list of jobs.
-     * @param skip 
-     * @param limit 
-     * @param processId 
-     * @param status 
-     * @param orderId 
+     * @param skip
+     * @param limit
+     * @param processId
+     * @param status
+     * @param orderId
      * @returns Job Successful Response
      * @throws ApiError
      */
     public static readListApiV1JobsGet(
-skip?: number,
-limit: number = 100,
-processId?: number,
-status?: string,
-orderId?: number,
-): CancelablePromise<Array<Job>> {
+        skip?: number,
+        limit: number = 100,
+        processId?: number,
+        status?: string,
+        orderId?: number,
+    ): CancelablePromise<Array<Job>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/jobs/',
@@ -344,13 +344,13 @@ orderId?: number,
     /**
      * Read Detail
      * Return the job with the given job id or raise 404.
-     * @param jobId 
+     * @param jobId
      * @returns Job Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1JobsJobIdGet(
-jobId: number,
-): CancelablePromise<Job> {
+        jobId: number,
+    ): CancelablePromise<Job> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/jobs/{job_id}',
@@ -366,21 +366,21 @@ jobId: number,
     /**
      * Read List
      * Return the list of literal inputs.
-     * @param skip 
-     * @param limit 
-     * @param wpsIdentifier 
-     * @param jobId 
-     * @param processId 
+     * @param skip
+     * @param limit
+     * @param wpsIdentifier
+     * @param jobId
+     * @param processId
      * @returns LiteralInput Successful Response
      * @throws ApiError
      */
     public static readListApiV1LiteralInputsGet(
-skip?: number,
-limit: number = 100,
-wpsIdentifier?: string,
-jobId?: number,
-processId?: number,
-): CancelablePromise<Array<LiteralInput>> {
+        skip?: number,
+        limit: number = 100,
+        wpsIdentifier?: string,
+        jobId?: number,
+        processId?: number,
+    ): CancelablePromise<Array<LiteralInput>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/literal-inputs/',
@@ -400,13 +400,13 @@ processId?: number,
     /**
      * Read Detail
      * Return the literal input with the given literal input id or raise 404.
-     * @param literalInputId 
+     * @param literalInputId
      * @returns LiteralInput Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1LiteralInputsLiteralInputIdGet(
-literalInputId: number,
-): CancelablePromise<LiteralInput> {
+        literalInputId: number,
+    ): CancelablePromise<LiteralInput> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/literal-inputs/{literal_input_id}',
@@ -422,19 +422,19 @@ literalInputId: number,
     /**
      * Read List
      * Return the list of order job ref.
-     * @param skip 
-     * @param limit 
-     * @param orderId 
-     * @param jobId 
+     * @param skip
+     * @param limit
+     * @param orderId
+     * @param jobId
      * @returns OrderJobRef Successful Response
      * @throws ApiError
      */
     public static readListApiV1OrderJobRefsGet(
-skip?: number,
-limit: number = 100,
-orderId?: number,
-jobId?: number,
-): CancelablePromise<Array<OrderJobRef>> {
+        skip?: number,
+        limit: number = 100,
+        orderId?: number,
+        jobId?: number,
+    ): CancelablePromise<Array<OrderJobRef>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/order-job-refs/',
@@ -453,13 +453,13 @@ jobId?: number,
     /**
      * Read Detail
      * Return the order with the given order job ref id or raise 404.
-     * @param orderJobRefId 
+     * @param orderJobRefId
      * @returns OrderJobRef Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1OrderJobRefsOrderJobRefIdGet(
-orderJobRefId: number,
-): CancelablePromise<OrderJobRef> {
+        orderJobRefId: number,
+    ): CancelablePromise<OrderJobRef> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/order-job-refs/{order_job_ref_id}',
@@ -475,17 +475,17 @@ orderJobRefId: number,
     /**
      * Read List
      * Return the list of orders.
-     * @param skip 
-     * @param limit 
-     * @param userId 
+     * @param skip
+     * @param limit
+     * @param userId
      * @returns Order Successful Response
      * @throws ApiError
      */
     public static readListApiV1OrdersGet(
-skip?: number,
-limit: number = 100,
-userId?: number,
-): CancelablePromise<Array<Order>> {
+        skip?: number,
+        limit: number = 100,
+        userId?: number,
+    ): CancelablePromise<Array<Order>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/orders/',
@@ -502,15 +502,15 @@ userId?: number,
 
     /**
      * Create Order
-     * @param requestBody 
-     * @param xApikey 
+     * @param requestBody
+     * @param xApikey
      * @returns Order Successful Response
      * @throws ApiError
      */
     public static createOrderApiV1OrdersPost(
-requestBody: OrderPost,
-xApikey?: any,
-): CancelablePromise<Order> {
+        requestBody: OrderPost,
+        xApikey?: any,
+    ): CancelablePromise<Order> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/orders/',
@@ -528,13 +528,13 @@ xApikey?: any,
     /**
      * Read Detail
      * Return the order with the given order id or raise 404.
-     * @param orderId 
+     * @param orderId
      * @returns Order Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1OrdersOrderIdGet(
-orderId: number,
-): CancelablePromise<Order> {
+        orderId: number,
+    ): CancelablePromise<Order> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/orders/{order_id}',
@@ -550,19 +550,19 @@ orderId: number,
     /**
      * Read List
      * Return the list of processes.
-     * @param skip 
-     * @param limit 
-     * @param wpsIdentifier 
-     * @param wpsUrl 
+     * @param skip
+     * @param limit
+     * @param wpsIdentifier
+     * @param wpsUrl
      * @returns Process Successful Response
      * @throws ApiError
      */
     public static readListApiV1ProcessesGet(
-skip?: number,
-limit: number = 100,
-wpsIdentifier?: string,
-wpsUrl?: string,
-): CancelablePromise<Array<Process>> {
+        skip?: number,
+        limit: number = 100,
+        wpsIdentifier?: string,
+        wpsUrl?: string,
+    ): CancelablePromise<Array<Process>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/processes/',
@@ -581,13 +581,13 @@ wpsUrl?: string,
     /**
      * Read Detail
      * Return the process with the given process id or raise 404.
-     * @param processId 
+     * @param processId
      * @returns Process Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1ProcessesProcessIdGet(
-processId: number,
-): CancelablePromise<Process> {
+        processId: number,
+    ): CancelablePromise<Process> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/processes/{process_id}',
@@ -603,19 +603,19 @@ processId: number,
     /**
      * Read List
      * Return the list of products.
-     * @param skip 
-     * @param limit 
-     * @param productTypeId 
-     * @param orderId 
+     * @param skip
+     * @param limit
+     * @param productTypeId
+     * @param orderId
      * @returns Product Successful Response
      * @throws ApiError
      */
     public static readListApiV1ProductsGet(
-skip?: number,
-limit: number = 100,
-productTypeId?: number,
-orderId?: number,
-): CancelablePromise<Array<Product>> {
+        skip?: number,
+        limit: number = 100,
+        productTypeId?: number,
+        orderId?: number,
+    ): CancelablePromise<Array<Product>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/products/',
@@ -634,13 +634,13 @@ orderId?: number,
     /**
      * Read Detail
      * Return the job with the given product id or raise 404.
-     * @param productId 
+     * @param productId
      * @returns Product Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1ProductsProductIdGet(
-productId: number,
-): CancelablePromise<Product> {
+        productId: number,
+    ): CancelablePromise<Product> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/products/{product_id}',
@@ -656,17 +656,17 @@ productId: number,
     /**
      * Read Derviced Products
      * Return the list of derived products.
-     * @param productId 
-     * @param skip 
-     * @param limit 
+     * @param productId
+     * @param skip
+     * @param limit
      * @returns Product Successful Response
      * @throws ApiError
      */
     public static readDervicedProductsApiV1ProductsProductIdDerivedProductsGet(
-productId: number,
-skip?: any,
-limit?: any,
-): CancelablePromise<Array<Product>> {
+        productId: number,
+        skip?: any,
+        limit?: any,
+    ): CancelablePromise<Array<Product>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/products/{product_id}/derived-products',
@@ -686,17 +686,17 @@ limit?: any,
     /**
      * Read Base Products
      * Return the list of base products.
-     * @param productId 
-     * @param skip 
-     * @param limit 
+     * @param productId
+     * @param skip
+     * @param limit
      * @returns Product Successful Response
      * @throws ApiError
      */
     public static readBaseProductsApiV1ProductsProductIdBaseProductsGet(
-productId: number,
-skip?: any,
-limit?: any,
-): CancelablePromise<Array<Product>> {
+        productId: number,
+        skip?: any,
+        limit?: any,
+    ): CancelablePromise<Array<Product>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/products/{product_id}/base-products',
@@ -716,15 +716,15 @@ limit?: any,
     /**
      * Read List
      * Return the list of product types.
-     * @param skip 
-     * @param limit 
+     * @param skip
+     * @param limit
      * @returns ProductType Successful Response
      * @throws ApiError
      */
     public static readListApiV1ProductTypesGet(
-skip?: number,
-limit: number = 100,
-): CancelablePromise<Array<ProductType>> {
+        skip?: number,
+        limit: number = 100,
+    ): CancelablePromise<Array<ProductType>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/product-types/',
@@ -741,13 +741,13 @@ limit: number = 100,
     /**
      * Read Detail
      * Return the job with the given product type id or raise 404.
-     * @param productTypeId 
+     * @param productTypeId
      * @returns ProductType Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1ProductTypesProductTypeIdGet(
-productTypeId: number,
-): CancelablePromise<ProductType> {
+        productTypeId: number,
+    ): CancelablePromise<ProductType> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/product-types/{product_type_id}',
@@ -763,17 +763,17 @@ productTypeId: number,
     /**
      * Read List
      * Return the list of users.
-     * @param skip 
-     * @param limit 
-     * @param xApikey 
+     * @param skip
+     * @param limit
+     * @param xApikey
      * @returns User Successful Response
      * @throws ApiError
      */
     public static readListApiV1UsersGet(
-skip?: number,
-limit: number = 100,
-xApikey?: any,
-): CancelablePromise<Array<User>> {
+        skip?: number,
+        limit: number = 100,
+        xApikey?: any,
+    ): CancelablePromise<Array<User>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/users/',
@@ -793,15 +793,15 @@ xApikey?: any,
     /**
      * Read Detail
      * Return the user with the given user id or raise 404.
-     * @param userId 
-     * @param xApikey 
+     * @param userId
+     * @param xApikey
      * @returns User Successful Response
      * @throws ApiError
      */
     public static readDetailApiV1UsersUserIdGet(
-userId: number,
-xApikey?: any,
-): CancelablePromise<User> {
+        userId: number,
+        xApikey?: any,
+    ): CancelablePromise<User> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/users/{user_id}',
@@ -819,13 +819,13 @@ xApikey?: any,
 
     /**
      * Register User
-     * @param requestBody 
+     * @param requestBody
      * @returns UserSelfInformation Successful Response
      * @throws ApiError
      */
     public static registerUserApiV1UsersRegisterPost(
-requestBody: UserCredentials,
-): CancelablePromise<UserSelfInformation> {
+        requestBody: UserCredentials,
+    ): CancelablePromise<UserSelfInformation> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/users/register',
@@ -839,13 +839,13 @@ requestBody: UserCredentials,
 
     /**
      * Login User
-     * @param requestBody 
+     * @param requestBody
      * @returns UserSelfInformation Successful Response
      * @throws ApiError
      */
     public static loginUserApiV1UsersLoginPost(
-requestBody: UserCredentials,
-): CancelablePromise<UserSelfInformation> {
+        requestBody: UserCredentials,
+    ): CancelablePromise<UserSelfInformation> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/users/login',

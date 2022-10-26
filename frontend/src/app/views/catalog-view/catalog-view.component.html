@@ -24,11 +24,31 @@
             <clr-dg-row *clrDgItems="let p of products" [clrDgItem]="p">
               <clr-dg-cell>{{p.id}}</clr-dg-cell>
               <clr-dg-cell>{{p.name}}</clr-dg-cell>
+
+              <clr-dg-row-detail *clrIfExpanded>
+                <div class="btn-group btn-icon">
+                  <button class="btn" (click)="showOnMap(p.id)">
+                      <clr-icon shape="map"></clr-icon>
+                      Show on map
+                  </button>
+                  <button class="btn" (click)="showInputsFor(p.id)">
+                      <clr-icon shape="upload"></clr-icon>
+                      Show input data
+                  </button>
+                  <button class="btn" (click)="showDerivedFrom(p.id)">
+                      <clr-icon shape="download"></clr-icon>
+                      Show derived data
+                  </button>
+              </div>
+              </clr-dg-row-detail>
             </clr-dg-row>
 
-            <clr-dg-detail *clrIfDetail="let detail">
-              <clr-dg-detail-header>{{detail.name}}</clr-dg-detail-header>
-            </clr-dg-detail>
+            <!-- <clr-dg-detail *clrIfDetail="let detail">
+              <clr-dg-detail-header>Derived information</clr-dg-detail-header>
+              <clr-dg-detail-body>
+                ...
+              </clr-dg-detail-body>
+            </clr-dg-detail> -->
 
 
             <clr-dg-footer>{{products.length}} products</clr-dg-footer>

@@ -8,3 +8,4 @@ export type LiteralInput = {
     input_value: string;
     id: number;
 };
+

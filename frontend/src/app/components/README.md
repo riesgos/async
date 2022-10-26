@@ -1,4 +1,4 @@
-# In this folder there are the components with are reused in routes 
+# This folder contains the components wich are being re-used between routes
 
 ## There are some default components which you can adjust for your needs
 - ukis-global-alert

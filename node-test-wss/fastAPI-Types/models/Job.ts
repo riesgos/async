@@ -7,3 +7,4 @@ export type Job = {
     status: string;
     id: number;
 };
+

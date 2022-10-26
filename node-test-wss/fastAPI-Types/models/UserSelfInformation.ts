@@ -7,3 +7,4 @@ export type UserSelfInformation = {
     email: string;
     apikey: string;
 };
+
