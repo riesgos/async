@@ -22,7 +22,11 @@ export interface Model {
  * }
  */
 export const model: Model = {
-    assetMaster: { 
+    assetmaster: { 
+        latmin: {'Lima': '-12.258153712042164'},
+        latmax: {'Lima': '-11.754436756202463'},
+        lonmin: {'Lima': '-77.42752075195312'},
+        lonmax: {'Lima': '-76.87957763671875'},
         model: {
             'LimaCVT1_PD30_TI70_5000': 'LimaCVT1_PD30_TI70_5000',
             'LimaCVT2_PD30_TI70_10000': 'LimaCVT2_PD30_TI70_10000',
@@ -33,12 +37,11 @@ export const model: Model = {
             'LimaBlocks': 'LimaBlocks'
         }
     },
-    modelProp: { 
+    'eq-modelprop': { 
         schema: {
             "SARA_v1.0": "SARA_v1.0"
         }
     },
-    
     shakyground: {
         quakeMLFile: {
             "quakeml:quakeledger/80674883": {
@@ -132,8 +135,10 @@ export const model: Model = {
         }
     },
 
-    deus: {
-        schema: {},
+    'eq-deus': {
+        schema: {
+            "SARA_v1.0": "SARA_v1.0"
+        },
         intensity: {},
         exposure: {},
         fragility: {},
