@@ -131,4 +131,11 @@ export const model: Model = {
             "FromSeismogeotechnicsMicrozonation": "FromSeismogeotechnicsMicrozonation",
         }
     },
+
+    deus: {
+        schema: {},
+        intensity: {},
+        exposure: {},
+        fragility: {},
+    }
 };

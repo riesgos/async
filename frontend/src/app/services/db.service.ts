@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { forkJoin, merge, Observable, of, zip } from 'rxjs';
 import { UserOrder } from './pulsar.service';
 import { ComplexOutput, Product, ProductType } from '../../../../node-test-wss/fastAPI-Types/index';
-import { map, tap } from 'rxjs/operators';
+import { map, mergeAll, switchMap, tap } from 'rxjs/operators';
 
 
 
@@ -20,16 +20,15 @@ export class DbService {
 
   constructor(private http: HttpClient) {}
 
-  getApiKey(): string {
+  public getApiKey(): string {
     return this.apiKey;
   }
-
   
-  setApiKey(apiKey: string) {
+  public setApiKey(apiKey: string) {
     this.apiKey = apiKey;
   }
 
-  register(email: string, password: string) {
+  public register(email: string, password: string) {
     return this.http.post<User>(
       `${this.dbUrl}/users/register`,
       { email, password },
@@ -44,7 +43,7 @@ export class DbService {
     }));
   }
 
-  login(email: string, password: string) {
+  public login(email: string, password: string) {
     return this.http.post<User>(
       `${this.dbUrl}/users/login`,
       { email, password },
@@ -59,49 +58,57 @@ export class DbService {
     }));
   }
 
-  getUser(id: number): Observable<User> {
+  public getUser(id: number): Observable<User> {
     return this.get<User>(`users/${id}`);
   }
 
-  getJobs(): Observable<Job[]> {
+  public getJobs(): Observable<Job[]> {
     return this.get<Job[]>(`jobs`);
   }
 
-  getOrders(): Observable<Order[]> {
+  public getOrders(): Observable<Order[]> {
     return this.get<Order[]>(`orders`);
   }
 
-  getProcesses(): Observable<Process[]> {
+  public getProcesses(): Observable<Process[]> {
     return this.get<Process[]>(`processes`);
   }
 
-  postOrder(order: UserOrder): Observable<any> {
+  public postOrder(order: UserOrder): Observable<any> {
     return this.post(`orders`, order);
+  }
+
+  public resolveProduct(productId: number) {
+    return this.get<ComplexOutput>(`complex-outputs/${productId}`);
   }
   
   public getProducts(): Observable<Product[]> {
     return this.get<Product[]>(`products`);
   }
 
+  public getProduct(productId: number): Observable<Product> {
+    return this.get<Product>(`products/${productId}`);
+  }
+
+  public getProductsDerivedFrom(productId: number) {
+    return this.get<Product[]>(`products/${productId}/derived-products`).pipe(
+      switchMap((products: Product[]) => {
+        const resolved$ = products.map(p => this.resolveProduct(p.id));
+        return zip(...resolved$);
+      })
+    );
+  }
+
+  public getBaseProducts(productId: number) {
+    return this.get<Product[]>(`products/${productId}/base-products`).pipe(
+      switchMap((products: Product[]) => {
+        const resolved$ = products.map(p => this.resolveProduct(p.id));
+        return zip(...resolved$);
+      })
+    );
+  }
   public getProductsTypes(): Observable<ProductType[]> {
     return this.get<ProductType[]>(`product-types`);
-  }
-
-
-  public getOutputsFromProduct(serviceId: string, productId: Product['id']): Observable<ComplexOutput[]> {
-    throw new Error(`Method not implemented`)
-    // // id -> job_id https://github.com/riesgos/async/blob/main/backend/tests/test_routes/test_products.py#L32
-    // const jobId = productId;
-
-    // let url = `${this.base}${serviceId}`
-    // if (serviceId.includes('http')) {
-    //   url = serviceId;
-    // }
-    // return this.http.get<ComplexOutput[]>(`${url}?job_id=${jobId}`);
-  }
-
-  public getProductsDerivedFrom(product: Product): Observable<Product[]> {
-    return of([]);
   }
 
   private get<T>(path: string): Observable<T> {

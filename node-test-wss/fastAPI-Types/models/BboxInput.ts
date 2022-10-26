@@ -12,3 +12,4 @@ export type BboxInput = {
     crs: string;
     id: number;
 };
+

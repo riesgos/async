@@ -8,3 +8,4 @@ export type ComplexOutputAsInput = {
     complex_output_id: number;
     id: number;
 };
+

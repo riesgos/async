@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npx ts-node index.ts",
     "fast-api": "npx fastapi -c ./fastapi.config.js",
-    "get-api-types": "npx openapi -o fastAPI-Types -i http://tramiel.eoc.dlr.de:8000/api/v1/openapi.json"
+    "get-api-types": "npx openapi -o fastAPI-Types -i http://localhost:8000/api/v1/openapi.json"
   },
   "author": "",
   "license": "ISC",

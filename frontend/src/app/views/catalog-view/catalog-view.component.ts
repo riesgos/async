@@ -29,24 +29,24 @@ export class CatalogViewComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
   public nav = {
-    leftWidth: 19,
+    leftWidth: 30,
     rightWidth: 19
   };
 
-  productTypes$: Observable<ProductType[]>;
-  products$: Observable<Product[]>;
-  outputs$!: Observable<ComplexOutput[]>
+  public productTypes$: Observable<ProductType[]>;
+  public products$: Observable<Product[]>;
 
   navGroups: { [name: string]: boolean } = {};
 
   controls: IMapControls;
-  constructor(private dbSvc: DbService,
+  constructor(
+    private dbSvc: DbService,
     public layerSvc: LayersService,
-    public mapStateSvc: MapStateService) {
+    public mapStateSvc: MapStateService
+  ) {
     this.controls = {
       scaleLine: true
     }
-
     this.productTypes$ = this.dbSvc.getProductsTypes();
     this.products$ = this.dbSvc.getProducts();
   }
@@ -88,8 +88,16 @@ export class CatalogViewComponent implements OnInit {
     });
   }
 
-  getOutputs(productId: Product['id']) {
-    this.outputs$ = this.dbSvc.getOutputsFromProduct('/api/complex-outputs', productId);
+  showOnMap(productId: Product['id']) {
+    this.dbSvc.resolveProduct(productId).subscribe(p => console.log(p))
+  }
+
+  showInputsFor(productId: Product['id']) {
+    this.dbSvc.getProductsDerivedFrom(productId).subscribe(products => console.log(products));
+  }
+
+  showDerivedFrom(productId: Product['id']) {
+    this.dbSvc.getBaseProducts(productId).subscribe(b => console.log(b))
   }
 
 }
