@@ -16,7 +16,7 @@ export interface Model {
  * { 
  *      processName: {
  *          inputName: {
- *              inputValueAsString: inputValue
+ *              label: inputValue
  *          }
  *      }
  * }

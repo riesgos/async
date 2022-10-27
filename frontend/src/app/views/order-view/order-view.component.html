@@ -4,20 +4,6 @@
 
     <clr-accordion>
 
-      <clr-accordion-panel>
-        <clr-accordion-title>Base product</clr-accordion-title>
-        <clr-accordion-content *clrIfExpanded>
-          <table class="table table-vertical">
-            <tbody>
-              <tr>
-                <th>Product-Id</th>
-                <td>1</td>
-              </tr>
-            </tbody>
-          </table>
-        </clr-accordion-content>
-      </clr-accordion-panel>
-
       <clr-accordion-panel *ngFor="let step of model | keyvalue" [formGroupName]="step.key">
         <clr-accordion-title>{{ step.key }}</clr-accordion-title>
 

@@ -5,6 +5,17 @@ version: "3.3"
 # ./asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar
 # If it is not, please run `mvn package` before.
 services:
+  wps:
+    image: gfzriesgos/riesgos-wps
+    ports:
+      - '8082:8080'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    networks:
+      - wps
+      - filestorage
+      - web
+
   deus_wrapper:
     image: spring-boot-image
     build:
@@ -14,10 +25,12 @@ services:
     depends_on:
       - db
       - queue
+      - wps
     networks:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'deus-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusWrapper'
@@ -29,7 +42,7 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'deus-success'
       pulsar.failureTopic: 'deus-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://wps/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
       filestorage.endpoint: http://filestorage:9000
@@ -282,3 +295,4 @@ networks:
   queue:
   filestorage:
   web:
+  wps:
