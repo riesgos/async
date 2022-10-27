@@ -11,6 +11,7 @@ services:
       - '8082:8080'
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
+      - './wps-server/json-configurations/:/usr/share/riesgos/json-configurations'
     networks:
       - wps
       - filestorage
@@ -42,7 +43,7 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'deus-success'
       pulsar.failureTopic: 'deus-failure'
-      wps.wpsUrl: 'http://wps/wps/WebProcessingService'
+      wps.wpsUrl: 'http://wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
       filestorage.endpoint: http://filestorage:9000
