@@ -20,9 +20,8 @@ services:
   deus_wrapper:
     image: spring-boot-image
     build:
-      context: asyncwrapper/dockerfile-spring-boot-baseimage
-    volumes:
-      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+      context: asyncwrapper
+      dockerfile: dockerfile-spring-boot-baseimage/Dockerfile
     depends_on:
       - db
       - queue
@@ -55,9 +54,8 @@ services:
   assetmaster_wrapper:
     image: spring-boot-image
     build:
-      context: asyncwrapper/dockerfile-spring-boot-baseimage
-    volumes:
-      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+      context: asyncwrapper
+      dockerfile: dockerfile-spring-boot-baseimage/Dockerfile
     depends_on:
       - db
       - queue
@@ -88,9 +86,8 @@ services:
   modelprop_wrapper:
     image: spring-boot-image
     build:
-      context: asyncwrapper/dockerfile-spring-boot-baseimage
-    volumes:
-      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+      context: asyncwrapper
+      dockerfile: dockerfile-spring-boot-baseimage/Dockerfile
     depends_on:
       - db
       - queue
@@ -121,9 +118,8 @@ services:
   shakyground_wrapper:
     image: spring-boot-image
     build:
-      context: asyncwrapper/dockerfile-spring-boot-baseimage
-    volumes:
-      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+      context: asyncwrapper
+      dockerfile: dockerfile-spring-boot-baseimage/Dockerfile
     depends_on:
       - db
       - queue
@@ -154,9 +150,8 @@ services:
   quakeledger_wrapper:
     image: spring-boot-image
     build:
-      context: asyncwrapper/dockerfile-spring-boot-baseimage
-    volumes:
-      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+      context: asyncwrapper
+      dockerfile: dockerfile-spring-boot-baseimage/Dockerfile
     depends_on:
       - db
       - queue
