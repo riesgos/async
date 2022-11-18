@@ -37,7 +37,7 @@ services:
       filestorage.user: admin
       filestorage.password: secretpassword
       filestorage.bucketName: riesgosfiles
-      filestorage.access: http://localhost/api/v1/files/
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   assetmaster_wrapper:
     image: spring-boot-image
@@ -71,7 +71,7 @@ services:
       filestorage.user: admin
       filestorage.password: secretpassword
       filestorage.bucketName: riesgosfiles
-      filestorage.access: http://localhost/api/v1/files/
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   modelprop_wrapper:
     image: spring-boot-image
@@ -105,7 +105,7 @@ services:
       filestorage.user: admin
       filestorage.password: secretpassword
       filestorage.bucketName: riesgosfiles
-      filestorage.access: http://localhost/api/v1/files/
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   shakyground_wrapper:
     image: spring-boot-image
@@ -139,7 +139,7 @@ services:
       filestorage.user: admin
       filestorage.password: secretpassword
       filestorage.bucketName: riesgosfiles
-      filestorage.access: http://localhost/api/v1/files/
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   quakeledger_wrapper:
     image: spring-boot-image
@@ -173,7 +173,7 @@ services:
       filestorage.user: admin
       filestorage.password: secretpassword
       filestorage.bucketName: riesgosfiles
-      filestorage.access: http://localhost/api/v1/files/
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   backend:
     image: async-backend
