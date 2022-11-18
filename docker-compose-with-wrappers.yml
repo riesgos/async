@@ -303,6 +303,7 @@ services:
       - "riesgos-wps-server-config:/usr/local/tomcat/conf"
     networks:
       - wps
+      - filestorage
 
   shakyground:
     image: gfzriesgos/shakyground:2.0.0
