@@ -18,6 +18,7 @@ services:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'deus-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusWrapper'
@@ -29,7 +30,7 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'deus-success'
       pulsar.failureTopic: 'deus-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
       filestorage.endpoint: http://filestorage:9000
@@ -51,6 +52,7 @@ services:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'assetmaster-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper'
@@ -62,7 +64,7 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'assetmaster-success'
       pulsar.failureTopic: 'assetmaster-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess'
       filestorage.endpoint: http://filestorage:9000
@@ -84,6 +86,7 @@ services:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'modelprop-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper'
@@ -95,7 +98,7 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'modelprop-success'
       pulsar.failureTopic: 'modelprop-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
       filestorage.endpoint: http://filestorage:9000
@@ -117,6 +120,7 @@ services:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'shakyground-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ShakygroundWrapper'
@@ -128,7 +132,7 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'shakyground-success'
       pulsar.failureTopic: 'shakyground-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
       filestorage.endpoint: http://filestorage:9000
@@ -150,6 +154,7 @@ services:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'quakeledger-asyncwrapper'
       wrapperclass: 'org.n.riesgos.asyncwrapper.dummy.QuakeledgerWrapper'
@@ -161,7 +166,7 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'quakeledger-success'
       pulsar.failureTopic: 'quakeledger-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess'
       filestorage.endpoint: http://filestorage:9000
@@ -266,6 +271,7 @@ services:
     networks:
       - filestorage
       - web
+      - wps
     volumes:
       - ./reverse_proxy/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./reverse_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -294,7 +300,9 @@ services:
       - "riesgos-wps-hsqldb-dev:/usr/local/tomcat/webapps/wps/WEB-INF/classes/db/data"
       # And we need to store the server.xml, as we want to overwrite the
       # timeout settings.
-      - "./wps/server.xml:/usr/local/tomcat/conf/server.xml"
+      - "riesgos-wps-server-config:/usr/local/tomcat/conf"
+    networks:
+      - wps
 
   shakyground:
     image: gfzriesgos/shakyground:2.0.0
@@ -323,6 +331,9 @@ services:
   wps-init:
     image: python:3.10.5-alpine3.15
     entrypoint: "/entrypoint.sh"
+    environment:
+      WPS_HOSTPORT: '8080'
+      WPS_HOSTNAME: 'riesgos-wps'
     volumes:
       - "./wps/init/entrypoint.sh:/entrypoint.sh"
       - "./wps/init/init_wps.py:/init_wps.py"
@@ -332,6 +343,9 @@ services:
       - "assetmaster-metadata:/wps/processes/assetmaster"
       - "modelprop-metadata:/wps/processes/modelprop"
       - "deus-metadata:/wps/processes/deus"
+      - "riesgos-wps-server-config:/wps/server-config"
+    networks:
+      - wps
 
 
 volumes:
@@ -341,6 +355,7 @@ volumes:
   filestoragedata:
   riesgos-wps-hsqldb-dev:
   riesgos-wps-json-config:
+  riesgos-wps-server-config:
   shakyground-metadata:
   quakeledger-metadata:
   assetmaster-metadata:
@@ -352,3 +367,4 @@ networks:
   queue:
   filestorage:
   web:
+  wps:
