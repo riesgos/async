@@ -244,16 +244,18 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
                 val jobInputWithStoredInputLinks = storeInputLinks(jobInputWithoutStoredInputLinks)
                 hasAtLeastOneRun = true
                 LOGGER.info("Process job")
+                val optionalJobId = datamanagementRepo().jobIdHasAlreadyProcessed(
+                        getWpsIdentifier(),
+                        WPS_JOB_STATUS_SUCCEEDED,
+                        jobInputWithStoredInputLinks.complexConstraints,
+                        jobInputWithStoredInputLinks.literalConstraints,
+                        jobInputWithStoredInputLinks.bboxConstraints
+                )
                 // TODO: Extract job id or filter for a process that is not failed.
-                if (datamanagementRepo().hasAlreadyProcessed(
-                                getWpsIdentifier(),
-                                WPS_JOB_STATUS_SUCCEEDED,
-                                jobInputWithStoredInputLinks.complexConstraints,
-                                jobInputWithStoredInputLinks.literalConstraints,
-                                jobInputWithStoredInputLinks.bboxConstraints
-                        )
-                ) {
+                if (optionalJobId.isPresent()) {
+                    // cadd that job to the order
                     LOGGER.info("Inputs already processed")
+                    datamanagementRepo().addJobToOrder(optionalJobId.get(), orderId)
                     sendSuccess(orderId)
                 } else {
                     runOneJob(jobInputWithStoredInputLinks, orderId)
