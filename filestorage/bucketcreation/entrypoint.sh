@@ -11,7 +11,7 @@ done
 /usr/bin/mc alias set minio http://${MINIO_SERVER}:${MINIO_PORT} ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD} --api S3v4
 # And then we can make the bucket & set its policy
 /usr/bin/mc mb --quiet minio/${MINIO_BUCKET_NAME}
-/usr/bin/mc policy set download minio/${MINIO_BUCKET_NAME}
+/usr/bin/mc anonymous set download minio/${MINIO_BUCKET_NAME}
 
 
 # If we would need to run for longer, we could run
@@ -22,4 +22,5 @@ done
 # mc management command.
 #
 # But in most cases we don't need to, so we exit.
-exit 0
+#exit 0
+tail -f /dev/null

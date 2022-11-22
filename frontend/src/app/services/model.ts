@@ -139,8 +139,8 @@ export const model: Model = {
         schema: {
             "SARA_v1.0": "SARA_v1.0"
         },
-        intensity: {},
-        exposure: {},
-        fragility: {},
+        //intensity: {},
+        //exposure: {},
+        //fragility: {},
     }
 };
