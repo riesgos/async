@@ -25,6 +25,8 @@ import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/n
 
 // loading an icon from the "core set" now must be done manually
 import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from "@cds/core/icon";
+import { MultiOrderViewComponent } from './views/multi-order-view/multi-order-view.component';
+import { OrderDropComponent } from './components/order-drop/order-drop.component';
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
 @NgModule({
@@ -39,7 +41,9 @@ ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, .
     NavResizeDirectiveDirective,
     FilterOnIdPipe,
     LoginComponent,
-    CurrentStateComponent
+    CurrentStateComponent,
+    MultiOrderViewComponent,
+    OrderDropComponent
   ],
   imports: [
     BrowserModule,
