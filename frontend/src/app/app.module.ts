@@ -1,61 +1,61 @@
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ClarityModule } from "@clr/angular";
-import { HttpClientModule } from '@angular/common/http';
-import { MapOlModule } from '@dlr-eoc/map-ol';
-import { LayerControlModule } from '@dlr-eoc/layer-control';
-
-import { AppComponent } from "./app.component";
-import { HeaderComponent } from './components/header/header.component';
-import { GlobalAlertComponent } from './components/global-alert/global-alert.component';
 import { AlertService } from './components/global-alert/alert.service';
+import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
+import { CatalogViewComponent, FilterOnIdPipe } from './views/catalog-view/catalog-view.component';
+import { ClarityModule } from '@clr/angular';
+import { CurrentStateComponent } from './views/current-state/current-state.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { GlobalAlertComponent } from './components/global-alert/global-alert.component';
 import { GlobalProgressComponent } from './components/global-progress/global-progress.component';
+import { HeaderComponent } from './components/header/header.component';
+import { HttpClientModule } from '@angular/common/http';
+import { LayerControlModule } from '@dlr-eoc/layer-control';
+import { LoginComponent } from './components/login/login.component';
+import { MapOlModule } from '@dlr-eoc/map-ol';
+import { MultiOrderViewComponent } from './views/multi-order-view/multi-order-view.component';
+import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
+import { NgModule } from '@angular/core';
+import { NgxFileDropModule } from 'ngx-file-drop';
+import { OrderDropComponent } from './components/order-drop/order-drop.component';
+import { OrderViewComponent } from './views/order-view/order-view.component';
 import { ProgressService } from './components/global-progress/progress.service';
 import { PulsarService } from './services/pulsar.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UkisRoutingModule } from "./app-routing.module";
-import { CatalogViewComponent, FilterOnIdPipe } from './views/catalog-view/catalog-view.component';
-import { OrderViewComponent } from './views/order-view/order-view.component';
-import { LoginComponent } from './components/login/login.component';
-import { CurrentStateComponent } from './views/current-state/current-state.component';
-
+import { UkisRoutingModule } from './app-routing.module';
 import { VerticalNavResizeComponent } from './components/vertical-nav-resize/vertical-nav-resize.component';
-import { NavResizeDirectiveDirective } from './directives/nav-resize-directive/nav-resize-directive.directive';
 
 // loading an icon from the "core set" now must be done manually
-import { coreCollectionIcons, essentialCollectionIcons, ClarityIcons, travelCollectionIcons } from "@cds/core/icon";
-import { MultiOrderViewComponent } from './views/multi-order-view/multi-order-view.component';
-import { OrderDropComponent } from './components/order-drop/order-drop.component';
+import { ClarityIcons, coreCollectionIcons, essentialCollectionIcons, travelCollectionIcons } from '@cds/core/icon';
 ClarityIcons.addIcons(...[...coreCollectionIcons, ...essentialCollectionIcons, ...travelCollectionIcons]);
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
+    CatalogViewComponent,
+    CurrentStateComponent,
+    FilterOnIdPipe,
     GlobalAlertComponent,
     GlobalProgressComponent,
-    CatalogViewComponent,
+    HeaderComponent,
+    LoginComponent,
+    MultiOrderViewComponent,
+    NavResizeDirectiveDirective,
+    OrderDropComponent,
     OrderViewComponent,
     VerticalNavResizeComponent,
-    NavResizeDirectiveDirective,
-    FilterOnIdPipe,
-    LoginComponent,
-    CurrentStateComponent,
-    MultiOrderViewComponent,
-    OrderDropComponent
   ],
   imports: [
-    BrowserModule,
     BrowserAnimationsModule,
+    BrowserModule,
     ClarityModule,
-    HttpClientModule,
     FormsModule,
-    ReactiveFormsModule,
     HttpClientModule,
-    UkisRoutingModule,
+    HttpClientModule,
+    LayerControlModule,
     MapOlModule,
-    LayerControlModule
+    NgxFileDropModule,
+    ReactiveFormsModule,
+    UkisRoutingModule,
   ],
   providers: [
     AlertService,

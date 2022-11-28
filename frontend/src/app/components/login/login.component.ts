@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { DbService } from 'src/app/services/db.service';
 import { LoginService } from 'src/app/services/login.service';
 import { PulsarService } from 'src/app/services/pulsar.service';
@@ -12,23 +12,23 @@ import { PulsarService } from 'src/app/services/pulsar.service';
 export class LoginComponent implements OnInit {
   public isLoggedIn: boolean = false;
   public errorMessage: string = '';
-  public loginForm: FormGroup;
-  public registerForm: FormGroup;
+  public loginForm: UntypedFormGroup;
+  public registerForm: UntypedFormGroup;
   public action: 'login' | 'register' = 'login';
 
   constructor(
     private loginSvc: LoginService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private dbSvc: DbService,
     private orderSvc: PulsarService
   ) {
     this.loginForm = this.formBuilder.group({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required]),
+      email: new UntypedFormControl('', [Validators.required, Validators.email]),
+      password: new UntypedFormControl('', [Validators.required]),
     });
     this.registerForm = this.formBuilder.group({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required]),
+      email: new UntypedFormControl('', [Validators.required, Validators.email]),
+      password: new UntypedFormControl('', [Validators.required]),
     });
   }
 
