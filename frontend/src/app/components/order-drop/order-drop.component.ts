@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgxFileDropEntry } from 'ngx-file-drop';
 import { ParserService } from 'src/app/services/parser.service';
+import { PulsarService, UserOrder } from 'src/app/services/pulsar.service';
+import { User } from '../../../../../node-test-wss/fastAPI-Types';
 
 @Component({
   selector: 'app-order-drop',
@@ -10,8 +12,12 @@ import { ParserService } from 'src/app/services/parser.service';
 export class OrderDropComponent implements OnInit {
   
   public files: NgxFileDropEntry[] = [];
+  public orders: UserOrder[] = [];
 
-  constructor(private parser: ParserService) {}
+  constructor(
+    private parser: ParserService,
+    private orderSvc: PulsarService
+  ) {}
 
   ngOnInit(): void {
   }
@@ -28,8 +34,9 @@ export class OrderDropComponent implements OnInit {
           // Here you can access the real file
           console.log(droppedFile.relativePath, file);
 
-          // const requirements = this.parser.parseFile(file);
-
+          const orders: UserOrder[] = this.parser.parseFile(file);
+          this.orders.push(...orders);
+          
         });
       } else {
         // It was a directory (empty directories are added, otherwise only files)
