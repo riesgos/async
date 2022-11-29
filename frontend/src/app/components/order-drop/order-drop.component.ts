@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgxFileDropEntry } from 'ngx-file-drop';
+import { ParserService } from 'src/app/services/parser.service';
 
 @Component({
   selector: 'app-order-drop',
@@ -9,6 +10,8 @@ import { NgxFileDropEntry } from 'ngx-file-drop';
 export class OrderDropComponent implements OnInit {
   
   public files: NgxFileDropEntry[] = [];
+
+  constructor(private parser: ParserService) {}
 
   ngOnInit(): void {
   }
@@ -25,21 +28,7 @@ export class OrderDropComponent implements OnInit {
           // Here you can access the real file
           console.log(droppedFile.relativePath, file);
 
-          /**
-          // You could upload it like this:
-          const formData = new FormData()
-          formData.append('logo', file, relativePath)
-
-          // Headers
-          const headers = new HttpHeaders({
-            'security-token': 'mytoken'
-          })
-
-          this.http.post('https://mybackend.com/api/upload/sanitize-and-save-logo', formData, { headers: headers, responseType: 'blob' })
-          .subscribe(data => {
-            // Sanitized logo returned from backend
-          })
-          **/
+          // const requirements = this.parser.parseFile(file);
 
         });
       } else {
