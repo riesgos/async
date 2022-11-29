@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { DbService } from 'src/app/services/db.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, FormControl, UntypedFormGroup } from '@angular/forms';
 import { BboxParameterConstraints, ComplexParameterConstraints, isBboxInput, isComplexInput, isLiteralInput, LiteralParameterConstraints, ParameterConstraints, PulsarService, ServiceConstraints, UserOrder } from 'src/app/services/pulsar.service';
 import { model } from '../../services/model';
 
@@ -12,14 +12,14 @@ import { model } from '../../services/model';
 export class OrderViewComponent implements OnInit {
   @HostBinding('class') class = 'content-container';
 
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public model = model;
   public state: 'ready' | 'running' | 'done' = 'ready';
 
 
   constructor(
     private orderSvc: PulsarService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
   ) {
     const formData: any = {};
     for (const step in this.model) {
