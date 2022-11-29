@@ -34,8 +34,9 @@ export class OrderDropComponent implements OnInit {
           // Here you can access the real file
           console.log(droppedFile.relativePath, file);
 
-          const orders: UserOrder[] = this.parser.parseFile(file);
-          this.orders.push(...orders);
+          this.parser.parseFile(file).then(orders => {
+            this.orders.push(...orders);
+          });
           
         });
       } else {

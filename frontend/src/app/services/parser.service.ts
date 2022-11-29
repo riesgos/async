@@ -8,9 +8,28 @@ export class ParserService {
   
   constructor() { }
 
-  parseFile(file: File): UserOrder[] {
-    const buffer = await file.arrayBuffer()
-    throw new Error('Method not implemented.');
+  async parseFile(file: File): Promise<UserOrder[]> {
+    const dataString = await this.readFile(file);
+    console.log(dataString)
+    const data = JSON.parse(dataString);
+    return []
+  }
+
+  async readFile(file: File): Promise<string> {
+    return await file.text();
+
+    // const response$ = new Promise((resolve, reject) => {
+    //   const reader = new FileReader();
+    //   reader.onload = (e) => {
+    //     resolve(e.target?.result);
+    //   }
+    //   reader.readAsText(file, 'UTF-8');
+    // })
+
+    // const buffer = await file.arrayBuffer();
+    // const string = Buffer.from(buffer).toString('UTF-8');
+    // const data = JSON.parse(string);
+    // return data;
   }
 
 }
