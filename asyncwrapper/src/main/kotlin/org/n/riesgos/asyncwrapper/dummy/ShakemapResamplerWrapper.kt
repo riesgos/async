@@ -1,5 +1,6 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import com.scurrilous.circe.Hash
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
@@ -7,7 +8,9 @@ import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
+import java.util.*
 import java.util.logging.Logger
+import kotlin.collections.HashMap
 
 class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, publisher: PulsarPublisher) : AbstractWrapper(publisher, wpsConfig) {
 
@@ -15,6 +18,13 @@ class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRep
     private val wpsShakemapResamplerProcessIdentifier = wpsConfig.process
 
     companion object {
+        //input ids
+        val WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE = "shakeMapFile";
+        val WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_RANDOM_SEED = "randomSeed";
+        //output ids
+        val WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE = "resampledShakeMapFile";
+
+
         // Wrapper name is different from the wps process identifier, as it could
         // be that we use the same process for different tasks.
         val WRAPPER_NAME_SHAKEMAPRESAMPLER = "shakemapresampler"
@@ -39,15 +49,15 @@ class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRep
     }
 
     override fun getDefaultLiteralConstraints(): Map<String, List<String>> {
-        TODO("Not yet implemented")
+        return HashMap<String, List<String>>()
     }
 
     override fun getDefaultComplexConstraints(orderId: Long): Map<String, List<ComplexInputConstraint>> {
-        TODO("Not yet implemented")
+        return HashMap<String, List<ComplexInputConstraint>>()
     }
 
     override fun getDefaultBBoxConstraints(orderId: Long): Map<String, List<BBoxInputConstraint>> {
-        TODO("Not yet implemented")
+        return HashMap<String, List<BBoxInputConstraint>>()
     }
 
     override fun getJobInputs(
@@ -55,10 +65,32 @@ class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRep
         complexInputs: Map<String, List<ComplexInputConstraint>>,
         bboxInputs: Map<String, List<BBoxInputConstraint>>
     ): List<JobConstraints> {
-        TODO("Not yet implemented")
+        val inputs = ArrayList<JobConstraints>()
+
+        for (randomSeed in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_RANDOM_SEED, ArrayList())){
+            for(shakemap in complexInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE, ArrayList())){
+                val literalInputValues = HashMap<String, String>()
+                val complexInputValues = HashMap<String, ComplexInputConstraint>()
+                val bboxInputConstraints = HashMap<String, BBoxInputConstraint>()
+
+                literalInputValues[WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_RANDOM_SEED] = randomSeed
+                complexInputValues[ShakygroundWrapper.WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_QUAKEML_FILE] = shakemap
+
+                inputs.add(JobConstraints(literalInputValues, complexInputValues, bboxInputConstraints))
+            }
+        }
+
+        return inputs
     }
 
     override fun getRequestedOutputs(): List<WPSOutputDefinition> {
-        TODO("Not yet implemented")
+        return listOf(
+            WPSOutputDefinition(
+                WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE,
+                "text/xml",
+                "http://earthquake.usgs.gov/eqcenter/shakemap",
+                "UTF-8"
+            )
+        )
     }
 }
