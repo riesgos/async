@@ -19,10 +19,10 @@ class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRep
 
     companion object {
         //input ids
-        val WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE = "shakeMapFile";
-        val WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_RANDOM_SEED = "randomSeed";
+        val WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE = "intensity_file";
+        val WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_RANDOM_SEED = "random_seed";
         //output ids
-        val WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE = "resampledShakeMapFile";
+        val WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE = "intensity_output_file";
 
 
         // Wrapper name is different from the wps process identifier, as it could
@@ -65,6 +65,8 @@ class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRep
         complexInputs: Map<String, List<ComplexInputConstraint>>,
         bboxInputs: Map<String, List<BBoxInputConstraint>>
     ): List<JobConstraints> {
+        LOGGER.info("get inputs for $WRAPPER_NAME_SHAKEMAPRESAMPLER")
+
         val inputs = ArrayList<JobConstraints>()
 
         for (randomSeed in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_RANDOM_SEED, ArrayList())){
