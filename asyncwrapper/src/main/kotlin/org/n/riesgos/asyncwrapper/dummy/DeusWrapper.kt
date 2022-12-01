@@ -122,11 +122,6 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
         return result
     }
 
-    private fun toComplexInputConstraints (outputs: List<ComplexOutput>): MutableList<ComplexInputConstraint> {
-        return outputs.stream().map({x -> ComplexInputConstraint(x.link, null, x.mimeType, x.xmlschema, x.encoding) }).collect(Collectors.toList())
-    }
-
-
     override fun getDefaultBBoxConstraints (orderId: Long): Map<String, List<BBoxInputConstraint>> {
         return HashMap<String, MutableList<BBoxInputConstraint>>()
     }

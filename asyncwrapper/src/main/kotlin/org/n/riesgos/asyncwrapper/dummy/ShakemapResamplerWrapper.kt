@@ -1,6 +1,5 @@
 package org.n.riesgos.asyncwrapper.dummy
 
-import com.scurrilous.circe.Hash
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
@@ -8,9 +7,7 @@ import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
-import java.util.*
 import java.util.logging.Logger
-import kotlin.collections.HashMap
 
 class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, publisher: PulsarPublisher) : AbstractWrapper(publisher, wpsConfig) {
 
@@ -19,10 +16,14 @@ class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRep
 
     companion object {
         //input ids
-        val WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE = "intensity_file";
-        val WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_RANDOM_SEED = "random_seed";
+        val WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE = "intensity_file"
+        val WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_RANDOM_SEED = "random_seed"
         //output ids
-        val WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE = "intensity_output_file";
+        val WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE = "intensity_output_file"
+
+        //shakyground  ids
+        val WPS_PROCESS_IDENTIFIER_SHAKYGROUND = "org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess"
+        val WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE = "shakeMapFile"
 
 
         // Wrapper name is different from the wps process identifier, as it could
@@ -53,7 +54,17 @@ class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRep
     }
 
     override fun getDefaultComplexConstraints(orderId: Long): Map<String, List<ComplexInputConstraint>> {
-        return HashMap<String, List<ComplexInputConstraint>>()
+        val result = HashMap<String, MutableList<ComplexInputConstraint>>()
+        // We can only handle those that give us the xml output
+        val existingShakemapOutputs = datamanagementRepo.findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(
+            orderId,
+            WPS_PROCESS_IDENTIFIER_SHAKYGROUND,
+            WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE,
+            "text/xml"
+        )
+
+        result[WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE] = toComplexInputConstraints(existingShakemapOutputs)
+        return result
     }
 
     override fun getDefaultBBoxConstraints(orderId: Long): Map<String, List<BBoxInputConstraint>> {
@@ -76,7 +87,7 @@ class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRep
                 val bboxInputConstraints = HashMap<String, BBoxInputConstraint>()
 
                 literalInputValues[WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_RANDOM_SEED] = randomSeed
-                complexInputValues[ShakygroundWrapper.WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_QUAKEML_FILE] = shakemap
+                complexInputValues[WPS_PROCESS_INPUT_IDENTIFIER_SHAKEMAPRESAMPLER_SHAKEMAP_FILE] = shakemap
 
                 inputs.add(JobConstraints(literalInputValues, complexInputValues, bboxInputConstraints))
             }
