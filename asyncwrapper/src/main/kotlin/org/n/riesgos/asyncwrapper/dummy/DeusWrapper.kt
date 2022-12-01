@@ -11,8 +11,6 @@ import org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper.Companion.WPS_PROCESS
 import org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA
 import org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
-import org.n52.geoprocessing.wps.client.model.Format
-import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 import java.util.stream.Collectors
 
@@ -36,8 +34,8 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
         val WPS_PROCESS_OUTPUT_IDENTIFIER_DEUS_METASUMMARY = "meta_summary"
 
 
-        val WPS_PROCESS_IDENTIFIER_SHAKYGROUND = "org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess"
-        val WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE = "shakeMapFile"
+        val WPS_PROCESS_IDENTIFIER_SHAKEMAP_RESAMPLER = "org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler"
+        val WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKEMAP_RESAMPLER_SHAKEMAP_FILE = "intensity_output_file"
 
         val WPS_PROCESS_IDENTIFIER_ASSETMASTER = "org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess"
         val WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA = "schema"
@@ -88,8 +86,8 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
         // We can only handle those that give us the xml output
         val existingShakemapOutputs = datamanagementRepo.findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(
                 orderId,
-                WPS_PROCESS_IDENTIFIER_SHAKYGROUND,
-                WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKYGROUND_SHAKEMAP_FILE,
+                WPS_PROCESS_IDENTIFIER_SHAKEMAP_RESAMPLER,
+                WPS_PROCESS_OUTPUT_IDENTIFIER_SHAKEMAP_RESAMPLER_SHAKEMAP_FILE,
                 "text/xml"
         )
         val existingModelpropOutputs = datamanagementRepo.findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(
@@ -102,8 +100,14 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
                 // it doesn't make a real difference at the moment
                 // but we want to run this deus wrapper only for exposure models that
                 // were created for the earthquake setting.
-                .filter({x -> createdWithLiteralInput(x, WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS)})
-                .collect(Collectors.toList())
+                .filter { x ->
+                    createdWithLiteralInput(
+                        x,
+                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA,
+                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS
+                    )
+                }
+            .collect(Collectors.toList())
         val existingAssetmasterOutputs = datamanagementRepo.findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(
                 orderId,
                 WPS_PROCESS_IDENTIFIER_ASSETMASTER,
@@ -111,13 +115,19 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
                 "application/json"
         )
                 .stream()
-                .filter({x -> createdWithLiteralInput(x, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS)})
-                .collect(Collectors.toList())
+                .filter { x ->
+                    createdWithLiteralInput(
+                        x,
+                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA,
+                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS
+                    )
+                }
+            .collect(Collectors.toList())
 
 
-        result.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_INTENSITY, toComplexInputConstraints(existingShakemapOutputs))
-        result.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_FRAGILITY, toComplexInputConstraints(existingModelpropOutputs))
-        result.put(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_EXPOSURE, toComplexInputConstraints(existingAssetmasterOutputs))
+        result[WPS_PROCESS_INPUT_IDENTIFIER_DEUS_INTENSITY] = toComplexInputConstraints(existingShakemapOutputs)
+        result[WPS_PROCESS_INPUT_IDENTIFIER_DEUS_FRAGILITY] = toComplexInputConstraints(existingModelpropOutputs)
+        result[WPS_PROCESS_INPUT_IDENTIFIER_DEUS_EXPOSURE] = toComplexInputConstraints(existingAssetmasterOutputs)
 
         return result
     }
@@ -129,9 +139,9 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
     fun createdWithLiteralInput (complexOutput: ComplexOutput, wpsInputIdentifier: String, options: List<String>) : Boolean {
         val asInput = ComplexInputConstraint(complexOutput.link, null, complexOutput.mimeType, complexOutput.xmlschema, complexOutput.encoding)
         val literalInputs = datamanagementRepo.findLiteralInputsForComplexOutput(asInput, wpsInputIdentifier)
-        return literalInputs.stream().allMatch({
-            x -> options.contains(x.inputValue)
-        })
+        return literalInputs.stream().allMatch { x ->
+            options.contains(x.inputValue)
+        }
     }
 
 
@@ -142,8 +152,8 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
                 for (exposureConstraint in complexInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_EXPOSURE, ArrayList())) {
                     val extractedSchemas = datamanagementRepo.findLiteralInputsForComplexOutput(exposureConstraint, WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA)
                             .stream()
-                            .map({ x -> x.inputValue })
-                            .collect(Collectors.toList())
+                            .map { x -> x.inputValue }
+                        .collect(Collectors.toList())
 
 
                     for (schemaConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_SCHEMA, extractedSchemas)) {
