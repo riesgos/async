@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NgxFileDropEntry } from 'ngx-file-drop';
 import { ParserService } from 'src/app/services/parser.service';
 import { PulsarService, UserOrder } from 'src/app/services/pulsar.service';
-import { User } from '../../../../../node-test-wss/fastAPI-Types';
 
 @Component({
   selector: 'app-order-drop',
@@ -13,6 +12,7 @@ export class OrderDropComponent implements OnInit {
   
   public files: NgxFileDropEntry[] = [];
   public orders: UserOrder[] = [];
+  public state: 'awaiting_orders' | 'processing' = 'awaiting_orders';
 
   constructor(
     private parser: ParserService,
@@ -53,5 +53,9 @@ export class OrderDropComponent implements OnInit {
 
   public fileLeave(event: DragEvent){
     console.log(event);
+  }
+
+  public onExecuteClicked() {
+    this.orders.map(o => this.orderSvc.postOrder(o));
   }
 }

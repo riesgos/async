@@ -1,0 +1,224 @@
+[
+    {
+        "order_constraints": {
+            "shakyground": {
+                "literal_inputs": {
+                    "gmpe": "USGSSlopeBasedTopographyProxy",
+                    "vsgrid": "MontalvaEtAl2016SInter"
+                },
+                "complex_inputs": {
+                    "quakeMLFile": {
+                        "type": "FeatureCollection",
+                        "features": []
+                    }
+                }
+            },
+            "resampler": {
+                "literal_inputs": {
+                    "random_seed": [
+                        1
+                    ]
+                }
+            },
+            "assetmaster": {
+                "literal_inputs": {
+                    "lonmin": [
+                        123
+                    ],
+                    "lonmax": [
+                        123
+                    ],
+                    "latmin": [
+                        123
+                    ],
+                    "latmax": [
+                        123
+                    ],
+                    "model": [
+                        "ValpCVTBayesian"
+                    ],
+                    "schema": [
+                        "SARA_v1.0"
+                    ],
+                    "assettype": [
+                        "res"
+                    ],
+                    "querymode": [
+                        "intersects"
+                    ]
+                }
+            },
+            "modelprop": {
+                "literal_inputs": {
+                    "schema": [
+                        "SARA_v1.0"
+                    ],
+                    "assetcategory": [
+                        "buildings"
+                    ],
+                    "losscategory": [
+                        "structural"
+                    ],
+                    "taxonomies": [
+                        "none"
+                    ]
+                }
+            },
+            "deus": {
+                "literal_inputs": {
+                    "schema": [
+                        "SARA_v1"
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "order_constraints": {
+            "shakyground": {
+                "literal_inputs": {
+                    "gmpe": "USGSSlopeBasedTopographyProxy",
+                    "vsgrid": "MontalvaEtAl2016SInter"
+                },
+                "complex_inputs": {
+                    "quakeMLFile": {
+                        "type": "FeatureCollection",
+                        "features": []
+                    }
+                }
+            },
+            "resampler": {
+                "literal_inputs": {
+                    "random_seed": [
+                        2
+                    ]
+                }
+            },
+            "assetmaster": {
+                "literal_inputs": {
+                    "lonmin": [
+                        123
+                    ],
+                    "lonmax": [
+                        123
+                    ],
+                    "latmin": [
+                        123
+                    ],
+                    "latmax": [
+                        123
+                    ],
+                    "model": [
+                        "ValpCVTBayesian"
+                    ],
+                    "schema": [
+                        "SARA_v1.0"
+                    ],
+                    "assettype": [
+                        "res"
+                    ],
+                    "querymode": [
+                        "intersects"
+                    ]
+                }
+            },
+            "modelprop": {
+                "literal_inputs": {
+                    "schema": [
+                        "SARA_v1.0"
+                    ],
+                    "assetcategory": [
+                        "buildings"
+                    ],
+                    "losscategory": [
+                        "structural"
+                    ],
+                    "taxonomies": [
+                        "none"
+                    ]
+                }
+            },
+            "deus": {
+                "literal_inputs": {
+                    "schema": [
+                        "SARA_v1"
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "order_constraints": {
+            "shakyground": {
+                "literal_inputs": {
+                    "gmpe": "USGSSlopeBasedTopographyProxy",
+                    "vsgrid": "MontalvaEtAl2016SInter"
+                },
+                "complex_inputs": {
+                    "quakeMLFile": {
+                        "type": "FeatureCollection",
+                        "features": []
+                    }
+                }
+            },
+            "resampler": {
+                "literal_inputs": {
+                    "random_seed": [
+                        3
+                    ]
+                }
+            },
+            "assetmaster": {
+                "literal_inputs": {
+                    "lonmin": [
+                        123
+                    ],
+                    "lonmax": [
+                        123
+                    ],
+                    "latmin": [
+                        123
+                    ],
+                    "latmax": [
+                        123
+                    ],
+                    "model": [
+                        "ValpCVTBayesian"
+                    ],
+                    "schema": [
+                        "SARA_v1.0"
+                    ],
+                    "assettype": [
+                        "res"
+                    ],
+                    "querymode": [
+                        "intersects"
+                    ]
+                }
+            },
+            "modelprop": {
+                "literal_inputs": {
+                    "schema": [
+                        "SARA_v1.0"
+                    ],
+                    "assetcategory": [
+                        "buildings"
+                    ],
+                    "losscategory": [
+                        "structural"
+                    ],
+                    "taxonomies": [
+                        "none"
+                    ]
+                }
+            },
+            "deus": {
+                "literal_inputs": {
+                    "schema": [
+                        "SARA_v1"
+                    ]
+                }
+            }
+        }
+    }
+]

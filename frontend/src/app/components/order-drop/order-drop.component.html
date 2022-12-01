@@ -22,11 +22,14 @@
 
     </ngx-file-drop>
 
+
+
     <div class="upload-table">
+        <h4>Orders</h4>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Uploaded files</th>
+                    <th>Filename</th>
                 </tr>
             </thead>
             <tbody class="upload-name-style">
@@ -35,5 +38,35 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+
+    <div class="upload-table">
+        <h4>Orders</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>shakyground</td>
+                    <td>resampler</td>
+                    <td>assetmaster</td>
+                    <td>modelprop</td>
+                    <td>deus</td>                </tr>
+            </thead>
+            <tbody class="upload-name-style">
+                <tr *ngFor="let order of orders; let i=index">
+                    <td>  <cds-icon *ngIf="order.order_constraints['shakyground']" shape="check"></cds-icon> </td>
+                    <td>  <cds-icon *ngIf="order.order_constraints['resampler']" shape="check"></cds-icon> </td>
+                    <td>  <cds-icon *ngIf="order.order_constraints['assetmaster']" shape="check"></cds-icon> </td>
+                    <td>  <cds-icon *ngIf="order.order_constraints['modelprop']" shape="check"></cds-icon> </td>
+                    <td>  <cds-icon *ngIf="order.order_constraints['deus']" shape="check"></cds-icon> </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div>
+        <button *ngIf="state === 'awaiting_orders'" class="btn btn-primary" [disabled]="orders.length < 1" (click)="onExecuteClicked()">Execute now</button>
+        <a routerLink="/state"><button *ngIf="state === 'processing'" class="btn">See process overview</button></a>
     </div>
 </div>

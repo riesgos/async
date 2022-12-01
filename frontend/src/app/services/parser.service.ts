@@ -10,9 +10,8 @@ export class ParserService {
 
   async parseFile(file: File): Promise<UserOrder[]> {
     const dataString = await this.readFile(file);
-    console.log(dataString)
     const data = JSON.parse(dataString);
-    return []
+    return data;
   }
 
   async readFile(file: File): Promise<string> {
