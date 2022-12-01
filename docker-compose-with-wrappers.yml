@@ -115,7 +115,33 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
-
+  shakemap_resampler_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+      - filestorage
+    environment:
+      appID: 'shakemap-resampler-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ShakemapResamplerWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: 'shakyground-success'
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'shakemap-resampler-success'
+      pulsar.failureTopic: 'shakemap-resampler-failure'
+      wps.wpsUrl: 'https://riesgos.52north.org/javaps/service'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler'
   quakeledger_wrapper:
     image: spring-boot-image
     build:
