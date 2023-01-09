@@ -1,4 +1,4 @@
-<h3>Product types</h3>
+<h4>Product types</h4>
 <table *ngIf="productTypes$ | async as productTypes">
     <tr>
         <th>ProductTypeName</th>
@@ -9,21 +9,24 @@
 </table>
 
 
-<h3>Products</h3>
+<h4>Products</h4>
 <table *ngIf="products$ | async as products">
     <tr>
+        <th>BaseProducts</th>
         <th>ProductId</th>
         <th>ProductName</th>
+        <th>DerivedProducts</th>
     </tr>
     <tr *ngFor="let product of products">
+        <td>{{ product.baseProducts | json }}</td>
         <td>{{ product.product.id }}</td>
         <td>{{ product.product.name }}</td>
-        <!-- TODO: base and derived products -->
+        <td>{{ product.derivedProducts | json }}</td>
     </tr>
 </table>
 
 
-<h3>Processes</h3>
+<h4>Processes</h4>
 <table *ngIf="processes$ | async as processes">
     <tr>
         <th>ProcessId</th>
@@ -35,12 +38,12 @@
     </tr>
 </table>
 
-<h3>Orders</h3>
+<h4>Orders</h4>
 <table *ngIf="orders$ | async as orders">
     <tr>
         <th>OrderId</th>
-        <td>Constraints</td>
-        <td>UserId</td>
+        <th>Constraints</th>
+        <th>UserId</th>
     </tr>
     <tr *ngFor="let order of orders">
         <td>{{ order.id }}</td>
@@ -49,7 +52,7 @@
     </tr>
 </table>
 
-<h3>Jobs</h3>
+<h4>Jobs</h4>
 <table *ngIf="jobs$ | async as jobs">
     <tr>
         <th>JobId</th>
