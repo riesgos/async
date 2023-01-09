@@ -1,0 +1,64 @@
+<h3>Product types</h3>
+<table *ngIf="productTypes$ | async as productTypes">
+    <tr>
+        <th>ProductTypeName</th>
+    </tr>
+    <tr *ngFor="let productType of productTypes">
+        <td>{{ productType.name }}</td>
+    </tr>
+</table>
+
+
+<h3>Products</h3>
+<table *ngIf="products$ | async as products">
+    <tr>
+        <th>ProductId</th>
+        <th>ProductName</th>
+    </tr>
+    <tr *ngFor="let product of products">
+        <td>{{ product.product.id }}</td>
+        <td>{{ product.product.name }}</td>
+        <!-- TODO: base and derived products -->
+    </tr>
+</table>
+
+
+<h3>Processes</h3>
+<table *ngIf="processes$ | async as processes">
+    <tr>
+        <th>ProcessId</th>
+        <th>WpsId</th>
+    </tr>
+    <tr *ngFor="let process of processes">
+        <td>{{ process.id }}</td>
+        <td>{{ process.wps_identifier }}</td>
+    </tr>
+</table>
+
+<h3>Orders</h3>
+<table *ngIf="orders$ | async as orders">
+    <tr>
+        <th>OrderId</th>
+        <td>Constraints</td>
+        <td>UserId</td>
+    </tr>
+    <tr *ngFor="let order of orders">
+        <td>{{ order.id }}</td>
+        <td>{{ order.order_constraints | json }}</td>
+        <td>{{ order.user_id }}</td>
+    </tr>
+</table>
+
+<h3>Jobs</h3>
+<table *ngIf="jobs$ | async as jobs">
+    <tr>
+        <th>JobId</th>
+        <th>ProcessId</th>
+        <th>Status</th>
+    </tr>
+    <tr *ngFor="let job of jobs">
+        <td>{{ job.id }}</td>
+        <td>{{ job.process_id }}</td>
+        <td>{{ job.status }}</td>
+    </tr>
+</table>
