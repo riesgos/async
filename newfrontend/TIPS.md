@@ -5,6 +5,14 @@
 - When in office: Cable in, VPN off, Wifi off. Otherwise connection-problems between the docker-containers.
 
 
+## Compiling
+- Building wrapper
+    cd asyncwrapper
+    docker compose up
+    docker exec -it maven_builder /bin/bash
+    mvn package -DskipTests
+
+
 ## Database
 
 - Accessing db from host-machine
