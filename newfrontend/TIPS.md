@@ -3,14 +3,15 @@
 ## Docker
 
 - When in office: Cable in, VPN off, Wifi off. Otherwise connection-problems between the docker-containers.
-
+- It takes a while for first websocket-connections to be established.
 
 ## Compiling
 - Building wrapper
     cd asyncwrapper
-    docker compose up
-    docker exec -it maven_builder /bin/bash
-    mvn package -DskipTests
+    <!-- docker compose up -d
+    docker exec -it riesgos-mvn-builder /bin/bash
+    mvn package -DskipTests -->
+    ./mvn_package.sh
 
 
 ## Database
