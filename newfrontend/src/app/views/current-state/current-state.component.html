@@ -1,3 +1,6 @@
+<div>
+<button (click)="onRefresh()">Refresh</button>
+
 <h4>Product types</h4>
 <table *ngIf="productTypes$ | async as productTypes">
     <tr>
@@ -65,3 +68,4 @@
         <td>{{ job.status }}</td>
     </tr>
 </table>
+</div>

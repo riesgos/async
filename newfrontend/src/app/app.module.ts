@@ -14,7 +14,7 @@ import { PlaceOrderComponent } from './views/place-order/place-order.component';
   declarations: [
     AppComponent,
     CurrentStateComponent,
-    PlaceOrderComponent
+    PlaceOrderComponent,
   ],
   imports: [
     BrowserModule,
