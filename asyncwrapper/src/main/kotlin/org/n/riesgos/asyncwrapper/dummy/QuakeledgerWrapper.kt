@@ -19,7 +19,7 @@ class QuakeledgerWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig:
     private val wpsURL = wpsConfig.wpsURL
     private val wpsProcessIdentifier = wpsConfig.process
     companion object {
-        val WPS_PROCESS_INPUT_IDENTIFIER_QUAKELEDGER_INPUTBOUDINGBOX = "lonmin"
+        val WPS_PROCESS_INPUT_IDENTIFIER_QUAKELEDGER_INPUTBOUDINGBOX = "input-boundingbox"
         val WPS_PROCESS_INPUT_IDENTIFIER_QUAKELEDGER_MMIN = "mmin"
         val WPS_PROCESS_INPUT_IDENTIFIER_QUAKELEDGER_MMAX = "mmax"
         val WPS_PROCESS_INPUT_IDENTIFIER_QUAKELEDGER_ZMIN = "zmin"
