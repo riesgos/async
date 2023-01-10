@@ -1,5 +1,6 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.FilestorageConfig
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
@@ -12,8 +13,8 @@ import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
 class ModelpropTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig: WPSConfiguration,
-                          publisher: PulsarPublisher
-): AbstractWrapper(publisher, wpsConfig) {
+                          publisher: PulsarPublisher, filestorageConfig: FilestorageConfig
+): AbstractWrapper(publisher, wpsConfig, filestorageConfig) {
 
     private val wpsURL = wpsConfig.wpsURL
     private val wpsProcessIdentifier = wpsConfig.process
