@@ -133,6 +133,15 @@ export class PlaceOrderComponent implements OnInit {
           },
         },
 
+        'eq-modelprop': {
+          literal_inputs: {
+            'schema': ['SARA_v1.0'],
+            'assetcategory': ['buildings'],
+            'losscategory': ['structural'],
+            'taxonomies': ['none'],
+          }
+        },
+
         quakeledger: {
           literal_inputs: {
             mmin: ['6.6'],
@@ -206,6 +215,12 @@ export class PlaceOrderComponent implements OnInit {
             }]
           }
         },
+
+        'eq-deus': {
+          literal_inputs: {
+            schema: ['SARA_v1.0']
+          }
+        }
 
       }
     }).subscribe(success => console.log(`order transmitted with ${success ? 'success' : 'failure'}`));
