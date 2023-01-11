@@ -18,6 +18,7 @@ services:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'deus-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusWrapper'
@@ -29,14 +30,14 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'deus-success'
       pulsar.failureTopic: 'deus-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
       filestorage.endpoint: http://filestorage:9000
       filestorage.user: admin
       filestorage.password: secretpassword
       filestorage.bucketName: riesgosfiles
-      filestorage.access: http://localhost/api/v1/files/
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   assetmaster_wrapper:
     image: spring-boot-image
@@ -51,6 +52,7 @@ services:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'assetmaster-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper'
@@ -62,14 +64,14 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'assetmaster-success'
       pulsar.failureTopic: 'assetmaster-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess'
       filestorage.endpoint: http://filestorage:9000
       filestorage.user: admin
       filestorage.password: secretpassword
       filestorage.bucketName: riesgosfiles
-      filestorage.access: http://localhost/api/v1/files/
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   modelprop_wrapper:
     image: spring-boot-image
@@ -84,6 +86,7 @@ services:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'modelprop-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper'
@@ -95,14 +98,14 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'modelprop-success'
       pulsar.failureTopic: 'modelprop-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
       filestorage.endpoint: http://filestorage:9000
       filestorage.user: admin
       filestorage.password: secretpassword
       filestorage.bucketName: riesgosfiles
-      filestorage.access: http://localhost/api/v1/files/
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   shakyground_wrapper:
     image: spring-boot-image
@@ -117,6 +120,7 @@ services:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'shakyground-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ShakygroundWrapper'
@@ -128,14 +132,14 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'shakyground-success'
       pulsar.failureTopic: 'shakyground-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
       filestorage.endpoint: http://filestorage:9000
       filestorage.user: admin
       filestorage.password: secretpassword
       filestorage.bucketName: riesgosfiles
-      filestorage.access: http://localhost/api/v1/files/
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   quakeledger_wrapper:
     image: spring-boot-image
@@ -150,6 +154,7 @@ services:
       - db
       - queue
       - filestorage
+      - wps
     environment:
       appID: 'quakeledger-asyncwrapper'
       wrapperclass: 'org.n.riesgos.asyncwrapper.dummy.QuakeledgerWrapper'
@@ -161,14 +166,14 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'quakeledger-success'
       pulsar.failureTopic: 'quakeledger-failure'
-      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess'
       filestorage.endpoint: http://filestorage:9000
       filestorage.user: admin
       filestorage.password: secretpassword
       filestorage.bucketName: riesgosfiles
-      filestorage.access: http://localhost/api/v1/files/
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   backend:
     image: async-backend
@@ -266,9 +271,82 @@ services:
     networks:
       - filestorage
       # - web
+      - wps
     volumes:
       - ./reverse_proxy/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./reverse_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  riesgos-wps:
+    image: gfzriesgos/riesgos-wps:20220908
+    restart: always
+    ports:
+      - "8082:8080"
+    environment:
+      - CATALINA_OPTS=-Xmx4g -Xms4g
+      - RIESGOS_MAX_CACHE_SIZE_MB=1024
+      - RIESGOS_GEOSERVER_ACCESS_BASE_URL=http://localhost:8082/geoserver
+      - RIESGOS_GEOSERVER_SEND_BASE_URL=http://riesgos-wps:8080/geoserver
+      - RIESGOS_GEOSERVER_USERNAME=admin
+      - RIESGOS_GEOSERVER_PASSWORD=geoserver
+    volumes:
+      # We need to pass the docker.sock as the WPS itself needs to run
+      # docker commands
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      # We also want a volume for the riesgos-json-config files.
+      # As it is where the processes are defined.
+      - "riesgos-wps-json-config:/usr/share/riesgos/json-configurations"
+      # We need the hsqldb in order to handle the internal configuration
+      # of the WPS server settings.
+      - "riesgos-wps-hsqldb-dev:/usr/local/tomcat/webapps/wps/WEB-INF/classes/db/data"
+      # And we need to store the server.xml, as we want to overwrite the
+      # timeout settings.
+      - "riesgos-wps-server-config:/usr/local/tomcat/conf"
+    networks:
+      - wps
+      - filestorage
+
+  shakyground:
+    image: gfzriesgos/shakyground:2.0.0
+    volumes:
+      - "shakyground-metadata:/usr/share/git/shakyground/metadata"
+
+  quakeledger:
+    image: gfzriesgos/quakeledger:1.0.1
+    volumes:
+      - "quakeledger-metadata:/usr/share/git/quakeledger/metadata"
+  assetmaster:
+    image: gfzriesgos/assetmaster:2.1.0
+    volumes:
+      - "assetmaster-metadata:/usr/share/git/assetmaster/metadata"
+
+  modelprop:
+    image: gfzriesgos/modelprop:1.1.1
+    volumes:
+      - "modelprop-metadata:/usr/share/git/modelprop/metadata"
+
+  deus:
+    image: gfzriesgos/deus:2.1.1
+    volumes:
+      - "deus-metadata:/usr/share/git/deus/metadata"
+
+  wps-init:
+    image: python:3.10.5-alpine3.15
+    entrypoint: "/entrypoint.sh"
+    environment:
+      WPS_HOSTPORT: '8080'
+      WPS_HOSTNAME: 'riesgos-wps'
+    volumes:
+      - "./wps/init/entrypoint.sh:/entrypoint.sh"
+      - "./wps/init/init_wps.py:/init_wps.py"
+      - "riesgos-wps-json-config:/wps/json-configurations"
+      - "shakyground-metadata:/wps/processes/shakyground"
+      - "quakeledger-metadata:/wps/processes/quakeledger"
+      - "assetmaster-metadata:/wps/processes/assetmaster"
+      - "modelprop-metadata:/wps/processes/modelprop"
+      - "deus-metadata:/wps/processes/deus"
+      - "riesgos-wps-server-config:/wps/server-config"
+    networks:
+      - wps
 
 
 volumes:
@@ -276,9 +354,18 @@ volumes:
   pulsardata:
   pulsarconf:
   filestoragedata:
+  riesgos-wps-hsqldb-dev:
+  riesgos-wps-json-config:
+  riesgos-wps-server-config:
+  shakyground-metadata:
+  quakeledger-metadata:
+  assetmaster-metadata:
+  modelprop-metadata:
+  deus-metadata:
 
 networks:
   db:
   queue:
   filestorage:
   # web:
+  wps:
