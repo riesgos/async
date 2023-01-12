@@ -22,6 +22,7 @@ import java.security.MessageDigest
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
+import java.util.stream.Collectors
 
 /**
  * This is an abstract wrapper. We are going to overwrite some of the abstract
@@ -489,6 +490,12 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         }
 
         return JobConstraints(literalConstraints, complexConstraints, bboxConstraints)
+    }
+
+    protected fun toComplexInputConstraints (outputs: List<ComplexOutput>): MutableList<ComplexInputConstraint> {
+        return outputs.stream()
+            .map { x -> ComplexInputConstraint(x.link, null, x.mimeType, x.xmlschema, x.encoding) }
+            .collect(Collectors.toList())
     }
 }
 
