@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { catchError, forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
+import { catchError, defaultIfEmpty, forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
 import { Job, Order, Process, Product, ProductType, UserSelfInformation } from "src/app/backend_api/models";
 import { ApiService } from "src/app/backend_api/services";
 import { UserOrder } from "../pulsar/pulsar.service";
@@ -55,7 +55,7 @@ import { UserOrder } from "../pulsar/pulsar.service";
                   tasks$.push(details$);
                 }
                 
-                return forkJoin(tasks$);
+                return forkJoin(tasks$).pipe(defaultIfEmpty([]));
             })
         );
     }
@@ -75,7 +75,7 @@ import { UserOrder } from "../pulsar/pulsar.service";
                     tasks$.push(task$);
                 }
 
-                return forkJoin(tasks$);
+                return forkJoin(tasks$).pipe(defaultIfEmpty([]));
             })
         );
     }
@@ -89,7 +89,7 @@ import { UserOrder } from "../pulsar/pulsar.service";
                     tasks$.push(details$);
                 }
 
-                return forkJoin(tasks$);
+                return forkJoin(tasks$).pipe(defaultIfEmpty([]));
             })
         );
     }
@@ -105,7 +105,7 @@ import { UserOrder } from "../pulsar/pulsar.service";
                     tasks$.push(details$);
                 }
                 
-                return forkJoin(tasks$);
+                return forkJoin(tasks$).pipe(defaultIfEmpty([]));
             })
         );
     }
@@ -119,7 +119,7 @@ import { UserOrder } from "../pulsar/pulsar.service";
                 tasks$.push(details$);
             }
 
-            return forkJoin(tasks$);
+            return forkJoin(tasks$).pipe(defaultIfEmpty([]));
         })
       );
     }

@@ -9,12 +9,14 @@ import { ApiModule } from './backend_api/api.module';
 import { ApiService } from './backend_api/services';
 import { CurrentStateComponent } from './views/current-state/current-state.component';
 import { PlaceOrderComponent } from './views/place-order/place-order.component';
+import { LogvizComponent } from './views/logviz/logviz.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CurrentStateComponent,
     PlaceOrderComponent,
+    LogvizComponent,
   ],
   imports: [
     BrowserModule,

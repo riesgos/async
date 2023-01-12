@@ -5,7 +5,7 @@ export class Consumer {
 
     private ws: WebSocket;
 
-    constructor(url: string) {
+    constructor(readonly url: string) {
         this.ws = new WebSocket(url);
     }
 
