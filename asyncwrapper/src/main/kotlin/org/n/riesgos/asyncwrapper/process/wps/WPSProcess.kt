@@ -22,6 +22,7 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
 
         // take a look at the process description
         val processDescription = wpsClient.getProcessDescription(url, processID, wpsVersion)
+        LOGGER.info("Got process description from ${url}/${processID}/${wpsVersion}: \n ${processDescription}")
 
         // create the request, add literal input
         val executeBuilder = ExecuteRequestBuilder(processDescription)
@@ -80,6 +81,7 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
             val requestText = WPS20ExecuteEncoder.encode(executeRequest)
             LOGGER.info(requestText)
 
+            // @TODO: if falure due to network-problems, repeat n times before giving up.
             val output = wpsClient.execute(url, executeRequest, wpsVersion)
 
             var result: org.n52.geoprocessing.wps.client.model.Result =

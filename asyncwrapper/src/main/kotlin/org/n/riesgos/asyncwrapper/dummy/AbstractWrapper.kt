@@ -333,7 +333,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         try {
             val wpsClientService = WPSClientService(wpsConfiguration)
             val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs())
-            LOGGER.info("Start calling the wps itself")
+            LOGGER.info("Start calling the wps itself under ${getWpsUrl()}/${getWpsIdentifier()}")
             val wpsOutputs = wpsProcess.runProcess(wpsInputs)
             LOGGER.info("Finished calling the wps itself")
             val wpsOutputMapper = OutputMapper(jobId, wpsOutputs)
@@ -364,6 +364,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
             sendSuccess(orderId)
         } catch (e: Exception) {
             LOGGER.info("WPS call failed")
+            LOGGER.info("WPS call failed because of: ${e.message}")
             e.printStackTrace()
             datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_FAILED)
             // => without the re-raise we would be able to run the loop & don't

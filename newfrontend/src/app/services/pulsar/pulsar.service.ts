@@ -15,18 +15,18 @@ export class PulsarService {
   // ws://broker-service-url:8080/ws/v2/consumer/persistent/:tenant/:namespace/:topic/:subscription
   private orders = new Producer('ws://localhost:8080/ws/v2/producer/persistent/public/default/new-order');
 
-  private quakeledgerErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/quakeledger-failure/shared');
-  private assetmasterErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/assetmaster-failure/shared');
-  private modelpropErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/modelprop-failure/shared');
-  private shakygroundErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/shakyground-failure/shared');
-  private deusErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/deus-failure/shared');
+  // private quakeledgerErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/quakeledger-failure/shared');
+  // private assetmasterErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/assetmaster-failure/shared');
+  // private modelpropErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/modelprop-failure/shared');
+  // private shakygroundErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/shakyground-failure/shared');
+  // private deusErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/deus-failure/shared');
 
   constructor(private db: DbService) {
-    this.quakeledgerErrors.readMessages().subscribe(data => console.log(`quakeledger-Errors: `, data));
-    this.assetmasterErrors.readMessages().subscribe(data => console.log(`assetmaster-Errors: `, data));
-    this.modelpropErrors.readMessages().subscribe(data => console.log(`modelprop-Errors: `, data));
-    this.shakygroundErrors.readMessages().subscribe(data => console.log(`Shakyground-Errors: `, data));
-    this.deusErrors.readMessages().subscribe(data => console.log(`Deus-Errors: `, data));
+    // this.quakeledgerErrors.readMessages().subscribe(data => console.log(`quakeledger-Errors: `, data));
+    // this.assetmasterErrors.readMessages().subscribe(data => console.log(`assetmaster-Errors: `, data));
+    // this.modelpropErrors.readMessages().subscribe(data => console.log(`modelprop-Errors: `, data));
+    // this.shakygroundErrors.readMessages().subscribe(data => console.log(`Shakyground-Errors: `, data));
+    // this.deusErrors.readMessages().subscribe(data => console.log(`Deus-Errors: `, data));
   }
 
 

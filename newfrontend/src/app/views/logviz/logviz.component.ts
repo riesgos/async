@@ -39,7 +39,7 @@ export class LogvizComponent implements OnInit, OnDestroy {
     const bufferSize = 2;
     const startBufferEvery = 1;
 
-    const queues = [this.orders, ... this.logs, ... this.errors];
+    const queues = [... this.logs, ... this.errors]; //[this.orders, ... this.logs, ... this.errors];
     const queues$ = queues.map(q => q.readMessages());
     this.all$ = merge(...queues$).pipe(
       tap(v => console.log('new line arrived:', v)),

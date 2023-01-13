@@ -46,5 +46,8 @@ export class CurrentStateComponent implements OnInit {
     });
   }
 
+  public getProcessById(id: number) {
+    return this.processes$.value.find(v => v.id === id);
+  }
 
 }

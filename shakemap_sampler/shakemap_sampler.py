@@ -56,11 +56,10 @@ def main():
 
     args = argparser.parse_args()
 
-
-    file_name=args.intensity_file
-    shakemap_outfile=args.intensity_output_file
-    random_seed=int(args.random_seed)
-    correlated=True
+    file_name = os.path.join(current_dir, args.intensity_file)
+    shakemap_outfile = os.path.join(current_dir, args.intensity_output_file)
+    random_seed = int(args.random_seed)
+    correlated = True
     event,columns,units,grid_data, event_specific_uncertainties, regular_grid = sampler.extract_shakemap_data(file_name)
     if correlated:
         grid_data,columns,units = sampler.create_correlated_residuals(grid_data,columns,units,random_seed)
