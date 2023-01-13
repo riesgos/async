@@ -165,9 +165,14 @@ services:
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'shakemap-resampler-success'
       pulsar.failureTopic: 'shakemap-resampler-failure'
-      wps.wpsUrl: 'https://riesgos.52north.org/javaps/service'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler'
+      filestorage.endpoint: http://filestorage:9000
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://filestorage:9000/riesgosfiles/
 
   quakeledger_wrapper:
     image: spring-boot-image
@@ -357,6 +362,13 @@ services:
     volumes:
       - "deus-metadata:/usr/share/git/deus/metadata"
 
+  shakemap_sampler:
+    build: 
+      context: ./shakemap_sampler
+      dockerfile: metadata/Dockerfile
+    volumes:
+      - "shakemap_sampler-metadata:/usr/share/git/shakemap_sampler/metadata"
+
   wps-init:
     image: python:3.10.5-alpine3.15
     entrypoint: "/entrypoint.sh"
@@ -371,7 +383,8 @@ services:
       - "quakeledger-metadata:/wps/processes/quakeledger"
       - "assetmaster-metadata:/wps/processes/assetmaster"
       - "modelprop-metadata:/wps/processes/modelprop"
-      - "deus-metadata:/wps/processes/deus"
+      - "deus-metadata:/wps/processes/deus"    
+      - "shakemap_sampler-metadata:/wps/processes/shakemap_sampler"
       - "riesgos-wps-server-config:/wps/server-config"
     networks:
       - wps
@@ -390,6 +403,7 @@ volumes:
   assetmaster-metadata:
   modelprop-metadata:
   deus-metadata:
+  shakemap_sampler-metadata:
 
 networks:
   db:

@@ -1,5 +1,6 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.FilestorageConfig
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
@@ -9,7 +10,9 @@ import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import java.util.logging.Logger
 
-class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, publisher: PulsarPublisher) : AbstractWrapper(publisher, wpsConfig) {
+class ShakemapResamplerWrapper(private val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, 
+                                publisher: PulsarPublisher, filestorageConfig: FilestorageConfig
+) : AbstractWrapper(publisher, wpsConfig, filestorageConfig) {
 
     private val wpsURL = wpsConfig.wpsURL
     private val wpsShakemapResamplerProcessIdentifier = wpsConfig.process

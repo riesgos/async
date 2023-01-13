@@ -101,6 +101,11 @@ export class PlaceOrderComponent implements OnInit {
       taxonomies: 'none'
     },
 
+    shakemapresampler: {
+      // 'intensity_file': 
+      'random_seed': ['1']
+    },
+
     'eq-deus': {
       // schema: any
       // intensity: any
@@ -213,6 +218,12 @@ export class PlaceOrderComponent implements OnInit {
                 xmlschema: "",
                 encoding: "UTF-8"
             }]
+          }
+        },
+
+        shakemapresampler: {
+          literal_inputs: {
+            'random_seed': ['1']
           }
         },
 
