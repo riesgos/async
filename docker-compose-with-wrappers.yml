@@ -324,7 +324,7 @@ services:
       - deus
       - shakemap_sampler
     environment:
-      - CATALINA_OPTS=-Xmx4g -Xms4g
+      - CATALINA_OPTS=-Xmx4g -Xms4g 
       - RIESGOS_MAX_CACHE_SIZE_MB=1024
       - RIESGOS_GEOSERVER_ACCESS_BASE_URL=http://riesgos-wps:8082/geoserver
       - RIESGOS_GEOSERVER_SEND_BASE_URL=http://riesgos-wps:8080/geoserver

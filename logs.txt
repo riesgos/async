@@ -337,7 +337,9 @@ Caused by: org.xml.sax.SAXParseException: Unexpected element: CDATA
 	... 16 common frames omitted
 2023-01-14 13:28:14,809 [pool-7-thread-2] INFO  org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler: Cache-Hash: 96a2eab17a13943462efbe7555662a29
 2023-01-14 13:28:14,810 [pool-7-thread-2] INFO  org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler: There is no result in the cache
-2023-01-14 13:28:16,035 [pool-7-thread-2] ERROR org.n52.wps.server.request.ExecuteRequestV200: Exception/Error while executing ExecuteRequest for org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler: org.n52.wps.server.ExceptionReport: Can't read from stdout
+2023-01-14 13:28:16,035 [pool-7-thread-2] ERROR org.n52.wps.server.request.ExecuteRequestV200: 
+	Exception/Error while executing ExecuteRequest for org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler: 
+	org.n52.wps.server.ExceptionReport: Can't read from stdout
 2023-01-14 13:28:16,040 [pool-7-thread-2] INFO  org.n52.wps.commons.context.ExecutionContextFactory: Context unregistered
 2023-01-14 13:28:16,041 [http-nio-8080-exec-5] WARN  org.n52.wps.server.handler.RequestHandler: exception while handling ExecuteRequest.
 2023-01-14 13:28:16,041 [http-nio-8080-exec-5] ERROR org.n52.wps.server.handler.RequestHandler: exception handling ExecuteRequest.

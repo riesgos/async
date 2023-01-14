@@ -62,7 +62,7 @@ def main():
         grid_data,columns,units = sampler.create_uncorrelated_residuals(grid_data,columns,units,random_seed)
   
     result = sampler.build_random_shakemap(event,columns,units,grid_data, event_specific_uncertainties,regular_grid,random_seed)
-    print(result)
+    print("<?xml version='1.0' encoding='UTF-8'?>" + result.strip())
 
 
 
