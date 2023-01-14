@@ -245,7 +245,7 @@ def jbcorrelation_length( imt, vs30_clustering=False):
         return b
 
 
-def save_random_shakemap(shakemap_outfile,event,columns,units,grid_data, event_specific_uncertainties,regular_grid,random_seed):
+def build_random_shakemap(event,columns,units,grid_data, event_specific_uncertainties,regular_grid,random_seed):
     nsmap = {
         "xsi": "http://www.w3.org/2001/XMLSchema-instance",
         None: "http://earthquake.usgs.gov/eqcenter/shakemap",
@@ -435,8 +435,9 @@ def save_random_shakemap(shakemap_outfile,event,columns,units,grid_data, event_s
     grid_data_out.text = "\n" + grid_data.to_csv(sep=" ", header=False, index=False)
     # grid_data.text = '\n'+grid_data.to_string(header=False,index=False,justify='left')
     
-    with open(shakemap_outfile, 'w') as f:
-        f.write(le.tostring(shakeml, pretty_print=True, encoding="unicode"))
+    # with open(shakemap_outfile, 'w') as f:
+    #     f.write(le.tostring(shakeml, pretty_print=True, encoding="unicode"))
+    return le.tostring(shakeml, pretty_print=True, encoding="unicode")
 
     
 

@@ -43,10 +43,6 @@ def main():
         help="File with hazard intensities, for example a shakemap",
     )
     argparser.add_argument(
-        "--intensity_output_file", 
-        help="Output file with the randomly sampled ground motion"
-    )
-    argparser.add_argument(
         "--random_seed",
         help="The random seed, for reproducibility",
     )
@@ -57,7 +53,6 @@ def main():
     args = argparser.parse_args()
 
     file_name = os.path.join(current_dir, args.intensity_file)
-    shakemap_outfile = os.path.join(current_dir, args.intensity_output_file)
     random_seed = int(args.random_seed)
     correlated = True
     event,columns,units,grid_data, event_specific_uncertainties, regular_grid = sampler.extract_shakemap_data(file_name)
@@ -66,7 +61,8 @@ def main():
     else:
         grid_data,columns,units = sampler.create_uncorrelated_residuals(grid_data,columns,units,random_seed)
   
-    sampler.save_random_shakemap(shakemap_outfile,event,columns,units,grid_data, event_specific_uncertainties,regular_grid,random_seed)
+    result = sampler.build_random_shakemap(event,columns,units,grid_data, event_specific_uncertainties,regular_grid,random_seed)
+    print(result)
 
 
 
