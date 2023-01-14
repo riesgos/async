@@ -1,394 +1,455 @@
-ClassLoaderLeakPreventorListener: Settings for se.jiderhamn.classloader.leak.prevention.ClassLoaderLeakPreventorListener (CL: 0x4373f66f):
-ClassLoaderLeakPreventorListener:   stopThreads = true
-ClassLoaderLeakPreventorListener:   stopTimerThreads = true
-ClassLoaderLeakPreventorListener:   executeShutdownHooks = true
-ClassLoaderLeakPreventorListener:   threadWaitMs = 5000 ms
-ClassLoaderLeakPreventorListener:   shutdownHookWaitMs = 10000 ms
-2023-01-13 17:00:57,074 [main] INFO  hsqldb.db.HSQLDB85AC13CD41.ENGINE: Checkpoint start
-2023-01-13 17:00:57,078 [main] INFO  hsqldb.db.HSQLDB85AC13CD41.ENGINE: checkpointClose start
-2023-01-13 17:00:57,086 [main] INFO  hsqldb.db.HSQLDB85AC13CD41.ENGINE: checkpointClose end
-2023-01-13 17:00:57,089 [main] INFO  hsqldb.db.HSQLDB85AC13CD41.ENGINE: Checkpoint end
-2023-01-13 17:00:57,261 [main] INFO  hsqldb.db.HSQLDB85AC13CD41.ENGINE: Database closed
-ClassLoaderLeakPreventorListener: Settings for se.jiderhamn.classloader.leak.prevention.ClassLoaderLeakPreventorListener (CL: 0x4373f66f):
-ClassLoaderLeakPreventorListener:   stopThreads = true
-ClassLoaderLeakPreventorListener:   stopTimerThreads = true
-ClassLoaderLeakPreventorListener:   executeShutdownHooks = true
-ClassLoaderLeakPreventorListener:   threadWaitMs = 5000 ms
-ClassLoaderLeakPreventorListener:   shutdownHookWaitMs = 10000 ms
-2023-01-13 17:01:00,432 [main] INFO  org.hibernate.validator.internal.util.Version: HV000001: Hibernate Validator 5.0.1.Final
-2023-01-13 17:01:01,130 [main] INFO  org.n52.wps.server.WebProcessingService: NEW org.n52.wps.server.WebProcessingService@1eb7ca95
-2023-01-13 17:01:03,340 [main] INFO  org.n52.wps.commons.SpringIntegrationHelper: Init class org.n52.wps.commons.SpringIntegrationHelper with org.springframework.beans.factory.support.DefaultListableBeanFactory@326f32d6: defining beans [mvcContentNegotiationManager,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0,org.springframework.format.support.FormattingConversionServiceFactoryBean#0,org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean#0,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0,mvcUriComponentsContributor,org.springframework.web.servlet.handler.MappedInterceptor#0,org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0,org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0,org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0,org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,org.springframework.web.servlet.config.viewControllerHandlerMapping,mvcPathMatcher,mvcUrlPathHelper,mvcResourceUrlProvider,org.springframework.web.servlet.handler.MappedInterceptor#1,org.springframework.web.servlet.resource.ResourceHttpRequestHandler#0,org.springframework.web.servlet.handler.SimpleUrlHandlerMapping#0,webProcessingService,springIntegrationHelper,repositoryManager,org.springframework.web.servlet.view.UrlBasedViewResolver#0,tilesConfigurer,multipartResolver,backupController,databasesController,errorController,generatorsController,logConfigurationsController,mainController,parsersController,repositoriesController,serverController,serviceIdentificationController,serviceProviderController,testClientController,uploadController,usersController,serviceLoaderAlgorithmRepositoryCM,localAlgorithmRepositoryCM,uploadedAlgorithmRepositoryCM,valueParser,configurationManager,JDomUtil,resourcePathUtil,capabilitiesDAO,configurationDAO,xmlLogConfigurationsDAO,userDAO,server,configurationService,capabilitiesService,userService,backupService,logConfigurationsService,postgresDatabaseConfigurationModule,flatFileDatabaseConfigurationModule,grassProcessRepositoryCM,GRASSXMLGeneratorCM,KMLGeneratorCM,geoserverWMSGeneratorCM,GML3BasicGeneratorCM,genericRasterFileGeneratorCM,geotiffGeneratorCM,geoserverWCSGeneratorCM,mapserverWMSGeneratorCM,GTBinZippedSHPGeneratorCM,proxyGMLGenerator4FilesCM,geoserverWFSGeneratorCM,JSONGeometryGeneratorCM,asciiGrassGeneratorCM,geoserverWXSGeneratorCM,GML2BasicGeneratorCM,simpleGMLGeneratorCM,genericFileDataWithGTGeneratorCM,geoJSONGeneratorCM,GML3BasicParserCM,asciiGrassParserCM,KMLParserCM,geoJSONParserCM,GRASSKMLParserCM,GML32BasicParserCM,GML2BasicParser4FilesCM,GML3BasicParser4FilesCM,GML2BasicParserCM,GTBinZippedSHPParserCM,genericFileDataWithGTParserCM,simpleGMLParserCM,geotiffZippedParserCM,geotiffParserCM,genericRasterFileParserCM,GTBinZippedWKT64ParserCM,genericXMLDataGeneratorCM,genericFileGeneratorCM,WCPSGeneratorCM,WKTGeneratorCM,WKTParserCM,genericFileParserCM,genericXMLDataParserCM,WCPSQueryParserCM,scriptFileRepository,org.n52.wps.server.r.RConfigurationModule,customDataTypeManager,RDataTypeRegistry,RAnnotationParser,resourceFileRepository,r_Config,RConfigurationModule,RResource,retrieveResultServlet,sextanteProcessRepositoryCM,gfzRiesgosRepositoryCM,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor,org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@201e7ba9
-2023-01-13 17:01:03,346 [main] INFO  org.n52.wps.server.WebProcessingService: *** WebProcessingService initializing... ***
-2023-01-13 17:01:03,348 [main] INFO  org.n52.wps.server.WebProcessingService: Setting max request size to 134217728 bytes.
-2023-01-13 17:01:03,349 [main] INFO  org.n52.wps.server.WebProcessingService: Initialization of wps properties successful! WPSConfig: org.n52.wps.commons.WPSConfig@50cf4438
-2023-01-13 17:01:03,355 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GeotiffZippedParser
-2023-01-13 17:01:03,358 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GRASSKMLParser
-2023-01-13 17:01:03,362 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.KMLParser
-2023-01-13 17:01:03,365 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.AsciiGrassParser
-2023-01-13 17:01:03,368 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.WCPSQueryParser
-2023-01-13 17:01:03,372 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GenericFileParser
-2023-01-13 17:01:03,375 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GTBinZippedSHPParser
-2023-01-13 17:01:03,379 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GTBinZippedWKT64Parser
-2023-01-13 17:01:03,380 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GenericXMLDataParser
-2023-01-13 17:01:03,383 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GeoJSONParser
-2023-01-13 17:01:03,385 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GeotiffParser
-2023-01-13 17:01:03,386 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GML2BasicParser4Files
-2023-01-13 17:01:03,393 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GML2BasicParser
-2023-01-13 17:01:03,394 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GML3BasicParser4Files
-2023-01-13 17:01:03,396 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GML32BasicParser
-2023-01-13 17:01:03,397 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.WKTParser
-2023-01-13 17:01:03,413 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.SimpleGMLParser
-2023-01-13 17:01:03,414 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GenericRasterFileParser
-2023-01-13 17:01:03,415 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GenericFileDataWithGTParser
-2023-01-13 17:01:03,416 [main] INFO  org.n52.wps.io.ParserFactory: Parser class registered: org.n52.wps.io.datahandler.parser.GML3BasicParser
-2023-01-13 17:01:03,417 [main] INFO  org.n52.wps.server.WebProcessingService: Initialized org.n52.wps.io.ParserFactory@54b7752b
-2023-01-13 17:01:03,418 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.WKTGenerator
-2023-01-13 17:01:03,419 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.GenericFileGenerator
-2023-01-13 17:01:03,420 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.GRASSXMLGenerator
-2023-01-13 17:01:03,420 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.KMLGenerator
-2023-01-13 17:01:03,421 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.GenericRasterFileGenerator
-2023-01-13 17:01:03,423 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.GeotiffGenerator
-2023-01-13 17:01:03,424 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.GTBinZippedSHPGenerator
-2023-01-13 17:01:03,430 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.GML2BasicGenerator
-2023-01-13 17:01:03,432 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.GML3BasicGenerator
-2023-01-13 17:01:03,433 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.ProxyGMLGenerator4Files
-2023-01-13 17:01:03,434 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.WCPSGenerator
-2023-01-13 17:01:03,436 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.JSONGeometryGenerator
-2023-01-13 17:01:03,437 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.AsciiGrassGenerator
-2023-01-13 17:01:03,438 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.GenericFileDataWithGTGenerator
-2023-01-13 17:01:03,439 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.SimpleGMLGenerator
-2023-01-13 17:01:03,440 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.AbstractGeoserverWXSGenerator
-2023-01-13 17:01:03,445 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.GeoJSONGenerator
-2023-01-13 17:01:03,446 [main] INFO  org.n52.wps.io.GeneratorFactory: Generator class registered: org.n52.wps.io.datahandler.generator.GenericXMLDataGenerator
-2023-01-13 17:01:03,447 [main] INFO  org.n52.wps.server.WebProcessingService: Initialized org.n52.wps.io.GeneratorFactory@92f66c2
-2023-01-13 17:01:03,809 [main] INFO  org.n52.wps.server.RepositoryManager: Hard wiring 'org.n52.wps.server.ServiceLoaderAlgorithmRepository' for module 'org.n52.wps.server.modules.ServiceLoaderAlgorithmRepositoryCM'.
-2023-01-13 17:01:03,842 [main] WARN  org.n52.wps.server.r.data.RDataTypeRegistry: Doubled definition of data type-key for notation: xs:string
-only the first definition will be used for this key.+(That might be the usual case if more than one annotation type key refer to one WPS-mimetype with different data handlers)
-2023-01-13 17:01:03,842 [main] WARN  org.n52.wps.server.r.data.RDataTypeRegistry: Doubled definition of data type-key for notation: image/jpeg
-only the first definition will be used for this key.+(That might be the usual case if more than one annotation type key refer to one WPS-mimetype with different data handlers)
-2023-01-13 17:01:03,947 [main] INFO  org.n52.wps.server.RepositoryManager: Algorithm Repository org.n52.wps.server.ServiceLoaderAlgorithmRepository registered
-2023-01-13 17:01:03,947 [main] WARN  org.n52.wps.server.RepositoryManager: Won't load inactive module 'org.n52.wps.server.r.RConfigurationModule'
-2023-01-13 17:01:03,948 [main] INFO  org.n52.wps.server.RepositoryManager: Hard wiring 'org.n52.gfz.riesgos.repository.GfzRiesgosRepository' for module 'org.n52.gfz.riesgos.repository.modules.GfzRiesgosRepositoryCM'.
-2023-01-13 17:01:03,989 [main] INFO  org.n52.wps.server.RepositoryManager: Algorithm Repository org.n52.gfz.riesgos.repository.GfzRiesgosRepository registered
-2023-01-13 17:01:03,990 [main] INFO  org.n52.wps.server.RepositoryManager: Hard wiring 'org.n52.wps.server.LocalAlgorithmRepository' for module 'org.n52.wps.server.modules.LocalAlgorithmRepositoryCM'.
-2023-01-13 17:01:04,430 [main] INFO  org.n52.wps.server.LocalAlgorithmRepository: Algorithm class registered: org.n52.wps.server.algorithm.JTSConvexHullAlgorithm
-2023-01-13 17:01:04,496 [main] INFO  org.n52.wps.server.LocalAlgorithmRepository: Algorithm class registered: org.n52.wps.server.algorithm.test.DummyTestClass
-2023-01-13 17:01:04,537 [main] INFO  org.n52.wps.server.LocalAlgorithmRepository: Algorithm class registered: org.n52.wps.server.algorithm.test.EchoProcess
-2023-01-13 17:01:04,541 [main] INFO  org.n52.wps.server.LocalAlgorithmRepository: Algorithm class registered: org.n52.wps.server.algorithm.test.LongRunningDummyTestClass
-2023-01-13 17:01:04,552 [main] INFO  org.n52.wps.server.LocalAlgorithmRepository: Algorithm class registered: org.n52.wps.server.algorithm.test.MultiReferenceBinaryInputAlgorithm
-2023-01-13 17:01:04,564 [main] INFO  org.n52.wps.server.LocalAlgorithmRepository: Algorithm class registered: org.n52.wps.server.algorithm.test.MultiReferenceInputAlgorithm
-2023-01-13 17:01:04,569 [main] INFO  org.n52.wps.server.LocalAlgorithmRepository: Algorithm class registered: org.n52.wps.server.algorithm.test.MultipleComplexInAndOutputsDummyTestClass
-2023-01-13 17:01:04,569 [main] INFO  org.n52.wps.server.RepositoryManager: Algorithm Repository org.n52.wps.server.LocalAlgorithmRepository registered
-2023-01-13 17:01:04,570 [main] INFO  org.n52.wps.server.RepositoryManager: Hard wiring 'org.n52.wps.server.UploadedAlgorithmRepository' for module 'org.n52.wps.server.modules.UploadedAlgorithmRepositoryCM'.
-2023-01-13 17:01:04,571 [main] INFO  org.n52.wps.server.RepositoryManager: Algorithm Repository org.n52.wps.server.UploadedAlgorithmRepository registered
-2023-01-13 17:01:04,571 [main] WARN  org.n52.wps.server.RepositoryManager: Won't load inactive module 'org.n52.wps.server.sextante.configurationmodule.SextanteProcessRepositoryCM'
-2023-01-13 17:01:04,571 [main] WARN  org.n52.wps.server.RepositoryManager: Won't load inactive module 'org.n52.wps.server.grass.configurationmodule.GrassProcessRepositoryCM'
-2023-01-13 17:01:04,572 [main] INFO  org.n52.wps.server.WebProcessingService: Initialized org.n52.wps.server.RepositoryManager@775d7f5d
-2023-01-13 17:01:04,576 [main] INFO  org.n52.wps.server.database.DatabaseFactory: Database class name was not found in properties. FlatFileDatabase will be used.
-2023-01-13 17:01:04,583 [main] INFO  org.n52.wps.server.database.FlatFileDatabase: Using "http://localhost:8080/wps/RetrieveResultServlet?id=" as base URL for results
-2023-01-13 17:01:04,584 [main] INFO  org.n52.wps.commons.PropertyUtil: Using default value for "path": /usr/local/tomcat/temp/Database/Results
-2023-01-13 17:01:04,584 [main] INFO  org.n52.wps.server.database.FlatFileDatabase: Using "/usr/local/tomcat/temp/Database/Results" as base directory for results database
-2023-01-13 17:01:04,584 [main] INFO  org.n52.wps.server.database.FlatFileDatabase: Results database does not exist, creating.
-2023-01-13 17:01:04,584 [main] INFO  org.n52.wps.commons.PropertyUtil: Config property "wipe.enabled" exists, using value of: true (true) 
-2023-01-13 17:01:04,713 [main] INFO  org.n52.wps.commons.PropertyUtil: Config property for "wipe.period" exists, using value of: PT1H (3600000ms) 
-2023-01-13 17:01:04,714 [main] INFO  org.n52.wps.commons.PropertyUtil: Config property for "wipe.threshold" exists, using value of: P7D (604800000ms) 
-2023-01-13 17:01:04,717 [main] INFO  org.n52.wps.server.database.FlatFileDatabase: Started FlatFileDatabase file wiper timer; period 3600000 ms, threshold 604800000 ms
-2023-01-13 17:01:04,718 [main] INFO  org.n52.wps.commons.PropertyUtil: Using default value for "complex.gzip" of true
-2023-01-13 17:01:04,718 [main] INFO  org.n52.wps.server.WebProcessingService: Initialized org.n52.wps.server.database.FlatFileDatabase@4da1706f
-2023-01-13 17:01:04,733 [FlatFileDatabase File Wiper] INFO  org.n52.wps.server.database.FlatFileDatabase: FlatFileDatabase file wiper, checking /usr/local/tomcat/temp/Database/Results for files older than 604800000 ms
-2023-01-13 17:01:05,021 [main] INFO  org.n52.wps.server.WebProcessingService: Service base url is http://localhost:8080/wps | Service endpoint is http://localhost:8080/wps/WebProcessingService
-2023-01-13 17:01:05,021 [main] INFO  org.n52.wps.server.WebProcessingService: *** WPS up and running! ***
-2023-01-13 17:01:05,175 [main] INFO  org.apache.tiles.access.TilesAccess: Publishing TilesContext for context: org.springframework.web.servlet.view.tiles3.SpringWildcardServletTilesApplicationContext
-13 Jan 17:01:08 DEBUG [geoserver.global] - Found Java environment variable GEOSERVER_DATA_DIR to be unset
-13 Jan 17:01:08 DEBUG [geoserver.global] - Found Servlet context parameter GEOSERVER_DATA_DIR to be unset
-13 Jan 17:01:08 DEBUG [geoserver.global] - Found System environment variable GEOSERVER_DATA_DIR to be unset
-13 Jan 17:01:08 DEBUG [geoserver.global] - Found Java environment variable GEOSERVER_DATA_ROOT to be unset
-13 Jan 17:01:08 DEBUG [geoserver.global] - Found Servlet context parameter GEOSERVER_DATA_ROOT to be unset
-13 Jan 17:01:08 DEBUG [geoserver.global] - Found System environment variable GEOSERVER_DATA_ROOT to be unset
-13 Jan 17:01:08 INFO [geoserver.global] - Falling back to embedded data directory: /usr/local/tomcat/webapps/geoserver/data
-13 Jan 17:01:08 WARN [geoserver.logging] - log4jConfigFile 'DEFAULT_LOGGING.properties' couldn't be found in the data dir, so GeoServer will install the various logging config file into the data dir, and then try to find it again.
-13 Jan 17:01:08 INFO [geoserver.global] - Falling back to embedded data directory: /usr/local/tomcat/webapps/geoserver/data
-13 Jan 17:01:09 INFO [geoserver.global] - Falling back to embedded data directory: /usr/local/tomcat/webapps/geoserver/data
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'burg'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'capitals'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'cite_lakes'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'dem'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'generic'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'giant_polygon'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'grass'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'green'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'line'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'poi'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'point'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'poly_landmarks'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'polygon'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'pophatch'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'population'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'rain'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'raster'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'restricted'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'simple_roads'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'simple_streams'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded style 'tiger_roads'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded default workspace cite
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded workspace 'cite'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded workspace 'it.geosolutions'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded workspace 'nurc'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded workspace 'sde'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded workspace 'sf'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded workspace 'tiger'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded workspace 'topp'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded store 'arcGridSample', enabled
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded coverage store 'arcGridSample'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded coverage 'Arc_Sample', enabled
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded coverage 'arcGridSample'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded layer 'Arc_Sample'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded store 'img_sample2', enabled
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded coverage store 'img_sample2'
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded coverage 'Pk50095', enabled
-13 Jan 17:01:09 INFO [org.geoserver] - Loaded coverage 'img_sample2'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'Pk50095'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded store 'mosaic', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded coverage store 'mosaic'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded coverage 'mosaic', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded coverage 'mosaic'
-13 Jan 17:01:10 WARN [imagemosaic.Utils] - Unable to find sample image for path /usr/local/tomcat/webapps/geoserver/data/coverages/mosaic_sample/sample_image
-13 Jan 17:01:10 WARN [gce.imagemosaic] - Unable to find sample image for path file:/usr/local/tomcat/webapps/geoserver/data/coverages/mosaic_sample/mosaic.shp
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'mosaic'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded store 'worldImageSample', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded coverage store 'worldImageSample'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded coverage 'Img_Sample', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded coverage 'worldImageSample'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'Img_Sample'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded store 'sf', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded data store 'sf'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'archsites', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'sf'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'archsites'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'bugsites', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'sf'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'bugsites'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'restricted', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'sf'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'restricted'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'roads', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'sf'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'roads'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'streams', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'sf'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'streams'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded store 'sfdem', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded coverage store 'sfdem'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded coverage 'sfdem', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded coverage 'sfdem'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'sfdem'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded store 'nyc', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded data store 'nyc'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'giant_polygon', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'nyc'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'giant_polygon'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'poi', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'nyc'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'poi'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'poly_landmarks', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'nyc'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'poly_landmarks'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'tiger_roads', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'nyc'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'tiger_roads'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded store 'states_shapefile', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded data store 'states_shapefile'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'states', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'states_shapefile'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'states'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded store 'taz_shapes', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded data store 'taz_shapes'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'tasmania_cities', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'taz_shapes'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'tasmania_cities'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'tasmania_roads', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'taz_shapes'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'tasmania_roads'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'tasmania_state_boundaries', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'taz_shapes'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'tasmania_state_boundaries'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'tasmania_water_bodies', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded feature type 'taz_shapes'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer 'tasmania_water_bodies'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer group 'spearfish'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer group 'tasmania'
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded layer group 'tiger-ny'
-13 Jan 17:01:10 INFO [config.GeoserverXMLResourceProvider] - Will look for 'geowebcache.xml' in directory '/usr/local/tomcat/webapps/geoserver/data/gwc'.
-13 Jan 17:01:10 WARN [config.GeoserverXMLResourceProvider] - Found no configuration file in config directory, will create one at 'gwc/geowebcache.xml' from template jar:file:/usr/local/tomcat/webapps/geoserver/WEB-INF/lib/gwc-core-1.10.3.jar!/geowebcache_empty.xml
-13 Jan 17:01:10 INFO [config.GeoserverXMLResourceProvider] - Found configuration file in gwc
-13 Jan 17:01:10 INFO [config.GeoserverXMLResourceProvider] - Found configuration file in gwc
-13 Jan 17:01:10 WARN [config.XMLConfiguration] - ********************************************************************************
-13 Jan 17:01:10 WARN [config.XMLConfiguration] - *** GWC configuration validation error: cvc-elt.1: Cannot find the declaration of element 'gwcConfiguration'.
-13 Jan 17:01:10 WARN [config.XMLConfiguration] - *** Will try to use configuration anyway. Please check the order of declared elements against the schema.
-13 Jan 17:01:10 WARN [config.XMLConfiguration] - ********************************************************************************
-13 Jan 17:01:10 INFO [gwc.layer] - Initializing GWC configuration based on GeoServer's Catalog
-13 Jan 17:01:10 INFO [gwc.layer] - GeoServer TileLayer store base directory is: gwc-layers
-13 Jan 17:01:10 INFO [gwc.layer] - Loading tile layers from gwc-layers
-13 Jan 17:01:10 INFO [gwc.layer] - GWC configuration based on GeoServer's Catalog loaded successfuly
-13 Jan 17:01:10 INFO [layer.TileLayerDispatcher] - Configuration GeoServer Catalog Configuration contained no layers.
-13 Jan 17:01:10 INFO [config.XMLConfiguration] - Initializing GridSets from gwc
-13 Jan 17:01:10 INFO [config.XMLConfiguration] - Initializing layers from gwc
-13 Jan 17:01:10 INFO [layer.TileLayerDispatcher] - Configuration gwc contained no layers.
-13 Jan 17:01:10 INFO [storage.DefaultStorageFinder] - ***************************************************************************************
-13 Jan 17:01:10 INFO [storage.DefaultStorageFinder] - *** Reverting to java.io.tmpdir null for storage. Please set GEOWEBCACHE_CACHE_DIR. ***
-13 Jan 17:01:10 INFO [storage.DefaultStorageFinder] - ***************************************************************************************
-13 Jan 17:01:10 INFO [config.GeoserverXMLResourceProvider] - Will look for 'geowebcache-diskquota.xml' in directory '/usr/local/tomcat/webapps/geoserver/data/gwc'.
-13 Jan 17:01:10 INFO [config.GeoserverXMLResourceProvider] - Will look for 'geowebcache-diskquota-jdbc.xml' in directory '/usr/local/tomcat/webapps/geoserver/data/gwc'.
-13 Jan 17:01:10 INFO [diskquota.ConfigLoader] - DiskQuota configuration is not readable: gwc/geowebcache-diskquota.xml
-13 Jan 17:01:10 INFO [diskquota.ConfigLoader] - DiskQuota configuration is not readable: gwc/geowebcache-diskquota.xml
-13 Jan 17:01:10 INFO [diskquota.DiskQuotaMonitor] - Setting up disk quota periodic enforcement task
-13 Jan 17:01:10 INFO [diskquota.DiskQuotaMonitor] - 0 layers configured with their own quotas. 
-13 Jan 17:01:10 INFO [diskquota.DiskQuotaMonitor] - 0 layers attached to global quota 500.0 MB
-13 Jan 17:01:10 INFO [diskquota.DiskQuotaMonitor] - Disk quota periodic enforcement task set up every 10 SECONDS
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded service 'WMTSInfoImpl--374bca93:185ac1402f4:-8000', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded service 'wcs', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded service 'wfs', enabled
-13 Jan 17:01:10 INFO [org.geoserver] - Loaded service 'wms', enabled
-13 Jan 17:01:10 INFO [gwc.config] - Initializing GeoServer specific GWC configuration from gwc-gs.xml
-13 Jan 17:01:10 INFO [ows.OWSHandlerMapping] - Mapped URL path [/gwc/service/**] onto handler 'dispatcher'
-13 Jan 17:01:10 INFO [geowebcache.GeoWebCacheDispatcher] - Invoked setServletPrefix(gwc)
-13 Jan 17:01:10 INFO [georss.GeoRSSPoller] - Initializing GeoRSS poller in a background job...
-13 Jan 17:01:10 INFO [georss.GeoRSSPoller] - No enabled GeoRSS feeds found, poller will not run.
-13 Jan 17:01:11 INFO [rest.RESTDispatcher] - Created RESTDispatcher with 15 paths
-13 Jan 17:01:11 INFO [wms.WMSService] - Will NOT recombine tiles for non-tiling clients.
-13 Jan 17:01:11 INFO [wms.WMSService] - Will proxy requests to backend that are not getmap or getcapabilities.
-13 Jan 17:01:11 INFO [ows.OWSHandlerMapping] - Mapped URL path [/kml] onto handler 'dispatcher'
-13 Jan 17:01:11 INFO [ows.OWSHandlerMapping] - Mapped URL path [/kml/*] onto handler 'dispatcher'
-13 Jan 17:01:11 INFO [ows.OWSHandlerMapping] - Mapped URL path [/kml/icon/**/*] onto handler 'kmlIconService'
-13 Jan 17:01:11 INFO [geoserver.global] - Falling back to embedded data directory: /usr/local/tomcat/webapps/geoserver/data
-13 Jan 17:01:11 INFO [ows.OWSHandlerMapping] - Mapped URL path [/ows/**] onto handler 'dispatcher'
-13 Jan 17:01:11 INFO [ows.OWSHandlerMapping] - Mapped URL path [/ows] onto handler 'dispatcher'
-13 Jan 17:01:11 INFO [org.geoserver] - GeoServer configuration lock is enabled
-13 Jan 17:01:11 INFO [ows.OWSHandlerMapping] - Mapped URL path [/wcs] onto handler 'dispatcher'
-13 Jan 17:01:11 INFO [ows.OWSHandlerMapping] - Mapped URL path [/wcs/*] onto handler 'dispatcher'
-13 Jan 17:01:11 INFO [ows.OWSHandlerMapping] - Mapped URL path [/TestWfsPost] onto handler 'wfsTestServlet'
-13 Jan 17:01:11 INFO [ows.OWSHandlerMapping] - Mapped URL path [/wfs/*] onto handler 'dispatcher'
-13 Jan 17:01:11 INFO [ows.OWSHandlerMapping] - Mapped URL path [/wfs] onto handler 'dispatcher'
-13 Jan 17:01:13 INFO [ows.OWSHandlerMapping] - Mapped URL path [/wms] onto handler 'dispatcher'
-13 Jan 17:01:13 INFO [ows.OWSHandlerMapping] - Mapped URL path [/wms/*] onto handler 'dispatcher'
-13 Jan 17:01:13 INFO [ows.OWSHandlerMapping] - Mapped URL path [/animate/*] onto handler 'dispatcher'
-13 Jan 17:01:13 INFO [ows.OWSHandlerMapping] - Mapped URL path [/animate] onto handler 'dispatcher'
-13 Jan 17:01:13 INFO [geoserver.security] - AuthenticationCache Initialized with 1000 Max Entries, 300 seconds idle time, 600 seconds time to live and 3 concurrency level
-13 Jan 17:01:13 INFO [geoserver.security] - AuthenticationCache Eviction Task created to run every 600 seconds
-13 Jan 17:01:13 INFO [geoserver.security] - Start reloading user/groups for service named default
-13 Jan 17:01:13 INFO [geoserver.security] - Reloading user/groups successful for service named default
-2023-01-13 17:01:15,016 [http-nio-8080-exec-6] INFO  org.n52.wps.webapp.web.ServerController: Reterived 'org.n52.wps.webapp.entities.Server' configuration module.
-2023-01-13 17:01:15,158 [http-nio-8080-exec-7] INFO  org.n52.wps.webapp.web.ServerController: Configuration module 'org.n52.wps.webapp.entities.Server' values has been saved.
-2023-01-13 17:01:56,390 [http-nio-8080-exec-10] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:01:56,390 [http-nio-8080-exec-10] INFO  org.n52.wps.server.request.Request: Handled GetCapabilitiesRequest successfully!
-2023-01-13 17:01:56,394 [http-nio-8080-exec-10] INFO  org.n52.wps.webapp.util.ResourcePathUtil: Resolved webapp resource'config/wpsCapabilitiesSkeleton.xml' to '/usr/local/tomcat/webapps/wps/config/wpsCapabilitiesSkeleton.xml'
-2023-01-13 17:01:56,402 [http-nio-8080-exec-9] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:01:56,402 [http-nio-8080-exec-9] INFO  org.n52.wps.server.request.Request: Handled GetCapabilitiesRequest successfully!
-2023-01-13 17:01:56,405 [http-nio-8080-exec-1] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:01:56,405 [http-nio-8080-exec-1] INFO  org.n52.wps.server.request.Request: Handled GetCapabilitiesRequest successfully!
-2023-01-13 17:01:56,415 [http-nio-8080-exec-2] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:01:56,415 [http-nio-8080-exec-2] INFO  org.n52.wps.server.request.Request: Handled GetCapabilitiesRequest successfully!
-2023-01-13 17:01:56,420 [http-nio-8080-exec-10] INFO  org.n52.wps.webapp.util.JDomUtil: /usr/local/tomcat/webapps/wps/config/wpsCapabilitiesSkeleton.xml is parsed and a Document is returned.
-2023-01-13 17:01:56,422 [http-nio-8080-exec-10] INFO  org.n52.wps.webapp.dao.XmlCapabilitiesDAO: '/usr/local/tomcat/webapps/wps/config/wpsCapabilitiesSkeleton.xml' is parsed and a ServiceIdentification object is returned
-2023-01-13 17:01:56,422 [http-nio-8080-exec-10] INFO  org.n52.wps.webapp.util.ResourcePathUtil: Resolved webapp resource'config/wpsCapabilitiesSkeleton.xml' to '/usr/local/tomcat/webapps/wps/config/wpsCapabilitiesSkeleton.xml'
-2023-01-13 17:01:56,424 [http-nio-8080-exec-10] INFO  org.n52.wps.webapp.util.JDomUtil: /usr/local/tomcat/webapps/wps/config/wpsCapabilitiesSkeleton.xml is parsed and a Document is returned.
-2023-01-13 17:01:56,424 [http-nio-8080-exec-10] INFO  org.n52.wps.webapp.dao.XmlCapabilitiesDAO: '/usr/local/tomcat/webapps/wps/config/wpsCapabilitiesSkeleton.xml' is parsed and a ServiceProvider object is returned
-2023-01-13 17:01:56,828 [http-nio-8080-exec-4] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:01:56,833 [http-nio-8080-exec-4] INFO  org.n52.wps.server.request.Request: Handled Request successfully for: org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess
-2023-01-13 17:01:56,921 [pool-7-thread-1] INFO  org.n52.wps.commons.context.ExecutionContextFactory: Context registered
-2023-01-13 17:01:56,930 [pool-7-thread-1] WARN  org.n52.wps.server.request.InputHandler: Could not find class org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess
-2023-01-13 17:01:56,998 [pool-7-thread-1] INFO  org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess: Cache-Hash: e1d830ca5967772c7ce03729448b5b88
-2023-01-13 17:01:56,999 [pool-7-thread-1] INFO  org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess: There is no result in the cache
-2023-01-13 17:01:58,619 [pool-7-thread-1] INFO  org.n52.wps.server.response.ResponseData: Using generator org.n52.gfz.riesgos.formats.jsonfile.generators.JsonFileGenerator for Schema: null
-2023-01-13 17:01:58,688 [pool-7-thread-1] INFO  org.n52.wps.commons.context.ExecutionContextFactory: Context unregistered
-2023-01-13 17:01:58,688 [http-nio-8080-exec-5] INFO  org.n52.wps.server.handler.RequestHandler: Served ExecuteRequest.
-2023-01-13 17:02:01,537 [http-nio-8080-exec-7] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:02:01,537 [http-nio-8080-exec-7] INFO  org.n52.wps.server.request.Request: Handled GetCapabilitiesRequest successfully!
-2023-01-13 17:02:01,538 [http-nio-8080-exec-8] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:02:01,539 [http-nio-8080-exec-8] INFO  org.n52.wps.server.request.Request: Handled GetCapabilitiesRequest successfully!
-2023-01-13 17:02:01,540 [http-nio-8080-exec-10] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:02:01,541 [http-nio-8080-exec-10] INFO  org.n52.wps.server.request.Request: Handled GetCapabilitiesRequest successfully!
-2023-01-13 17:02:01,709 [http-nio-8080-exec-1] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:02:01,712 [http-nio-8080-exec-1] INFO  org.n52.wps.server.request.Request: Handled Request successfully for: org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess
-2023-01-13 17:02:01,779 [pool-7-thread-2] INFO  org.n52.wps.commons.context.ExecutionContextFactory: Context registered
-2023-01-13 17:02:01,784 [pool-7-thread-2] WARN  org.n52.wps.server.request.InputHandler: Could not find class org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess
-2023-01-13 17:02:01,847 [pool-7-thread-2] INFO  org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess: Cache-Hash: a32746c8d6107d2763a12b2a3d7ae9cf
-2023-01-13 17:02:01,847 [pool-7-thread-2] INFO  org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess: There is no result in the cache
-2023-01-13 17:02:02,949 [pool-7-thread-2] INFO  org.n52.wps.server.response.ResponseData: Using generator org.n52.gfz.riesgos.formats.quakeml.generators.QuakeMLValidatedXmlGenerator for Schema: http://quakeml.org/xmlns/quakeml/1.2/QuakeML-1.2.xsd
-2023-01-13 17:02:02,951 [pool-7-thread-2] INFO  org.n52.wps.server.response.ResponseData: Using generator org.n52.gfz.riesgos.formats.quakeml.generators.QuakeMLGeoJsonGenerator for Schema: null
-2023-01-13 17:02:03,193 [pool-7-thread-2] INFO  org.n52.wps.commons.context.ExecutionContextFactory: Context unregistered
-2023-01-13 17:02:03,194 [http-nio-8080-exec-2] INFO  org.n52.wps.server.handler.RequestHandler: Served ExecuteRequest.
-2023-01-13 17:02:03,765 [http-nio-8080-exec-4] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:02:03,766 [http-nio-8080-exec-4] INFO  org.n52.wps.server.request.Request: Handled GetCapabilitiesRequest successfully!
-2023-01-13 17:02:03,813 [http-nio-8080-exec-6] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:02:03,816 [http-nio-8080-exec-6] INFO  org.n52.wps.server.request.Request: Handled Request successfully for: org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess
-2023-01-13 17:02:03,874 [pool-7-thread-3] INFO  org.n52.wps.commons.context.ExecutionContextFactory: Context registered
-2023-01-13 17:02:03,878 [pool-7-thread-3] WARN  org.n52.wps.server.request.InputHandler: Could not find class org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess
-2023-01-13 17:02:03,879 [pool-7-thread-3] INFO  org.n52.wps.io.ParserFactory: Matching parser found: org.n52.gfz.riesgos.formats.quakeml.parsers.QuakeMLGeoJsonParser@363b16d7
-2023-01-13 17:02:03,962 [pool-7-thread-3] INFO  org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess: Cache-Hash: 6ce1b22a7f4643e6d0b839ebc280c6f8
-2023-01-13 17:02:03,962 [pool-7-thread-3] INFO  org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess: There is no result in the cache
-2023-01-13 17:02:40,007 [pool-7-thread-3] INFO  org.n52.wps.server.response.ResponseData: Using generator org.n52.gfz.riesgos.formats.shakemap.generators.ShakemapXmlGenerator for Schema: http://earthquake.usgs.gov/eqcenter/shakemap
-2023-01-13 17:02:46,883 [pool-7-thread-3] INFO  org.n52.wps.server.response.ResponseData: Using generator org.n52.gfz.riesgos.formats.shakemap.generators.ShakemapWMSGenerator for Schema: null
-2023-01-13 17:02:52,677 [pool-7-thread-3] INFO  org.apache.commons.httpclient.auth.AuthChallengeProcessor: basic authentication scheme selected
-13 Jan 17:02:52 INFO [catalog.rest] - POST workspace riesgos
-2023-01-13 17:02:52,825 [pool-7-thread-3] INFO  org.apache.commons.httpclient.auth.AuthChallengeProcessor: basic authentication scheme selected
-13 Jan 17:02:52 INFO [catalog.rest] - PUT file, mimetype: text/plain
-13 Jan 17:02:52 INFO [catalog.rest] - Auto-configuring coverage store: primary1419552920392094395_ed1cc.tif
-2023-01-13 17:02:52,920 [pool-7-thread-3] INFO  org.n52.wps.commons.context.ExecutionContextFactory: Context unregistered
-2023-01-13 17:02:52,920 [http-nio-8080-exec-7] INFO  org.n52.wps.server.handler.RequestHandler: Served ExecuteRequest.
-2023-01-13 17:02:53,657 [http-nio-8080-exec-4] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:02:53,657 [http-nio-8080-exec-4] INFO  org.n52.wps.server.request.Request: Handled GetCapabilitiesRequest successfully!
-2023-01-13 17:02:53,729 [http-nio-8080-exec-6] WARN  org.n52.wps.server.request.Request: Parameter <language> not found.
-2023-01-13 17:02:53,732 [http-nio-8080-exec-6] INFO  org.n52.wps.server.request.Request: Handled Request successfully for: org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
-2023-01-13 17:02:53,776 [pool-7-thread-4] INFO  org.n52.wps.commons.context.ExecutionContextFactory: Context registered
-2023-01-13 17:02:53,779 [pool-7-thread-4] WARN  org.n52.wps.server.request.InputHandler: Could not find class org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
-2023-01-13 17:02:53,892 [pool-7-thread-4] INFO  org.n52.wps.server.request.InputHandler: Looking for matching Parser ... schema: "null", mimeType: "text/xml", encoding: "null"
-2023-01-13 17:02:53,892 [pool-7-thread-4] INFO  org.n52.wps.io.ParserFactory: Matching parser found: org.n52.wps.io.datahandler.parser.GenericXMLDataParser@191033c5
-2023-01-13 17:02:53,898 [pool-7-thread-4] ERROR org.n52.wps.io.datahandler.parser.GenericXMLDataParser: Could not parse inputstream as XMLObject.
-org.apache.xmlbeans.XmlException: error: Unexpected element: CDATA
-	at org.apache.xmlbeans.impl.store.Locale$SaxLoader.load(Locale.java:3511) ~[xmlbeans-2.6.0.jar:na]
-	at org.apache.xmlbeans.impl.store.Locale.parseToXmlObject(Locale.java:1277) ~[xmlbeans-2.6.0.jar:na]
-	at org.apache.xmlbeans.impl.store.Locale.parseToXmlObject(Locale.java:1264) ~[xmlbeans-2.6.0.jar:na]
-	at org.apache.xmlbeans.impl.schema.SchemaTypeLoaderBase.parse(SchemaTypeLoaderBase.java:345) ~[xmlbeans-2.6.0.jar:na]
-	at org.apache.xmlbeans.XmlObject$Factory.parse(XmlObject.java:688) ~[xmlbeans-2.6.0.jar:2.6.0-r1364789]
-	at org.n52.wps.io.datahandler.parser.GenericXMLDataParser.parse(GenericXMLDataParser.java:61) [52n-wps-io-impl-4.0.0-beta.10.jar:na]
-	at org.n52.wps.io.datahandler.parser.GenericXMLDataParser.parse(GenericXMLDataParser.java:40) [52n-wps-io-impl-4.0.0-beta.10.jar:na]
-	at org.n52.wps.server.request.InputHandler.handleComplexValueReference(InputHandler.java:1464) [52n-wps-server-4.0.0-beta.10.jar:na]
-	at org.n52.wps.server.request.InputHandler.<init>(InputHandler.java:228) [52n-wps-server-4.0.0-beta.10.jar:na]
-	at org.n52.wps.server.request.InputHandler.<init>(InputHandler.java:101) [52n-wps-server-4.0.0-beta.10.jar:na]
-	at org.n52.wps.server.request.InputHandler$Builder.build(InputHandler.java:134) [52n-wps-server-4.0.0-beta.10.jar:na]
-	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:200) [52n-wps-server-4.0.0-beta.10.jar:na]
-	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71) [52n-wps-server-4.0.0-beta.10.jar:na]
-	at java.util.concurrent.FutureTask.run(FutureTask.java:266) [na:1.8.0_342]
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [na:1.8.0_342]
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [na:1.8.0_342]
-	at java.lang.Thread.run(Thread.java:750) [na:1.8.0_342]
-Caused by: org.xml.sax.SAXParseException: Unexpected element: CDATA
-	at org.apache.xmlbeans.impl.piccolo.xml.Piccolo.reportFatalError(Piccolo.java:1038) ~[xmlbeans-2.6.0.jar:na]
-	at org.apache.xmlbeans.impl.piccolo.xml.Piccolo.parse(Piccolo.java:723) ~[xmlbeans-2.6.0.jar:na]
-	at org.apache.xmlbeans.impl.store.Locale$SaxLoader.load(Locale.java:3479) ~[xmlbeans-2.6.0.jar:na]
-	... 16 common frames omitted
-2023-01-13 17:02:53,946 [pool-7-thread-4] INFO  org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler: Cache-Hash: a6b30761e4f625456e556b001dad93cc
-2023-01-13 17:02:53,946 [pool-7-thread-4] INFO  org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler: There is no result in the cache
-2023-01-13 17:02:55,213 [pool-7-thread-4] ERROR org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler: Files could not be read
-java.io.IOException: Error: No such container:path: 121ec5f4f1e6fc41c42e6f6a020f5d8714808b189b3421488c3ab4f519e9700d:/usr/share/git/shakemap_sampler/intensity_output_file.xml
 
-	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148) ~[gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73) ~[gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:978) [gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutableInContext(BaseGfzRiesgosService.java:620) [gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutable(BaseGfzRiesgosService.java:540) [gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.run(BaseGfzRiesgosService.java:438) [gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.access$100(BaseGfzRiesgosService.java:405) [gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService.run(BaseGfzRiesgosService.java:310) [gfz-riesgos-wps.jar:na]
-	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:214) [52n-wps-server-4.0.0-beta.10.jar:na]
-	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71) [52n-wps-server-4.0.0-beta.10.jar:na]
-	at java.util.concurrent.FutureTask.run(FutureTask.java:266) [na:1.8.0_342]
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) [na:1.8.0_342]
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) [na:1.8.0_342]
-	at java.lang.Thread.run(Thread.java:750) [na:1.8.0_342]
-2023-01-13 17:02:55,241 [pool-7-thread-4] ERROR org.n52.wps.server.request.ExecuteRequestV200: Exception/Error while executing ExecuteRequest for org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler: org.n52.wps.server.ExceptionReport: Files could not be readError: No such container:path: 121ec5f4f1e6fc41c42e6f6a020f5d8714808b189b3421488c3ab4f519e9700d:/usr/share/git/shakemap_sampler/intensity_output_file.xml
-java.io.IOException: Error: No such container:path: 121ec5f4f1e6fc41c42e6f6a020f5d8714808b189b3421488c3ab4f519e9700d:/usr/share/git/shakemap_sampler/intensity_output_file.xml
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.7.2)
+
+2023-01-14 12:33:09,786 [main] INFO  org.n.riesgos.asyncwrapper.RiesgosPulsarAsyncWrapperApplicationKt: Starting RiesgosPulsarAsyncWrapperApplicationKt v0.0.1-SNAPSHOT using Java 17-ea on b79d3407642c with PID 1 (/app.jar started by root in /)
+2023-01-14 12:33:09,794 [main] INFO  org.n.riesgos.asyncwrapper.RiesgosPulsarAsyncWrapperApplicationKt: No active profile set, falling back to 1 default profile: "default"
+2023-01-14 12:33:12,574 [main] INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate: Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2023-01-14 12:33:12,630 [main] INFO  org.springframework.data.repository.config.RepositoryConfigurationDelegate: Finished Spring Data repository scanning in 49 ms. Found 0 JDBC repository interfaces.
+2023-01-14 12:33:14,424 [main] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer: Tomcat initialized with port(s): 8080 (http)
+2023-01-14 12:33:14,475 [main] INFO  org.apache.coyote.http11.Http11NioProtocol: Initializing ProtocolHandler ["http-nio-8080"]
+2023-01-14 12:33:14,475 [main] INFO  org.apache.catalina.core.StandardService: Starting service [Tomcat]
+2023-01-14 12:33:14,476 [main] INFO  org.apache.catalina.core.StandardEngine: Starting Servlet engine: [Apache Tomcat/9.0.65]
+2023-01-14 12:33:14,888 [main] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]: Initializing Spring embedded WebApplicationContext
+2023-01-14 12:33:14,888 [main] INFO  org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext: Root WebApplicationContext: initialization completed in 4812 ms
+2023-01-14 12:33:16,071 [main] INFO  WrapperFactory: init wrapper: org.n.riesgos.asyncwrapper.dummy.ShakemapResamplerWrapper
+2023-01-14 12:33:16,083 [main] INFO  WrapperFactory: init wrapper: org.n.riesgos.asyncwrapper.dummy.ShakemapResamplerWrapper
+create consumer threads for input messages
+start new thread for subscription shakemap-resampler-asyncwrapper_shakyground-success_subscription
+create consumer thread for order messages
+start new thread for subscription shakemap-resampler-asyncwrapper_new-order_subscription
+connect to pulsar at pulsar://queue:6650
+connect to pulsar at pulsar://queue:6650
+2023-01-14 12:33:17,833 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] WARN  org.apache.pulsar.common.util.netty.DnsResolverUtil: Cannot get DNS TTL settings from sun.net.InetAddressCachePolicy class
+java.lang.IllegalAccessException: class org.apache.pulsar.common.util.netty.DnsResolverUtil cannot access class sun.net.InetAddressCachePolicy (in module java.base) because module java.base does not export sun.net to unnamed module @55f3ddb1
+	at java.base/jdk.internal.reflect.Reflection.newIllegalAccessException(Reflection.java:385)
+	at java.base/java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:687)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:560)
+	at org.apache.pulsar.common.util.netty.DnsResolverUtil.<clinit>(DnsResolverUtil.java:46)
+	at org.apache.pulsar.client.impl.ConnectionPool.createAddressResolver(ConnectionPool.java:118)
+	at org.apache.pulsar.client.impl.ConnectionPool.lambda$new$1(ConnectionPool.java:106)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.apache.pulsar.client.impl.ConnectionPool.<init>(ConnectionPool.java:106)
+	at org.apache.pulsar.client.impl.ConnectionPool.<init>(ConnectionPool.java:75)
+	at org.apache.pulsar.client.impl.ConnectionPool.<init>(ConnectionPool.java:70)
+	at org.apache.pulsar.client.impl.PulsarClientImpl.<init>(PulsarClientImpl.java:187)
+	at org.apache.pulsar.client.impl.PulsarClientImpl.<init>(PulsarClientImpl.java:145)
+	at org.apache.pulsar.client.impl.ClientBuilderImpl.build(ClientBuilderImpl.java:67)
+	at org.n.riesgos.asyncwrapper.pulsar.PulsarClientService.createPulsarConnection(PulsarClientService.kt:16)
+	at org.n.riesgos.asyncwrapper.pulsar.PulsarConsumer.createConsumer(PulsarConsumer.kt:47)
+	at org.n.riesgos.asyncwrapper.pulsar.PulsarConsumer.run(PulsarConsumer.kt:11)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:18,773 [pulsar-client-io-2-1] INFO  org.apache.pulsar.client.impl.ConnectionPool: [[id: 0x59384672, L:/192.168.16.4:52444 - R:queue/192.168.16.2:6650]] Connected to server
+2023-01-14 12:33:18,772 [pulsar-client-io-1-1] INFO  org.apache.pulsar.client.impl.ConnectionPool: [[id: 0x74f3a325, L:/192.168.16.4:52446 - R:queue/192.168.16.2:6650]] Connected to server
+2023-01-14 12:33:18,878 [pulsar-client-io-1-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/shakyground-success] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656292, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656292, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:18,883 [pulsar-client-io-2-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/new-order] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920452, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920452, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:18,903 [main] INFO  com.zaxxer.hikari.HikariDataSource: HikariPool-1 - Starting...
+2023-01-14 12:33:18,988 [pulsar-external-listener-4-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/new-order] Could not get connection while getPartitionedTopicMetadata -- Will try again in 100 ms
+2023-01-14 12:33:18,991 [pulsar-external-listener-5-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/shakyground-success] Could not get connection while getPartitionedTopicMetadata -- Will try again in 100 ms
+2023-01-14 12:33:19,011 [pulsar-client-io-2-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/new-order] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920453, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920453, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:19,016 [pulsar-client-io-1-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/shakyground-success] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656293, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656293, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:19,193 [pulsar-external-listener-4-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/new-order] Could not get connection while getPartitionedTopicMetadata -- Will try again in 182 ms
+2023-01-14 12:33:19,202 [pulsar-client-io-2-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/new-order] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920454, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920454, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:19,213 [pulsar-external-listener-5-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/shakyground-success] Could not get connection while getPartitionedTopicMetadata -- Will try again in 189 ms
+2023-01-14 12:33:19,254 [pulsar-client-io-1-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/shakyground-success] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656294, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656294, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:19,595 [pulsar-external-listener-4-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/new-order] Could not get connection while getPartitionedTopicMetadata -- Will try again in 387 ms
+2023-01-14 12:33:19,608 [pulsar-client-io-2-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/new-order] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920455, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920455, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:19,667 [pulsar-external-listener-5-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/shakyground-success] Could not get connection while getPartitionedTopicMetadata -- Will try again in 394 ms
+2023-01-14 12:33:19,674 [main] INFO  com.zaxxer.hikari.HikariDataSource: HikariPool-1 - Start completed.
+2023-01-14 12:33:19,680 [pulsar-client-io-1-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/shakyground-success] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656295, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656295, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:20,392 [pulsar-external-listener-4-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/new-order] Could not get connection while getPartitionedTopicMetadata -- Will try again in 781 ms
+2023-01-14 12:33:20,459 [pulsar-external-listener-5-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/shakyground-success] Could not get connection while getPartitionedTopicMetadata -- Will try again in 772 ms
+2023-01-14 12:33:20,472 [pulsar-client-io-1-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/shakyground-success] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656296, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656296, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:20,475 [pulsar-client-io-2-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/new-order] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920456, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920456, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:20,602 [main] INFO  org.apache.coyote.http11.Http11NioProtocol: Starting ProtocolHandler ["http-nio-8080"]
+2023-01-14 12:33:20,698 [main] INFO  org.springframework.boot.web.embedded.tomcat.TomcatWebServer: Tomcat started on port(s): 8080 (http) with context path ''
+2023-01-14 12:33:20,735 [main] INFO  org.n.riesgos.asyncwrapper.RiesgosPulsarAsyncWrapperApplicationKt: Started RiesgosPulsarAsyncWrapperApplicationKt in 11.788 seconds (JVM running for 14.755)
+2023-01-14 12:33:21,957 [pulsar-external-listener-4-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/new-order] Could not get connection while getPartitionedTopicMetadata -- Will try again in 1481 ms
+2023-01-14 12:33:21,960 [pulsar-client-io-2-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/new-order] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920457, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920457, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:21,966 [pulsar-external-listener-5-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/shakyground-success] Could not get connection while getPartitionedTopicMetadata -- Will try again in 1493 ms
+2023-01-14 12:33:21,968 [pulsar-client-io-1-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/shakyground-success] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656297, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656297, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:24,931 [pulsar-external-listener-5-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/shakyground-success] Could not get connection while getPartitionedTopicMetadata -- Will try again in 2963 ms
+2023-01-14 12:33:24,933 [pulsar-client-io-1-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/shakyground-success] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656298, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3787657210647656298, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52446"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:25,148 [pulsar-external-listener-4-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/new-order] Could not get connection while getPartitionedTopicMetadata -- Will try again in 3187 ms
+2023-01-14 12:33:25,150 [pulsar-client-io-2-1] WARN  org.apache.pulsar.client.impl.BinaryProtoLookupService: [persistent://public/default/new-order] failed to get Partitioned metadata : {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920458, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+org.apache.pulsar.client.api.PulsarClientException$BrokerMetadataException: {"errorMsg":"Policies not found for public/default namespace","reqId":3188334835600920458, "remote":"queue/192.168.16.2:6650", "local":"/192.168.16.4:52444"}
+	at org.apache.pulsar.client.impl.ClientCnx.getPulsarClientException(ClientCnx.java:1121)
+	at org.apache.pulsar.client.impl.ClientCnx.handlePartitionResponse(ClientCnx.java:601)
+	at org.apache.pulsar.common.protocol.PulsarDecoder.channelRead(PulsarDecoder.java:130)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:327)
+	at org.apache.pulsar.shade.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:299)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at org.apache.pulsar.shade.io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at org.apache.pulsar.shade.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:800)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.processReady(EpollEventLoop.java:487)
+	at org.apache.pulsar.shade.io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:385)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:995)
+	at org.apache.pulsar.shade.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at org.apache.pulsar.shade.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:831)
+2023-01-14 12:33:30,833 [pulsar-external-listener-5-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/shakyground-success] Could not get connection while getPartitionedTopicMetadata -- Will try again in 5899 ms
+2023-01-14 12:33:31,022 [pulsar-client-io-1-1] INFO  org.apache.pulsar.client.impl.ConsumerStatsRecorderImpl: Starting Pulsar consumer status recorder with config: {"topicNames":["shakyground-success"],"topicsPattern":null,"subscriptionName":"shakemap-resampler-asyncwrapper_shakyground-success_subscription","subscriptionType":"Exclusive","subscriptionProperties":null,"subscriptionMode":"Durable","receiverQueueSize":1000,"acknowledgementsGroupTimeMicros":100000,"negativeAckRedeliveryDelayMicros":60000000,"maxTotalReceiverQueueSizeAcrossPartitions":50000,"consumerName":null,"ackTimeoutMillis":0,"tickDurationMillis":1000,"priorityLevel":0,"maxPendingChunkedMessage":10,"autoAckOldestChunkedMessageOnQueueFull":false,"expireTimeOfIncompleteChunkedMessageMillis":60000,"cryptoFailureAction":"FAIL","properties":{},"readCompacted":false,"subscriptionInitialPosition":"Latest","patternAutoDiscoveryPeriod":60,"regexSubscriptionMode":"PersistentOnly","deadLetterPolicy":null,"retryEnable":false,"autoUpdatePartitions":true,"autoUpdatePartitionsIntervalSeconds":60,"replicateSubscriptionState":false,"resetIncludeHead":false,"keySharedPolicy":null,"batchIndexAckEnabled":false,"ackReceiptEnabled":false,"poolMessages":false,"startPaused":false,"maxPendingChuckedMessage":10}
+2023-01-14 12:33:31,032 [pulsar-client-io-1-1] INFO  org.apache.pulsar.client.impl.ConsumerStatsRecorderImpl: Pulsar client config: {"serviceUrl":"pulsar://queue:6650","authPluginClassName":null,"authParams":null,"authParamMap":null,"operationTimeoutMs":30000,"lookupTimeoutMs":30000,"statsIntervalSeconds":60,"numIoThreads":1,"numListenerThreads":1,"connectionsPerBroker":1,"useTcpNoDelay":true,"useTls":false,"tlsTrustCertsFilePath":"","tlsAllowInsecureConnection":false,"tlsHostnameVerificationEnable":false,"concurrentLookupRequest":5000,"maxLookupRequest":50000,"maxLookupRedirects":20,"maxNumberOfRejectedRequestPerConnection":50,"keepAliveIntervalSeconds":30,"connectionTimeoutMs":10000,"requestTimeoutMs":60000,"initialBackoffIntervalNanos":100000000,"maxBackoffIntervalNanos":60000000000,"enableBusyWait":false,"listenerName":null,"useKeyStoreTls":false,"sslProvider":null,"tlsTrustStoreType":"JKS","tlsTrustStorePath":null,"tlsTrustStorePassword":null,"tlsCiphers":[],"tlsProtocols":[],"memoryLimitBytes":67108864,"proxyServiceUrl":null,"proxyProtocol":null,"enableTransaction":false,"dnsLookupBindAddress":null,"dnsLookupBindPort":0,"socks5ProxyAddress":null,"socks5ProxyUsername":null,"socks5ProxyPassword":null}
+2023-01-14 12:33:31,040 [pulsar-client-io-1-1] INFO  org.apache.pulsar.client.impl.ConnectionPool: [[id: 0x79bd752e, L:/192.168.16.4:42362 - R:queue/192.168.16.2:6650]] Connected to server
+2023-01-14 12:33:31,040 [pulsar-client-io-1-1] INFO  org.apache.pulsar.client.impl.ClientCnx: [id: 0x79bd752e, L:/192.168.16.4:42362 - R:queue/192.168.16.2:6650] Connected through proxy to target broker at localhost:6650
+2023-01-14 12:33:31,041 [pulsar-client-io-1-1] INFO  org.apache.pulsar.client.impl.ConsumerImpl: [shakyground-success][shakemap-resampler-asyncwrapper_shakyground-success_subscription] Subscribing to topic on cnx [id: 0x79bd752e, L:/192.168.16.4:42362 - R:queue/192.168.16.2:6650], consumerId 0
+2023-01-14 12:33:31,057 [pulsar-client-io-1-1] INFO  org.apache.pulsar.client.impl.ConsumerImpl: [shakyground-success][shakemap-resampler-asyncwrapper_shakyground-success_subscription] Subscribed to topic on queue/192.168.16.2:6650 -- consumer: 0
+2023-01-14 12:33:31,418 [pulsar-external-listener-4-1] WARN  org.apache.pulsar.client.impl.PulsarClientImpl: [topic: persistent://public/default/new-order] Could not get connection while getPartitionedTopicMetadata -- Will try again in 6268 ms
+2023-01-14 12:33:31,425 [pulsar-client-io-2-1] INFO  org.apache.pulsar.client.impl.ConsumerStatsRecorderImpl: Starting Pulsar consumer status recorder with config: {"topicNames":["new-order"],"topicsPattern":null,"subscriptionName":"shakemap-resampler-asyncwrapper_new-order_subscription","subscriptionType":"Exclusive","subscriptionProperties":null,"subscriptionMode":"Durable","receiverQueueSize":1000,"acknowledgementsGroupTimeMicros":100000,"negativeAckRedeliveryDelayMicros":60000000,"maxTotalReceiverQueueSizeAcrossPartitions":50000,"consumerName":null,"ackTimeoutMillis":0,"tickDurationMillis":1000,"priorityLevel":0,"maxPendingChunkedMessage":10,"autoAckOldestChunkedMessageOnQueueFull":false,"expireTimeOfIncompleteChunkedMessageMillis":60000,"cryptoFailureAction":"FAIL","properties":{},"readCompacted":false,"subscriptionInitialPosition":"Latest","patternAutoDiscoveryPeriod":60,"regexSubscriptionMode":"PersistentOnly","deadLetterPolicy":null,"retryEnable":false,"autoUpdatePartitions":true,"autoUpdatePartitionsIntervalSeconds":60,"replicateSubscriptionState":false,"resetIncludeHead":false,"keySharedPolicy":null,"batchIndexAckEnabled":false,"ackReceiptEnabled":false,"poolMessages":false,"startPaused":false,"maxPendingChuckedMessage":10}
+2023-01-14 12:33:31,429 [pulsar-client-io-2-1] INFO  org.apache.pulsar.client.impl.ConsumerStatsRecorderImpl: Pulsar client config: {"serviceUrl":"pulsar://queue:6650","authPluginClassName":null,"authParams":null,"authParamMap":null,"operationTimeoutMs":30000,"lookupTimeoutMs":30000,"statsIntervalSeconds":60,"numIoThreads":1,"numListenerThreads":1,"connectionsPerBroker":1,"useTcpNoDelay":true,"useTls":false,"tlsTrustCertsFilePath":"","tlsAllowInsecureConnection":false,"tlsHostnameVerificationEnable":false,"concurrentLookupRequest":5000,"maxLookupRequest":50000,"maxLookupRedirects":20,"maxNumberOfRejectedRequestPerConnection":50,"keepAliveIntervalSeconds":30,"connectionTimeoutMs":10000,"requestTimeoutMs":60000,"initialBackoffIntervalNanos":100000000,"maxBackoffIntervalNanos":60000000000,"enableBusyWait":false,"listenerName":null,"useKeyStoreTls":false,"sslProvider":null,"tlsTrustStoreType":"JKS","tlsTrustStorePath":null,"tlsTrustStorePassword":null,"tlsCiphers":[],"tlsProtocols":[],"memoryLimitBytes":67108864,"proxyServiceUrl":null,"proxyProtocol":null,"enableTransaction":false,"dnsLookupBindAddress":null,"dnsLookupBindPort":0,"socks5ProxyAddress":null,"socks5ProxyUsername":null,"socks5ProxyPassword":null}
+2023-01-14 12:33:31,431 [pulsar-client-io-2-1] INFO  org.apache.pulsar.client.impl.ConnectionPool: [[id: 0xfe72be32, L:/192.168.16.4:42376 - R:queue/192.168.16.2:6650]] Connected to server
+2023-01-14 12:33:31,431 [pulsar-client-io-2-1] INFO  org.apache.pulsar.client.impl.ClientCnx: [id: 0xfe72be32, L:/192.168.16.4:42376 - R:queue/192.168.16.2:6650] Connected through proxy to target broker at localhost:6650
+2023-01-14 12:33:31,433 [pulsar-client-io-2-1] INFO  org.apache.pulsar.client.impl.ConsumerImpl: [new-order][shakemap-resampler-asyncwrapper_new-order_subscription] Subscribing to topic on cnx [id: 0xfe72be32, L:/192.168.16.4:42376 - R:queue/192.168.16.2:6650], consumerId 0
+2023-01-14 12:33:31,447 [pulsar-client-io-2-1] INFO  org.apache.pulsar.client.impl.ConsumerImpl: [new-order][shakemap-resampler-asyncwrapper_new-order_subscription] Subscribed to topic on queue/192.168.16.2:6650 -- consumer: 0
+2023-01-14 12:33:47,023 [pulsar-client-io-2-1] WARN  com.scurrilous.circe.checksum.Crc32cIntChecksum: Failed to load Circe JNI library. Falling back to Java based CRC32c provider
+order message handler receiver: {"orderId":1}
+2023-01-14 12:33:47,040 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Got new order to handle with wrapper 1
+2023-01-14 12:33:47,060 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Added literal input constraint for shakemapresampler random_seed: 1
+2023-01-14 12:33:47,061 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Parsed constraints
+2023-01-14 12:33:47,061 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Define the literal constraints for the jobs
+2023-01-14 12:33:47,061 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Define the complex constraints for the jobs
+2023-01-14 12:33:47,068 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Define the bbox constraints for the jobs
+2023-01-14 12:33:47,068 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  ShakemapResampler: get inputs for shakemapresampler
+2023-01-14 12:33:47,068 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: No job executed
+acknowledge message
+2023-01-14 12:34:31,430 [pulsar-timer-8-1] INFO  org.apache.pulsar.client.impl.ConsumerStatsRecorderImpl: [new-order] [shakemap-resampler-asyncwrapper_new-order_subscription] [d65bf] Prefetched messages: 0 --- Consume throughput received: 0.02 msgs/s --- 0.00 Mbit/s --- Ack sent rate: 0.02 ack/s --- Failed messages: 0 --- batch messages: 0 ---Failed acks: 0
+order message handler receiver: {"orderId":1}
+2023-01-14 12:34:40,976 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Got new order to handle with wrapper 1
+2023-01-14 12:34:40,977 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added literal input constraint for shakemapresampler random_seed: 1
+2023-01-14 12:34:40,977 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Parsed constraints
+2023-01-14 12:34:40,977 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the literal constraints for the jobs
+2023-01-14 12:34:40,978 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the complex constraints for the jobs
+2023-01-14 12:34:40,978 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the bbox constraints for the jobs
+2023-01-14 12:34:40,978 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  ShakemapResampler: get inputs for shakemapresampler
+2023-01-14 12:34:40,979 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Process job
+2023-01-14 12:34:40,983 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Lookup the process id
+2023-01-14 12:34:40,986 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Got the procss id 5
+2023-01-14 12:34:40,988 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Created one job
+2023-01-14 12:34:40,989 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added literal input for random_seed: 1
+2023-01-14 12:34:40,990 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added complex input (as reference to existing output) for intensity_file
+2023-01-14 12:34:40,991 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added job to order
+2023-01-14 12:34:40,992 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Start mapping to wps inputs
+2023-01-14 12:34:41,126 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  org.n52.geoprocessing.wps.client.WPSClientSession: CONNECT
+2023-01-14 12:34:41,221 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Start calling the wps itself under http://riesgos-wps:8080/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
+2023-01-14 12:34:41,233 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  WPSProcess: Got process description from http://riesgos-wps:8080/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler/2.0.0: 
+ Id: org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
+Title: shakemap_sampler
+			Abstract: null
+
+2023-01-14 12:34:41,254 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  WPSProcess: <wps:Execute xmlns:wps="http://www.opengis.net/wps/2.0" xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/2.0 http://schemas.opengis.net/wps/2.0/wps.xsd" response="document" mode="sync" service="WPS" version="2.0.0"><ows:Identifier>org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler</ows:Identifier><wps:Input id="random_seed"><wps:Data mimeType="text/xml"><wps:LiteralValue>1</wps:LiteralValue></wps:Data></wps:Input><wps:Input id="intensity_file"><wps:Reference xlink:href="http://filestorage:9000/riesgosfiles/5F5E65060103F91E1AFFC95CBA804C06D50BD33E" mimeType="text/xml"></wps:Reference></wps:Input><wps:Output id="intensity_output_file" transmission="reference" mimeType="text/xml" schema="http://earthquake.usgs.gov/eqcenter/shakemap" encoding="UTF-8"></wps:Output></wps:Execute>
+Got HTTP error code, response: Exceptions: [	Code: RemoteComputationError	Text: java.io.IOException: Error: No such container:path: abeb207dedf21a91ac73e75afbda3cf44716bc0d365a335b9390f93947b96c3a:/usr/share/git/shakemap_sampler/intensity_output_file.xml
 
 	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148)
 	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73)
@@ -403,13 +464,9 @@ java.io.IOException: Error: No such container:path: 121ec5f4f1e6fc41c42e6f6a020f
 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-	at java.lang.Thread.run(Thread.java:750)
-
-2023-01-13 17:02:55,244 [pool-7-thread-4] INFO  org.n52.wps.commons.context.ExecutionContextFactory: Context unregistered
-2023-01-13 17:02:55,244 [http-nio-8080-exec-8] WARN  org.n52.wps.server.handler.RequestHandler: exception while handling ExecuteRequest.
-2023-01-13 17:02:55,245 [http-nio-8080-exec-8] ERROR org.n52.wps.server.handler.RequestHandler: exception handling ExecuteRequest.
-org.n52.wps.server.ExceptionReport: Files could not be readError: No such container:path: 121ec5f4f1e6fc41c42e6f6a020f5d8714808b189b3421488c3ab4f519e9700d:/usr/share/git/shakemap_sampler/intensity_output_file.xml
-java.io.IOException: Error: No such container:path: 121ec5f4f1e6fc41c42e6f6a020f5d8714808b189b3421488c3ab4f519e9700d:/usr/share/git/shakemap_sampler/intensity_output_file.xml
+	at java.lang.Thread.run(Thread.java:750)	Locator: null]
+[Ljava.lang.StackTraceElement;@d07911d2023-01-14 12:34:42,828 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: WPS call failed
+2023-01-14 12:34:42,828 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: WPS call failed because of: Got HTTP error code, response: Exceptions: [	Code: RemoteComputationError	Text: java.io.IOException: Error: No such container:path: abeb207dedf21a91ac73e75afbda3cf44716bc0d365a335b9390f93947b96c3a:/usr/share/git/shakemap_sampler/intensity_output_file.xml
 
 	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148)
 	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73)
@@ -424,23 +481,257 @@ java.io.IOException: Error: No such container:path: 121ec5f4f1e6fc41c42e6f6a020f
 	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-	at java.lang.Thread.run(Thread.java:750)
+	at java.lang.Thread.run(Thread.java:750)	Locator: null]
+acknowledge message
+order message handler receiver: {"orderId":2}
+2023-01-14 12:35:22,140 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Got new order to handle with wrapper 2
+2023-01-14 12:35:22,141 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Added literal input constraint for shakemapresampler random_seed: 1
+2023-01-14 12:35:22,141 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Parsed constraints
+2023-01-14 12:35:22,141 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Define the literal constraints for the jobs
+2023-01-14 12:35:22,141 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Define the complex constraints for the jobs
+2023-01-14 12:35:22,143 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Define the bbox constraints for the jobs
+2023-01-14 12:35:22,143 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  ShakemapResampler: get inputs for shakemapresampler
+2023-01-14 12:35:22,143 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: No job executed
+acknowledge message
+order message handler receiver: {"orderId":2}
+2023-01-14 12:35:22,152 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Got new order to handle with wrapper 2
+2023-01-14 12:35:22,153 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added literal input constraint for shakemapresampler random_seed: 1
+2023-01-14 12:35:22,153 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Parsed constraints
+2023-01-14 12:35:22,153 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the literal constraints for the jobs
+2023-01-14 12:35:22,153 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the complex constraints for the jobs
+2023-01-14 12:35:22,154 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the bbox constraints for the jobs
+2023-01-14 12:35:22,154 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  ShakemapResampler: get inputs for shakemapresampler
+2023-01-14 12:35:22,154 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Process job
+2023-01-14 12:35:22,156 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Lookup the process id
+2023-01-14 12:35:22,156 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Got the procss id 5
+2023-01-14 12:35:22,156 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Created one job
+2023-01-14 12:35:22,157 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added literal input for random_seed: 1
+2023-01-14 12:35:22,158 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added complex input (as reference to existing output) for intensity_file
+2023-01-14 12:35:22,158 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added job to order
+2023-01-14 12:35:22,159 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Start mapping to wps inputs
+2023-01-14 12:35:22,159 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Start calling the wps itself under http://riesgos-wps:8080/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
+2023-01-14 12:35:22,166 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  WPSProcess: Got process description from http://riesgos-wps:8080/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler/2.0.0: 
+ Id: org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
+Title: shakemap_sampler
+			Abstract: null
 
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:1005) ~[gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutableInContext(BaseGfzRiesgosService.java:620) ~[gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutable(BaseGfzRiesgosService.java:540) ~[gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.run(BaseGfzRiesgosService.java:438) ~[gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.access$100(BaseGfzRiesgosService.java:405) ~[gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService.run(BaseGfzRiesgosService.java:310) ~[gfz-riesgos-wps.jar:na]
-	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:214) ~[52n-wps-server-4.0.0-beta.10.jar:na]
-	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71) ~[52n-wps-server-4.0.0-beta.10.jar:na]
-	at java.util.concurrent.FutureTask.run(FutureTask.java:266) ~[na:1.8.0_342]
-	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149) ~[na:1.8.0_342]
-	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[na:1.8.0_342]
-	at java.lang.Thread.run(Thread.java:750) ~[na:1.8.0_342]
-Caused by: java.io.IOException: Error: No such container:path: 121ec5f4f1e6fc41c42e6f6a020f5d8714808b189b3421488c3ab4f519e9700d:/usr/share/git/shakemap_sampler/intensity_output_file.xml
+2023-01-14 12:35:22,168 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  WPSProcess: <wps:Execute xmlns:wps="http://www.opengis.net/wps/2.0" xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/2.0 http://schemas.opengis.net/wps/2.0/wps.xsd" response="document" mode="sync" service="WPS" version="2.0.0"><ows:Identifier>org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler</ows:Identifier><wps:Input id="random_seed"><wps:Data mimeType="text/xml"><wps:LiteralValue>1</wps:LiteralValue></wps:Data></wps:Input><wps:Input id="intensity_file"><wps:Reference xlink:href="http://filestorage:9000/riesgosfiles/5F5E65060103F91E1AFFC95CBA804C06D50BD33E" mimeType="text/xml"></wps:Reference></wps:Input><wps:Output id="intensity_output_file" transmission="reference" mimeType="text/xml" schema="http://earthquake.usgs.gov/eqcenter/shakemap" encoding="UTF-8"></wps:Output></wps:Execute>
+Got HTTP error code, response: Exceptions: [	Code: RemoteComputationError	Text: java.io.IOException: Error: No such container:path: 90be4bc2ca3a3674128fab0c61540b1ea8791af86f17a9decce56eee8e6b8317:/usr/share/git/shakemap_sampler/intensity_output_file.xml
 
-	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148) ~[gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73) ~[gfz-riesgos-wps.jar:na]
-	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:978) ~[gfz-riesgos-wps.jar:na]
-	... 11 common frames omitted
+	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148)
+	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:978)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutableInContext(BaseGfzRiesgosService.java:620)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutable(BaseGfzRiesgosService.java:540)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.run(BaseGfzRiesgosService.java:438)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.access$100(BaseGfzRiesgosService.java:405)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService.run(BaseGfzRiesgosService.java:310)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:214)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)	Locator: null]
+[Ljava.lang.StackTraceElement;@7295e9432023-01-14 12:35:23,834 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: WPS call failed
+2023-01-14 12:35:23,834 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: WPS call failed because of: Got HTTP error code, response: Exceptions: [	Code: RemoteComputationError	Text: java.io.IOException: Error: No such container:path: 90be4bc2ca3a3674128fab0c61540b1ea8791af86f17a9decce56eee8e6b8317:/usr/share/git/shakemap_sampler/intensity_output_file.xml
+
+	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148)
+	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:978)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutableInContext(BaseGfzRiesgosService.java:620)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutable(BaseGfzRiesgosService.java:540)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.run(BaseGfzRiesgosService.java:438)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.access$100(BaseGfzRiesgosService.java:405)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService.run(BaseGfzRiesgosService.java:310)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:214)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)	Locator: null]
+acknowledge message
+order message handler receiver: {"orderId":2}
+2023-01-14 12:35:24,380 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Got new order to handle with wrapper 2
+2023-01-14 12:35:24,381 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added literal input constraint for shakemapresampler random_seed: 1
+2023-01-14 12:35:24,381 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Parsed constraints
+2023-01-14 12:35:24,381 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the literal constraints for the jobs
+2023-01-14 12:35:24,381 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the complex constraints for the jobs
+2023-01-14 12:35:24,382 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the bbox constraints for the jobs
+2023-01-14 12:35:24,382 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  ShakemapResampler: get inputs for shakemapresampler
+2023-01-14 12:35:24,382 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Process job
+2023-01-14 12:35:24,383 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Lookup the process id
+2023-01-14 12:35:24,383 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Got the procss id 5
+2023-01-14 12:35:24,384 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Created one job
+2023-01-14 12:35:24,385 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added literal input for random_seed: 1
+2023-01-14 12:35:24,385 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added complex input (as reference to existing output) for intensity_file
+2023-01-14 12:35:24,386 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added job to order
+2023-01-14 12:35:24,386 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Start mapping to wps inputs
+2023-01-14 12:35:24,386 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Start calling the wps itself under http://riesgos-wps:8080/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
+2023-01-14 12:35:24,393 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  WPSProcess: Got process description from http://riesgos-wps:8080/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler/2.0.0: 
+ Id: org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
+Title: shakemap_sampler
+			Abstract: null
+
+2023-01-14 12:35:24,395 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  WPSProcess: <wps:Execute xmlns:wps="http://www.opengis.net/wps/2.0" xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/2.0 http://schemas.opengis.net/wps/2.0/wps.xsd" response="document" mode="sync" service="WPS" version="2.0.0"><ows:Identifier>org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler</ows:Identifier><wps:Input id="random_seed"><wps:Data mimeType="text/xml"><wps:LiteralValue>1</wps:LiteralValue></wps:Data></wps:Input><wps:Input id="intensity_file"><wps:Reference xlink:href="http://filestorage:9000/riesgosfiles/5F5E65060103F91E1AFFC95CBA804C06D50BD33E" mimeType="text/xml"></wps:Reference></wps:Input><wps:Output id="intensity_output_file" transmission="reference" mimeType="text/xml" schema="http://earthquake.usgs.gov/eqcenter/shakemap" encoding="UTF-8"></wps:Output></wps:Execute>
+Got HTTP error code, response: Exceptions: [	Code: RemoteComputationError	Text: java.io.IOException: Error: No such container:path: 0e3dbd289dd2f9358567c0de2b4c5178eade3dda07f9c48ce5812100d226727d:/usr/share/git/shakemap_sampler/intensity_output_file.xml
+
+	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148)
+	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:978)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutableInContext(BaseGfzRiesgosService.java:620)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutable(BaseGfzRiesgosService.java:540)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.run(BaseGfzRiesgosService.java:438)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.access$100(BaseGfzRiesgosService.java:405)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService.run(BaseGfzRiesgosService.java:310)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:214)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)	Locator: null]
+[Ljava.lang.StackTraceElement;@7754a3b62023-01-14 12:35:25,756 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: WPS call failed
+2023-01-14 12:35:25,756 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: WPS call failed because of: Got HTTP error code, response: Exceptions: [	Code: RemoteComputationError	Text: java.io.IOException: Error: No such container:path: 0e3dbd289dd2f9358567c0de2b4c5178eade3dda07f9c48ce5812100d226727d:/usr/share/git/shakemap_sampler/intensity_output_file.xml
+
+	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148)
+	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:978)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutableInContext(BaseGfzRiesgosService.java:620)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutable(BaseGfzRiesgosService.java:540)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.run(BaseGfzRiesgosService.java:438)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.access$100(BaseGfzRiesgosService.java:405)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService.run(BaseGfzRiesgosService.java:310)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:214)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)	Locator: null]
+acknowledge message
+2023-01-14 12:35:31,034 [pulsar-timer-9-1] INFO  org.apache.pulsar.client.impl.ConsumerStatsRecorderImpl: [shakyground-success] [shakemap-resampler-asyncwrapper_shakyground-success_subscription] [1a101] Prefetched messages: 0 --- Consume throughput received: 0.05 msgs/s --- 0.00 Mbit/s --- Ack sent rate: 0.05 ack/s --- Failed messages: 0 --- batch messages: 0 ---Failed acks: 0
+2023-01-14 12:35:31,432 [pulsar-timer-8-1] INFO  org.apache.pulsar.client.impl.ConsumerStatsRecorderImpl: [new-order] [shakemap-resampler-asyncwrapper_new-order_subscription] [d65bf] Prefetched messages: 0 --- Consume throughput received: 0.02 msgs/s --- 0.00 Mbit/s --- Ack sent rate: 0.02 ack/s --- Failed messages: 0 --- batch messages: 0 ---Failed acks: 0
+order message handler receiver: {"orderId":3}
+2023-01-14 12:37:04,266 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Got new order to handle with wrapper 3
+2023-01-14 12:37:04,267 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Added literal input constraint for shakemapresampler random_seed: 1
+2023-01-14 12:37:04,267 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Parsed constraints
+2023-01-14 12:37:04,267 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Define the literal constraints for the jobs
+2023-01-14 12:37:04,267 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Define the complex constraints for the jobs
+2023-01-14 12:37:04,268 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: Define the bbox constraints for the jobs
+2023-01-14 12:37:04,268 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  ShakemapResampler: get inputs for shakemapresampler
+2023-01-14 12:37:04,268 [shakemap-resampler-asyncwrapper_new-order_subscription] INFO  AbstractWrapper: No job executed
+acknowledge message
+order message handler receiver: {"orderId":3}
+2023-01-14 12:37:04,276 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Got new order to handle with wrapper 3
+2023-01-14 12:37:04,277 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added literal input constraint for shakemapresampler random_seed: 1
+2023-01-14 12:37:04,277 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Parsed constraints
+2023-01-14 12:37:04,277 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the literal constraints for the jobs
+2023-01-14 12:37:04,277 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the complex constraints for the jobs
+2023-01-14 12:37:04,277 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the bbox constraints for the jobs
+2023-01-14 12:37:04,278 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  ShakemapResampler: get inputs for shakemapresampler
+2023-01-14 12:37:04,278 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Process job
+2023-01-14 12:37:04,279 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Lookup the process id
+2023-01-14 12:37:04,279 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Got the procss id 5
+2023-01-14 12:37:04,280 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Created one job
+2023-01-14 12:37:04,281 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added literal input for random_seed: 1
+2023-01-14 12:37:04,281 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added complex input (as reference to existing output) for intensity_file
+2023-01-14 12:37:04,282 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added job to order
+2023-01-14 12:37:04,282 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Start mapping to wps inputs
+2023-01-14 12:37:04,283 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Start calling the wps itself under http://riesgos-wps:8080/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
+2023-01-14 12:37:04,290 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  WPSProcess: Got process description from http://riesgos-wps:8080/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler/2.0.0: 
+ Id: org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
+Title: shakemap_sampler
+			Abstract: null
+
+2023-01-14 12:37:04,292 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  WPSProcess: <wps:Execute xmlns:wps="http://www.opengis.net/wps/2.0" xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/2.0 http://schemas.opengis.net/wps/2.0/wps.xsd" response="document" mode="sync" service="WPS" version="2.0.0"><ows:Identifier>org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler</ows:Identifier><wps:Input id="random_seed"><wps:Data mimeType="text/xml"><wps:LiteralValue>1</wps:LiteralValue></wps:Data></wps:Input><wps:Input id="intensity_file"><wps:Reference xlink:href="http://filestorage:9000/riesgosfiles/5F5E65060103F91E1AFFC95CBA804C06D50BD33E" mimeType="text/xml"></wps:Reference></wps:Input><wps:Output id="intensity_output_file" transmission="reference" mimeType="text/xml" schema="http://earthquake.usgs.gov/eqcenter/shakemap" encoding="UTF-8"></wps:Output></wps:Execute>
+Got HTTP error code, response: Exceptions: [	Code: RemoteComputationError	Text: java.io.IOException: Error: No such container:path: e41b7c758cfa7b5ae2648574a0776b87db7faeaa45e3f939f1184111a978b327:/usr/share/git/shakemap_sampler/intensity_output_file.xml
+
+	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148)
+	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:978)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutableInContext(BaseGfzRiesgosService.java:620)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutable(BaseGfzRiesgosService.java:540)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.run(BaseGfzRiesgosService.java:438)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.access$100(BaseGfzRiesgosService.java:405)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService.run(BaseGfzRiesgosService.java:310)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:214)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)	Locator: null]
+[Ljava.lang.StackTraceElement;@672d06392023-01-14 12:37:05,937 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: WPS call failed
+2023-01-14 12:37:05,937 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: WPS call failed because of: Got HTTP error code, response: Exceptions: [	Code: RemoteComputationError	Text: java.io.IOException: Error: No such container:path: e41b7c758cfa7b5ae2648574a0776b87db7faeaa45e3f939f1184111a978b327:/usr/share/git/shakemap_sampler/intensity_output_file.xml
+
+	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148)
+	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:978)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutableInContext(BaseGfzRiesgosService.java:620)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutable(BaseGfzRiesgosService.java:540)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.run(BaseGfzRiesgosService.java:438)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.access$100(BaseGfzRiesgosService.java:405)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService.run(BaseGfzRiesgosService.java:310)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:214)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)	Locator: null]
+acknowledge message
+order message handler receiver: {"orderId":3}
+2023-01-14 12:37:05,939 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Got new order to handle with wrapper 3
+2023-01-14 12:37:05,939 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added literal input constraint for shakemapresampler random_seed: 1
+2023-01-14 12:37:05,939 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Parsed constraints
+2023-01-14 12:37:05,939 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the literal constraints for the jobs
+2023-01-14 12:37:05,939 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the complex constraints for the jobs
+2023-01-14 12:37:05,940 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Define the bbox constraints for the jobs
+2023-01-14 12:37:05,940 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  ShakemapResampler: get inputs for shakemapresampler
+2023-01-14 12:37:05,940 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Process job
+2023-01-14 12:37:05,942 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Lookup the process id
+2023-01-14 12:37:05,943 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Got the procss id 5
+2023-01-14 12:37:05,943 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Created one job
+2023-01-14 12:37:05,944 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added literal input for random_seed: 1
+2023-01-14 12:37:05,945 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added complex input (as reference to existing output) for intensity_file
+2023-01-14 12:37:05,946 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Added job to order
+2023-01-14 12:37:05,946 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Start mapping to wps inputs
+2023-01-14 12:37:05,946 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: Start calling the wps itself under http://riesgos-wps:8080/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
+2023-01-14 12:37:05,955 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  WPSProcess: Got process description from http://riesgos-wps:8080/wps/WebProcessingService/org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler/2.0.0: 
+ Id: org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler
+Title: shakemap_sampler
+			Abstract: null
+
+2023-01-14 12:37:05,957 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  WPSProcess: <wps:Execute xmlns:wps="http://www.opengis.net/wps/2.0" xmlns:ows="http://www.opengis.net/ows/2.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wps/2.0 http://schemas.opengis.net/wps/2.0/wps.xsd" response="document" mode="sync" service="WPS" version="2.0.0"><ows:Identifier>org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler</ows:Identifier><wps:Input id="random_seed"><wps:Data mimeType="text/xml"><wps:LiteralValue>1</wps:LiteralValue></wps:Data></wps:Input><wps:Input id="intensity_file"><wps:Reference xlink:href="http://filestorage:9000/riesgosfiles/5F5E65060103F91E1AFFC95CBA804C06D50BD33E" mimeType="text/xml"></wps:Reference></wps:Input><wps:Output id="intensity_output_file" transmission="reference" mimeType="text/xml" schema="http://earthquake.usgs.gov/eqcenter/shakemap" encoding="UTF-8"></wps:Output></wps:Execute>
+Got HTTP error code, response: Exceptions: [	Code: RemoteComputationError	Text: java.io.IOException: Error: No such container:path: b3609d8356f77387a94b5ee56b6479a2525fe25e2bb915a1b772dbd4c8de382b:/usr/share/git/shakemap_sampler/intensity_output_file.xml
+
+	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148)
+	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:978)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutableInContext(BaseGfzRiesgosService.java:620)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutable(BaseGfzRiesgosService.java:540)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.run(BaseGfzRiesgosService.java:438)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.access$100(BaseGfzRiesgosService.java:405)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService.run(BaseGfzRiesgosService.java:310)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:214)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)	Locator: null]
+[Ljava.lang.StackTraceElement;@4f5bfe702023-01-14 12:37:07,532 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: WPS call failed
+2023-01-14 12:37:07,532 [shakemap-resampler-asyncwrapper_shakyground-success_subscription] INFO  AbstractWrapper: WPS call failed because of: Got HTTP error code, response: Exceptions: [	Code: RemoteComputationError	Text: java.io.IOException: Error: No such container:path: b3609d8356f77387a94b5ee56b6479a2525fe25e2bb915a1b772dbd4c8de382b:/usr/share/git/shakemap_sampler/intensity_output_file.xml
+
+	at org.n52.gfz.riesgos.cmdexecution.docker.DockerExecutionContextImpl.readFromFile(DockerExecutionContextImpl.java:148)
+	at org.n52.gfz.riesgos.readidatafromfiles.ReadSingleByteStreamFromPath.readFromFiles(ReadSingleByteStreamFromPath.java:73)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.readFromOutputFiles(BaseGfzRiesgosService.java:978)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutableInContext(BaseGfzRiesgosService.java:620)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.runExecutable(BaseGfzRiesgosService.java:540)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.run(BaseGfzRiesgosService.java:438)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService$InnerRunContext.access$100(BaseGfzRiesgosService.java:405)
+	at org.n52.gfz.riesgos.algorithm.BaseGfzRiesgosService.run(BaseGfzRiesgosService.java:310)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:214)
+	at org.n52.wps.server.request.ExecuteRequestV200.call(ExecuteRequestV200.java:71)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)	Locator: null]
+acknowledge message
+2023-01-14 12:37:31,037 [pulsar-timer-9-1] INFO  org.apache.pulsar.client.impl.ConsumerStatsRecorderImpl: [shakyground-success] [shakemap-resampler-asyncwrapper_shakyground-success_subscription] [1a101] Prefetched messages: 0 --- Consume throughput received: 0.03 msgs/s --- 0.00 Mbit/s --- Ack sent rate: 0.03 ack/s --- Failed messages: 0 --- batch messages: 0 ---Failed acks: 0
+2023-01-14 12:37:31,434 [pulsar-timer-8-1] INFO  org.apache.pulsar.client.impl.ConsumerStatsRecorderImpl: [new-order] [shakemap-resampler-asyncwrapper_new-order_subscription] [d65bf] Prefetched messages: 0 --- Consume throughput received: 0.02 msgs/s --- 0.00 Mbit/s --- Ack sent rate: 0.02 ack/s --- Failed messages: 0 --- batch messages: 0 ---Failed acks: 0

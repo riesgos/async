@@ -316,6 +316,13 @@ services:
     restart: always
     ports:
       - "8082:8080"
+    depends_on:
+      - shakyground
+      - quakeledger
+      - assetmaster
+      - modelprop
+      - deus
+      - shakemap_sampler
     environment:
       - CATALINA_OPTS=-Xmx4g -Xms4g
       - RIESGOS_MAX_CACHE_SIZE_MB=1024
@@ -376,6 +383,8 @@ services:
   wps-init:
     image: python:3.10.5-alpine3.15
     entrypoint: "/entrypoint.sh"
+    depends_on:
+      - riesgos-wps
     environment:
       WPS_HOSTPORT: '8080'
       WPS_HOSTNAME: 'riesgos-wps'

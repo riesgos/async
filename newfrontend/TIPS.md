@@ -9,19 +9,22 @@
 
 - Building wrapper
     cd asyncwrapper
-    <!-- docker compose up -d
-    docker exec -it riesgos-mvn-builder /bin/bash
-    mvn package -DskipTests -->
     ./mvn_package.sh
 
 
-## Database
+## Services
 
 - Accessing db from host-machine
     - psql -h 0.0.0.0 -p 5432 -U postgres (pw: postgres)
 
 - Empty all tables:
     - truncate order_job_refs, orders, complex_outputs, complex_outputs_as_inputs, complex_inputs, complex_inputs_as_values, literal_inputs, bbox_inputs, jobs, processes;
+
+- localhost:8081 -> Pulsar
+- localhost:8082/wps
+- localhost:8082/manager
+- localhost:8082/geoserver
+- localhost:9090 -> filestorage
 
 
 ## Notes
@@ -30,12 +33,12 @@
 
 ## Ongoing problems
 
+- WPS returns references as `xlin:href="http://localhost:8080/wps/RetrieveResultServlet?id=`, not as `xlin:href="http://riesgos-wps:8080/wps/RetrieveResultServlet?id=...`
+    - Problem disappears after `docker compose -f docker-compose-with-wrappers.yml stop/start riesgos-wps`
+    - This is a problem because wrapper cannot resolve that `localhost` link; causing bad data to be stored in the filestorage.
+    - The problem only becomes evident when a downstream-service tries to access that data.
+
 - Attempt to re-connect to wps from wrapper a few times if network-connection is shaky.
-
-
-- Minio bucket /riesgosfiles wasn't public for me initially ... even though `entrypoint.sh` does run `/usr/bin/mc anonymous set download minio/${MINIO_BUCKET_NAME}`.
-    - Had to set it public in the UI at localhost:9090
-    - Might have been a one-time thing. Probably error on very first setup, which has now been persisted in the mount.
 
 
 - It's possible for wrappers to start a process several times by accident. I just had deus being run thrice; with the following inputs:
@@ -43,13 +46,43 @@
     - Maybe wrappers don't check if an input-combination is currently being processed.
 
 
-- Pretty bad connection problems.
+- 
 
 
 
 
 
-# Current
+# Notes about ongoing problems
+
+## 5. Finding where the error occurs
+52N-Wps seems to be configured correctly.
+If I run the request from (4) locally on the wps, adjusting the URL to localhost, I get a localhost-reference back.
+Seems that the error might be in gfz-cli-tool.
+Cannot find the phrase `localhost:8080` outside of a comment on that machine, though.
+
+```xml
+<Server port="8005" shutdown="SHUTDOWN">
+  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+  <GlobalNamingResources>
+    <Resource name="UserDatabase" auth="Container" type="org.apache.catalina.UserDatabase" description="User database that can be updated and saved" factory="org.apache.catalina.users.MemoryUserDatabaseFactory" pathname="conf/tomcat-users.xml" />
+  </GlobalNamingResources>
+  <Service name="Catalina">
+    <Connector port="8080" protocol="HTTP/1.1" connectionTimeout="180000" redirectPort="8443" />  
+    <Engine name="Catalina" defaultHost="localhost">
+      <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm className="org.apache.catalina.realm.UserDatabaseRealm" resourceName="UserDatabase" />
+      </Realm>
+      <Host name="localhost" appBase="webapps" unpackWARs="true" autoDeploy="true">
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" prefix="localhost_access_log" suffix=".txt" pattern="%h %l %u %t &quot;%r&quot; %s %b" />
+      </Host>
+    </Engine>
+  </Service>
+</Server>/
+```
 
 ## 4. Fixing the configuration for riesgos-wps
 After restart of wps-server, still same problem.

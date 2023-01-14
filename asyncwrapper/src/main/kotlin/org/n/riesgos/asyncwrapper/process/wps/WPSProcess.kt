@@ -91,9 +91,9 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
                     (output as StatusInfo).result
                 }
 
-            println(result)
+            LOGGER.info("request result: ${result.toString()}")
             val outputs: List<Data> = result.outputs
-            println(outputs)
+            LOGGER.info("request outputs: ${outputs.toString()}")
             var refOutputs = HashMap<String, MutableList<ReferenceParameter>>()
 
             LOGGER.info("Start extracting results from the wps")
@@ -114,7 +114,7 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
                         LOGGER.info("Stored result for " + complexOutput.id)
                     }
                 }else{
-                    println("did not find expected outut parameter ${expectedOutputIdentifier} in wps result")
+                    println("did not find expected output parameter ${expectedOutputIdentifier} in wps result")
                     throw java.lang.IllegalArgumentException("Not found wps output parameter ${expectedOutputIdentifier}")
                 }
             }
