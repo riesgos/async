@@ -46,10 +46,14 @@
     - Maybe wrappers don't check if an input-combination is currently being processed.
 
 
-- 
+- On smaller machines, lot's of OutOfMemoryError: java.lang.HeapSize
+  - Changing CATALINA_OPTS did not help on my 16GB. 
+  - https://stackoverflow.com/questions/29923531/how-to-set-java-heap-size-xms-xmx-inside-docker-container
 
 
-
+- Something is clearly wrong with my version of the shakemap_sampler
+  - When I parse the input-paras, calling the wps results in an error `Can't read stdout`.
+  - When I just print out something without considering the arguments, its fine.
 
 
 # Notes about ongoing problems

@@ -378,7 +378,7 @@ services:
       dockerfile: metadata/Dockerfile
     image: shakemap_sampler:latest
     volumes:
-      - "shakemap_sampler-metadata:/usr/share/git/shakemap_sampler/metadata"
+      - "./shakemap_sampler/metadata:/usr/share/git/shakemap_sampler/metadata"
 
   wps-init:
     image: python:3.10.5-alpine3.15
@@ -397,7 +397,7 @@ services:
       - "assetmaster-metadata:/wps/processes/assetmaster"
       - "modelprop-metadata:/wps/processes/modelprop"
       - "deus-metadata:/wps/processes/deus"    
-      - "shakemap_sampler-metadata:/wps/processes/shakemap_sampler"
+      - "./shakemap_sampler/metadata:/wps/processes/shakemap_sampler"
       - "riesgos-wps-server-config:/wps/server-config"
     networks:
       - wps
@@ -416,7 +416,6 @@ volumes:
   assetmaster-metadata:
   modelprop-metadata:
   deus-metadata:
-  shakemap_sampler-metadata:
 
 networks:
   db:
