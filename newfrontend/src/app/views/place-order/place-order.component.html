@@ -1,5 +1,5 @@
 
-<app-order-drop></app-order-drop>
+<app-order-drop (fileDropped)="handleNewData($event)"></app-order-drop>
 
-<button (click)="onSendOrderClicked()">Send order</button>
+<button (click)="onSendOrderClicked()" [disabled]="this.orders.length <= 0">Send order</button>
 

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxFileDropEntry } from 'ngx-file-drop';
+import { UserOrder } from 'src/app/services/pulsar/pulsar.service';
 
 @Component({
   selector: 'app-order-drop',
@@ -9,7 +10,7 @@ import { NgxFileDropEntry } from 'ngx-file-drop';
 export class OrderDropComponent implements OnInit {
   
   public files: NgxFileDropEntry[] = [];
-  @Output() fileDropped = new EventEmitter<string>();
+  @Output() fileDropped = new EventEmitter<UserOrder[]>();
 
   constructor() {}
 
@@ -23,18 +24,12 @@ export class OrderDropComponent implements OnInit {
       // Is it a file?
       if (droppedFile.fileEntry.isFile) {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
-        fileEntry.file((f: File) => {
+        fileEntry.file(async (f: File) => {
 
-          // Here you can access the real file
-          console.log(droppedFile.relativePath, f);
+          const text = await f.text();
+          const data: UserOrder[] = JSON.parse(text);
+          this.fileDropped.emit(data);
 
-          const reader = new FileReader();
-          reader.addEventListener('load', event => {
-            const content = event.target?.result;
-            if (content) {
-              if (typeof content === 'string') this.fileDropped.emit(content);
-            }
-          });
         });
       } else {
         // It was a directory (empty directories are added, otherwise only files)
