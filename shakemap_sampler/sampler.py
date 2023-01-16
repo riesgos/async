@@ -37,14 +37,14 @@ def extract_shakemap_data(shakemap_file):
         shakeml = le.parse(shakemap_file)
     except:
         # maybe string
-        parser = le.XMLParser(huge_tree=True)
+        parser = le.XMLParser(huge_tree=True, recover=True, encoding="utf-8")
         # shakeml = le.parse(io.StringIO(shakemlfile),parser)
-        # shakeml = le.parse(shakemlfile,parser)
-        try:
-            inp = io.BytesIO(shakemap_file)
-        except TypeError:
-            inp = io.StringIO(shakemap_file)
-        shakeml = le.parse(inp, parser)
+        shakeml = le.parse(shakemap_file, parser)
+        # try:
+        #     inp = io.BytesIO(shakemap_file)
+        # except TypeError:
+        #     inp = io.StringIO(shakemap_file)
+        # shakeml = le.parse(inp, parser)
     nsmap = shakeml.getroot().nsmap
     shakemlroot = shakeml.getroot()
     
