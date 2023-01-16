@@ -273,6 +273,7 @@ def build_random_shakemap(event,columns,units,grid_data, event_specific_uncertai
     shakemap_id = le.QName("shakemap_id")
     map_status = le.QName("map_status")
     shakemap_event_type = le.QName("shakemap_event_type")
+    shakemap_originator = le.QName("shakemap_originator")
 
     shakeml = le.Element(
         "shakemap_grid",
@@ -289,6 +290,7 @@ def build_random_shakemap(event,columns,units,grid_data, event_specific_uncertai
             #shakemap_originator: provider,
             map_status: "RELEASED",
             shakemap_event_type: event.iloc[0]["type"],
+            shakemap_originator: f"GFZ with random seed: {str(random_seed)}"
         },
         nsmap=nsmap,
     )
@@ -305,7 +307,7 @@ def build_random_shakemap(event,columns,units,grid_data, event_specific_uncertai
     event_timestamp = le.QName("event_timestamp")
     event_network = le.QName("event_network")
     event_description = le.QName("event_description")
-    seed = le.QName("seed")
+    # seed = le.QName("seed")
     smevent = le.SubElement(
         shakeml,
         "event",
@@ -321,7 +323,7 @@ def build_random_shakemap(event,columns,units,grid_data, event_specific_uncertai
             event_timestamp: str(quakeml.event2utc(event.iloc[0])),
             event_network: str(event.iloc[0]["Agency"]),
             event_description: "",
-            seed:str(random_seed),
+            #seed:str(random_seed),
         },
         nsmap=nsmap,
     )

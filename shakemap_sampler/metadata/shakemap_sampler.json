@@ -5,12 +5,12 @@
     "workingDirectory": "/usr/share/git/shakemap_sampler",
     "commandToExecute": "python3 shakemap_sampler.py",
     "exitValueHandler": "logging",
-    "stderrHandler": "logging",
+    "stderrHandler": "pythonTraceback",
     "input": [
         { "title" : "random_seed",    "useAs": "commandLineArgument", "type": "double", "default": "123"             },
         { "title" : "intensity_file", "useAs": "file",                "type": "xml",    "path": "intensity_file.xml" }
      ],
     "output": [
-        { "title": "intensity_output_file", "readFrom": "stdout", "type": "shakemap", "schema": "http://earthquake.usgs.gov/eqcenter/shakemap"}
+        { "title": "intensity_output_file", "readFrom": "stdout", "type": "shakemap" }
     ]
 }
