@@ -115,12 +115,8 @@ export class PlaceOrderComponent implements OnInit {
 
   }
 
-  public formGroup: FormGroup;
 
-  constructor(private pulsar: PulsarService) {
-    this.formGroup = this.makeFormGroup(this.dataModel);
-    this.formGroup.valueChanges.subscribe(v => console.log(v))
-  }
+  constructor(private pulsar: PulsarService) {}
 
   onSendOrderClicked() {
     this.pulsar.postOrder({
@@ -238,57 +234,5 @@ export class PlaceOrderComponent implements OnInit {
   }
 
   ngOnInit(): void { }
-
-  private makeFormGroup(data: any): FormGroup {
-    const controls: any = {};
-    for (const key in data) {
-
-      const value = data[key];
-
-      if (this.isNull(value)) {
-        controls[key] = new FormControl('');
-      }
-      else if (this.isArray(value)) {
-        controls[key] = new FormControl(value[0], [Validators.required, this.createOneOfValidator(value)]);
-      }
-      else if (this.isString(value) || this.isNumber(value)) {
-        controls[key] = new FormControl(value, [Validators.required]);
-      }
-      else {
-        controls[key] = this.makeFormGroup(value);
-      }
-
-    }
-    const fg = new FormGroup(controls);
-    return fg;
-  }
-
-  private createOneOfValidator(options: any[]): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const value = control.value;
-      const oneOfOptions = options.includes(value);
-      return !oneOfOptions ? { notOneOfOptions: true } : null;
-    }
-  }
-
-  public isNull(value: any): boolean {
-    return (value === undefined || value === null);
-  }
-
-  public isArray(value: any): boolean {
-    return (Array.isArray(value) && value.length > 0);
-  }
-
-  public isString(value: any): boolean {
-    return (typeof value === 'string' || value instanceof String);
-  }
-
-  public isNumber(value: any): boolean {
-    return (!isNaN(value) || typeof value === 'number');
-  }
-
-  public isObject(value: any): boolean {
-    return typeof value === 'object' && !this.isArray(value) && !this.isString(value) && !this.isNumber(value);
-  }
 
 }

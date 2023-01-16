@@ -1,56 +1,5 @@
+
+<app-order-drop></app-order-drop>
+
 <button (click)="onSendOrderClicked()">Send order</button>
 
-<!-- <form [formGroup]="formGroup">
-    <div *ngFor="let entry of dataModel | keyvalue">
-        <div style="margin-left: 3%;" *ngIf="isObject(entry.value)">
-            <ng-container [ngTemplateOutlet]="objectTemplate" [ngTemplateOutletContext]="{formGroup: formGroup.controls[entry.key], entry}"></ng-container>
-        </div>
-    </div>
-</form>
-
-
-<ng-template #optionalTemplate let-key="key" let-value="value">
-    <div>Optional: {{ key }}</div>
-</ng-template>
-
-<ng-template #selectTemplate let-key="key" let-value="value">
-    <label [for]="key">{{key}}</label>
-    <select [name]="key" [id]="key" [formControlName]="key">
-        <option *ngFor="let option of value" [value]="option">{{ option }}</option>
-    </select>
-</ng-template>
-
-<ng-template #stringTemplate let-key="key" let-value="value">
-    <label [for]="key">{{key}}</label>
-    <input type="text" [id]="key" [name]="key" [value]="value" [formControlName]="key"/>
-</ng-template>
-
-<ng-template #numberTemplate let-key="key" let-value="value">
-    <label [for]="key">{{key}}</label>
-    <input type="text" [id]="key" [name]="key" [value]="value" [formControlName]="key"/>
-</ng-template>
-
-<ng-template #objectTemplate let-formGroup="formGroup" let-key="entry.key" let-value="entry.value" let-form>
-    <div [formGroup]="formGroup">
-        <h3>{{ key }}</h3>
-        <div *ngFor="let entry of value | keyvalue">
-            <ng-container *ngIf="isNull(entry.value)">
-                <ng-container [ngTemplateOutlet]="optionalTemplate" [ngTemplateOutletContext]="entry"></ng-container>
-            </ng-container>
-            <ng-container *ngIf="isArray(entry.value)">
-                <ng-container [ngTemplateOutlet]="selectTemplate" [ngTemplateOutletContext]="entry"></ng-container>
-            </ng-container>
-            <ng-container *ngIf="isString(entry.value)">
-                <ng-container [ngTemplateOutlet]="stringTemplate" [ngTemplateOutletContext]="entry"></ng-container>
-            </ng-container>
-            <ng-container *ngIf="isNumber(entry.value)">
-                <ng-container [ngTemplateOutlet]="numberTemplate" [ngTemplateOutletContext]="entry"></ng-container>
-            </ng-container>
-            <div style="margin-left: 3%;"  *ngIf="isObject(entry.value)">
-                <ng-container [ngTemplateOutlet]="objectTemplate" [ngTemplateOutletContext]="{formGroup: formGroup.controls[entry.key], entry}"></ng-container>
-            </div>
-        </div>
-    
-    </div>
-</ng-template>
- -->

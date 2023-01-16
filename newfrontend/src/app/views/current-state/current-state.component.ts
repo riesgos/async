@@ -19,7 +19,11 @@ export class CurrentStateComponent implements OnInit {
   constructor(private db: DbService) {}
 
   ngOnInit(): void {
-    interval(1000).subscribe(v => this.onRefresh());
+    interval(1000).subscribe(v => {
+      if (this.db.isLoggedIn()) {
+        this.onRefresh();
+      }
+    });
   }
 
 

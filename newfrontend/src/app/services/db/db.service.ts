@@ -38,6 +38,10 @@ import { UserOrder } from "../pulsar/pulsar.service";
       )
     }
 
+    public isLoggedIn() {
+        return !!this.userSelfInformation;
+    }
+
     placeOrder(order: UserOrder) {
         return this.apiSvc.createOrderApiV1OrdersPost({
             "x-apikey": this.userSelfInformation?.apikey,
