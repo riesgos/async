@@ -22,7 +22,6 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
 
         // take a look at the process description
         val processDescription = wpsClient.getProcessDescription(url, processID, wpsVersion)
-        LOGGER.info("Got process description from ${url}/${processID}/${wpsVersion}: \n ${processDescription}")
 
         // create the request, add literal input
         val executeBuilder = ExecuteRequestBuilder(processDescription)
