@@ -1,20 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OrderDropComponent } from './order-drop.component';
+import { DropfieldComponent } from './dropfield.component';
 
-describe('OrderDropComponent', () => {
-  let component: OrderDropComponent;
-  let fixture: ComponentFixture<OrderDropComponent>;
+describe('DropfieldComponent', () => {
+  let component: DropfieldComponent;
+  let fixture: ComponentFixture<DropfieldComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ OrderDropComponent ]
+      declarations: [ DropfieldComponent ]
     })
     .compileComponents();
-  });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(OrderDropComponent);
+    fixture = TestBed.createComponent(DropfieldComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

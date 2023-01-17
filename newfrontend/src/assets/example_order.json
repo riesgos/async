@@ -73,4 +73,154 @@
         }
 
       }
+    }, {
+      "order_constraints": {
+        "assetmaster": {
+          "literal_inputs": {
+            "lonmin": ["-71.8"],
+            "lonmax": ["-71.4"],
+            "latmin": ["-33.2"],
+            "latmax": ["-33.0"],
+            "schema": ["SARA_v1.0"],
+            "assettype": ["res"],
+            "querymode": ["intersects"],
+            "model": ["ValpCVTBayesian"]
+          }
+        },
+
+        "eq-modelprop": {
+          "literal_inputs": {
+            "schema": ["SARA_v1.0"],
+            "assetcategory": ["buildings"],
+            "losscategory": ["structural"],
+            "taxonomies": ["none"]
+          }
+        },
+
+        "quakeledger": {
+          "literal_inputs": {
+            "mmin": ["6.6"],
+            "mmax": ["8.5"],
+            "zmin": ["5"],
+            "zmax": ["140"],
+            "p": ["0.1"],
+            "tlon": ["-71.5730623712764"],
+            "tlat": ["-33.1299174879672"],
+            "etype": ["observed"]
+          },
+          "bbox_inputs": {
+            "input-boundingbox": [{
+              "lower_corner_x": -72,
+              "lower_corner_y": -34,
+              "upper_corner_x": -70,
+              "upper_corner_y": -32,
+              "crs": "EPSG:4326"
+            }]
+          }
+
+        },
+
+        "shakyground": {
+          "literal_inputs": {
+            "gmpe": ["MontalvaEtAl2016SInter"],
+            "vsgrid": ["USGSSlopeBasedTopographyProxy"]
+          },
+          "complex_inputs": {
+            "quakeMLFile": [{
+                "input_value": "{\"features\":[{\"geometry\":{\"coordinates\":[-77.9318,-12.1908],\"type\":\"Point\"},\"id\":\"quakeml:quakeledger/peru_70000011\",\"properties\":{\"description.text\":\"observed\",\"focalMechanism.nodalPlanes.nodalPlane1.dip.value\":\"20.0\",\"focalMechanism.nodalPlanes.nodalPlane1.rake.value\":\"90.0\",\"focalMechanism.nodalPlanes.nodalPlane1.strike.value\":\"329.0\",\"focalMechanism.nodalPlanes.preferredPlane\":\"nodalPlane1\",\"focalMechanism.publicID\":\"quakeml:quakeledger/peru_70000011\",\"magnitude.creationInfo.value\":\"GFZ\",\"magnitude.mag.value\":\"9.0\",\"magnitude.publicID\":\"quakeml:quakeledger/peru_70000011\",\"magnitude.type\":\"MW\",\"origin.creationInfo.value\":\"GFZ\",\"origin.depth.value\":\"8.0\",\"origin.publicID\":\"quakeml:quakeledger/peru_70000011\",\"origin.time.value\":\"1746-10-28T00:00:00.000000Z\",\"preferredMagnitudeID\":\"quakeml:quakeledger/peru_70000011\",\"preferredOriginID\":\"quakeml:quakeledger/peru_70000011\",\"publicID\":\"quakeml:quakeledger/peru_70000011\",\"selected\":true,\"type\":\"earthquake\"},\"type\":\"Feature\"}],\"type\":\"FeatureCollection\"}",
+                "mime_type": "application/vnd.geo+json",
+                "xmlschema": "",
+                "encoding": "UTF-8"
+            }]
+          }
+        },
+
+        "shakemapresampler": {
+          "literal_inputs": {
+            "random_seed": ["2"]
+          }
+        },
+
+        "eq-deus": {
+          "literal_inputs": {
+            "schema": ["SARA_v1.0"]
+          }
+        }
+
+      }
+    }, {
+      "order_constraints": {
+        "assetmaster": {
+          "literal_inputs": {
+            "lonmin": ["-71.8"],
+            "lonmax": ["-71.4"],
+            "latmin": ["-33.2"],
+            "latmax": ["-33.0"],
+            "schema": ["SARA_v1.0"],
+            "assettype": ["res"],
+            "querymode": ["intersects"],
+            "model": ["ValpCVTBayesian"]
+          }
+        },
+
+        "eq-modelprop": {
+          "literal_inputs": {
+            "schema": ["SARA_v1.0"],
+            "assetcategory": ["buildings"],
+            "losscategory": ["structural"],
+            "taxonomies": ["none"]
+          }
+        },
+
+        "quakeledger": {
+          "literal_inputs": {
+            "mmin": ["6.6"],
+            "mmax": ["8.5"],
+            "zmin": ["5"],
+            "zmax": ["140"],
+            "p": ["0.1"],
+            "tlon": ["-71.5730623712764"],
+            "tlat": ["-33.1299174879672"],
+            "etype": ["observed"]
+          },
+          "bbox_inputs": {
+            "input-boundingbox": [{
+              "lower_corner_x": -72,
+              "lower_corner_y": -34,
+              "upper_corner_x": -70,
+              "upper_corner_y": -32,
+              "crs": "EPSG:4326"
+            }]
+          }
+
+        },
+
+        "shakyground": {
+          "literal_inputs": {
+            "gmpe": ["MontalvaEtAl2016SInter"],
+            "vsgrid": ["USGSSlopeBasedTopographyProxy"]
+          },
+          "complex_inputs": {
+            "quakeMLFile": [{
+                "input_value": "{\"features\":[{\"geometry\":{\"coordinates\":[-77.9318,-12.1908],\"type\":\"Point\"},\"id\":\"quakeml:quakeledger/peru_70000011\",\"properties\":{\"description.text\":\"observed\",\"focalMechanism.nodalPlanes.nodalPlane1.dip.value\":\"20.0\",\"focalMechanism.nodalPlanes.nodalPlane1.rake.value\":\"90.0\",\"focalMechanism.nodalPlanes.nodalPlane1.strike.value\":\"329.0\",\"focalMechanism.nodalPlanes.preferredPlane\":\"nodalPlane1\",\"focalMechanism.publicID\":\"quakeml:quakeledger/peru_70000011\",\"magnitude.creationInfo.value\":\"GFZ\",\"magnitude.mag.value\":\"9.0\",\"magnitude.publicID\":\"quakeml:quakeledger/peru_70000011\",\"magnitude.type\":\"MW\",\"origin.creationInfo.value\":\"GFZ\",\"origin.depth.value\":\"8.0\",\"origin.publicID\":\"quakeml:quakeledger/peru_70000011\",\"origin.time.value\":\"1746-10-28T00:00:00.000000Z\",\"preferredMagnitudeID\":\"quakeml:quakeledger/peru_70000011\",\"preferredOriginID\":\"quakeml:quakeledger/peru_70000011\",\"publicID\":\"quakeml:quakeledger/peru_70000011\",\"selected\":true,\"type\":\"earthquake\"},\"type\":\"Feature\"}],\"type\":\"FeatureCollection\"}",
+                "mime_type": "application/vnd.geo+json",
+                "xmlschema": "",
+                "encoding": "UTF-8"
+            }]
+          }
+        },
+
+        "shakemapresampler": {
+          "literal_inputs": {
+            "random_seed": ["3"]
+          }
+        },
+
+        "eq-deus": {
+          "literal_inputs": {
+            "schema": ["SARA_v1.0"]
+          }
+        }
+
+      }
     }]

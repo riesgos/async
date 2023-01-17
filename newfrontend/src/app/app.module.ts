@@ -10,8 +10,7 @@ import { ApiService } from './backend_api/services';
 import { CurrentStateComponent } from './views/current-state/current-state.component';
 import { PlaceOrderComponent } from './views/place-order/place-order.component';
 import { LogvizComponent } from './views/logviz/logviz.component';
-import { OrderDropComponent } from './components/order-drop/order-drop.component';
-import { NgxFileDropComponent, NgxFileDropModule } from 'ngx-file-drop';
+import { DropfieldComponent } from './components/dropfield/dropfield.component';
 
 @NgModule({
   declarations: [
@@ -19,14 +18,13 @@ import { NgxFileDropComponent, NgxFileDropModule } from 'ngx-file-drop';
     CurrentStateComponent,
     PlaceOrderComponent,
     LogvizComponent,
-    OrderDropComponent
+    DropfieldComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    NgxFileDropModule,
     ApiModule.forRoot({
       rootUrl: 'http://localhost'
     })
