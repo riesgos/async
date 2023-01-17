@@ -9,9 +9,12 @@ export class CollapsibleComponent implements OnInit {
 
   public expanded = false;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
+    console.log('init')
   }
+
 
 }
