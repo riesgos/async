@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BboxParameterConstraints, ComplexParameterConstraints, LiteralParameterConstraints, PulsarService, UserOrder } from 'src/app/services/pulsar/pulsar.service';
 
 
  /**
@@ -90,17 +91,59 @@ export class OrderFormComponent implements OnInit {
   public model = dataModel;
   public formGroup = new FormGroup({});
 
-  constructor() { }
+  constructor(private pulsar: PulsarService) { }
 
   ngOnInit(): void {
     // this.formGroup.valueChanges.subscribe(v => console.log('new value', v));
   }
 
   download() {
-    console.log('downloading', this.formGroup.value)
+    const order = this.modelToOrder(this.formGroup.value);
+    this.downloadJson('order', order);
   }
 
   submit() {
-    console.log('submitting', this.formGroup.value)
+    const order = this.modelToOrder(this.formGroup.value);
+    this.pulsar.postOrder(order).subscribe(success => console.log(`order transmitted with ${success ? 'success' : 'failure'}`));
+  }
+
+  private modelToOrder(model: DataModel): UserOrder {
+
+    const order: UserOrder = {
+      order_constraints: {}
+    };
+
+    for (const service in model) {
+      const serviceData = model[service];
+      const literalInputs: LiteralParameterConstraints = {};
+      const bboxInputs: BboxParameterConstraints = {};
+      const complexInputs: ComplexParameterConstraints = {};
+
+      for (const parameter in serviceData) {
+        const parameterData = serviceData[parameter];
+
+        if (typeof parameterData === 'string') {
+          literalInputs[parameter] = [parameterData];
+        }
+        // @TODO: bbox and complex inputs
+      }
+
+      order.order_constraints[service] = {
+        literal_inputs: literalInputs,
+        bbox_inputs: bboxInputs,
+        complex_inputs: complexInputs
+      };
+    }
+    return order;
+  }
+
+  private downloadJson(name: string, data: any) {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", name + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
   }
 }
