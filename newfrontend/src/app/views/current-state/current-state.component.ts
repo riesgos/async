@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, delay, forkJoin, map, Observable, of, interval } from 'rxjs';
 import { Job, Order, Process, Product, ProductType } from 'src/app/backend_api/models';
-import { DbService } from 'src/app/services/db/db.service';
+import { DbService, ProductInformation } from 'src/app/services/db/db.service';
 
 @Component({
   selector: 'app-current-state',
@@ -11,7 +11,7 @@ import { DbService } from 'src/app/services/db/db.service';
 export class CurrentStateComponent implements OnInit {
 
   public productTypes$   = new BehaviorSubject<ProductType[]>([]);
-  public products$       = new BehaviorSubject<{product: Product, baseProducts: Product[], derivedProducts: Product[]}[]>([]);
+  public products$       = new BehaviorSubject<ProductInformation[]>([]);
   public processes$      = new BehaviorSubject<Process[]>([]);
   public jobs$           = new BehaviorSubject<Job[]>([]);
   public orders$         = new BehaviorSubject<Order[]>([]);
@@ -34,6 +34,11 @@ export class CurrentStateComponent implements OnInit {
     });
     this.db.getProducts().subscribe(products => {
       const sorted = products.sort((a, b) => a.product.id > b.product.id ? -1 : 1);
+      for (const entry of sorted) {
+        if (entry.link) {
+          entry.link = entry.link.replace('http://filestorage:9000/riesgosfiles', 'http://localhost/api/v1/files');
+        }
+      }
       this.products$.next(sorted);
     });
     this.db.getProcesses().subscribe(processes => {

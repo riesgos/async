@@ -1,8 +1,16 @@
 import { Injectable } from "@angular/core";
 import { catchError, defaultIfEmpty, forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
-import { Job, Order, Process, Product, ProductType, UserSelfInformation } from "src/app/backend_api/models";
+import { ComplexOutput, Job, Order, Process, Product, ProductType, UserSelfInformation } from "src/app/backend_api/models";
 import { ApiService } from "src/app/backend_api/services";
 import { UserOrder } from "../pulsar/pulsar.service";
+
+export interface ProductInformation {
+    inputs: string[],
+    product: Product,
+    link?: string,
+    derived: string[]
+}
+
 
 @Injectable({
     providedIn: 'root'
@@ -65,16 +73,32 @@ import { UserOrder } from "../pulsar/pulsar.service";
     }
 
     getProducts() {
-        return this.apiSvc.readListApiV1ProductsGet().pipe(
-            switchMap((products: Product[]) => {
+        const products$ = this.apiSvc.readListApiV1ProductsGet();
+        const complexOutputs$ = this.apiSvc.readListApiV1ComplexOutputsGet();
 
-                const tasks$: Observable<{product: Product, baseProducts: Product[], derivedProducts: Product[]}>[] = [];
+        return forkJoin([products$, complexOutputs$]).pipe(
+            switchMap(([products, complexOutputs]) => {
+
+                const tasks$: Observable<ProductInformation>[] = [];
                 for (const product of products) {
                     const details$ = this.apiSvc.readDetailApiV1ProductsProductIdGet({ product_id: product.id });
                     const baseProds$ = this.apiSvc.readBaseProductsApiV1ProductsProductIdBaseProductsGet({ product_id: product.id });
                     const derivedProds$ = this.apiSvc.readDervicedProductsApiV1ProductsProductIdDerivedProductsGet({ product_id: product.id });
-                    const task$: Observable<{product: Product, baseProducts: Product[], derivedProducts: Product[]}> = forkJoin([details$, baseProds$, derivedProds$]).pipe(map(([details, base, derived]) => {
-                        return {product: details, baseProducts: base, derivedProducts: derived};
+                    const task$: Observable<ProductInformation> = forkJoin([details$, baseProds$, derivedProds$, complexOutputs$]).pipe(map(([details, base, derived]) => {
+                        const productInfo: ProductInformation = {
+                            product: details,
+                            inputs: base.map(p => `${p.name} (${p.id})`),
+                            derived: derived.map(p => `${p.name} (${p.id})`),
+                        };
+
+
+                        // @TODO: pretty sure that this is not the correct kind of matching.
+                        const complexOutput = complexOutputs.find(co => co.job_id === product.id);
+                        if (complexOutput) {
+                            productInfo.link = complexOutput.link;
+                        }
+
+                        return productInfo;
                     }));
                     tasks$.push(task$);
                 }

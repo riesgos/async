@@ -36,10 +36,11 @@
         <th>DerivedProducts</th>
     </tr>
     <tr *ngFor="let product of products">
-        <td>{{ product.baseProducts | json }}</td>
+        <td>{{ product.inputs | json }}</td>
         <td>{{ product.product.id }}</td>
-        <td>{{ product.product.name }}</td>
-        <td>{{ product.derivedProducts | json }}</td>
+        <td *ngIf="!(product.link)">{{ product.product.name }}</td>
+        <td *ngIf="product.link"><a [href]="product.link" target="_blank">{{ product.product.name }}</a></td>
+        <td>{{ product.derived | json }}</td>
     </tr>
 </table>
 
