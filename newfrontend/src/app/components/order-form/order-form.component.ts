@@ -24,7 +24,7 @@ export interface ServiceDataModel {
 
 export type ParameterModel = string | string[] | ServiceDataModel;
 
- export const dataModel: DataModel = {
+export const dataModel: DataModel = {
 
   quakeledger: {
     lonmin: {
@@ -104,6 +104,7 @@ export class OrderFormComponent implements OnInit {
 
   submit() {
     const order = this.modelToOrder(this.formGroup.value);
+    console.log(`submitting order: `, order);
     this.pulsar.postOrder(order).subscribe(success => console.log(`order transmitted with ${success ? 'success' : 'failure'}`));
   }
 
