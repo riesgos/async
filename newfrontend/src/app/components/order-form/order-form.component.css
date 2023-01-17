@@ -1,11 +1,10 @@
-.placeOrder {
-    margin: 1% 25% 1% 25%;
+.orderFormContainer {
     background-color: var(--accent-bg);
     border-radius: 1.5%;
-    /* padding: 0 0.5% 0 0.5%; */
+    padding: 0 0.5% 0 0.5%;
 }
 
-.buttonContainer { 
+.buttonContainer {
     display: flex;
     justify-content: space-between;
 }

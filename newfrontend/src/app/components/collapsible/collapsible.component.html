@@ -1,0 +1,9 @@
+<div>
+    <ng-template [ngIf]="expanded">
+        <a href="" (click)="expanded = false">collapse</a>
+        <ng-content></ng-content>
+    </ng-template>
+    <ng-template [ngIf]="!expanded">
+        <a href="" (click)="expanded = true">expand</a>
+    </ng-template>
+</div>

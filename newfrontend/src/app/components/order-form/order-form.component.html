@@ -1,0 +1,11 @@
+<div class="orderFormContainer">
+    <h4>Order-form</h4>
+    <app-collapsible>
+        <div style="margin-left: 2%">
+            <app-service-order-form *ngFor="let entry of model | keyvalue" [title]="entry.key" [data]="entry.value" [formGroup]="formGroup"></app-service-order-form>
+        </div>
+        <div class="buttonContainer">
+            <button click="submit()">Submit as order</button> <button (click)="download()">Download as json</button>
+        </div>
+    </app-collapsible>
+</div>

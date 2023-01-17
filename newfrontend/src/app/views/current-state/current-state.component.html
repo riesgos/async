@@ -16,16 +16,6 @@
     </tr>
 </table>
 
-<h4>Product types</h4>
-<table *ngIf="productTypes$ | async as productTypes; else loading">
-    <tr>
-        <th>ProductTypeName</th>
-    </tr>
-    <tr *ngFor="let productType of productTypes">
-        <td>{{ productType.name }}</td>
-    </tr>
-</table>
-
 
 <h4>Products</h4>
 <table *ngIf="products$ | async as products; else loading">
@@ -41,6 +31,17 @@
         <td *ngIf="!(product.link)">{{ product.product.name }}</td>
         <td *ngIf="product.link"><a [href]="product.link" target="_blank">{{ product.product.name }}</a></td>
         <td>{{ product.derived | json }}</td>
+    </tr>
+</table>
+
+
+<h4>Product types</h4>
+<table *ngIf="productTypes$ | async as productTypes; else loading">
+    <tr>
+        <th>ProductTypeName</th>
+    </tr>
+    <tr *ngFor="let productType of productTypes">
+        <td>{{ productType.name }}</td>
     </tr>
 </table>
 

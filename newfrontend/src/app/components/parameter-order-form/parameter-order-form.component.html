@@ -1,0 +1,12 @@
+<p>{{ title }}</p>
+
+
+<ng-template [ngIf]="isString(data)">
+    <input [formControl]="formControl" type="text" name="" id="" [value]="data">
+</ng-template>
+
+<ng-template [ngIf]="isArray(data)">
+    <select [formControl]="formControl" name="" id="">
+        <option *ngFor="let entry of data" [value]="entry" [selected]="formControl.value === entry">{{ entry }}</option>
+    </select>
+</ng-template>
