@@ -10,3 +10,8 @@
         <option *ngFor="let entry of data" [value]="entry" [selected]="formControl.value === entry">{{ entry }}</option>
     </select>
 </ng-template>
+
+
+<ng-template [ngIf]="isComplex(data)">
+    <app-service-order-form [formGroup]="subFormGroup"></app-service-order-form>
+</ng-template>
