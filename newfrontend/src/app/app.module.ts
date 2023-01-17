@@ -15,7 +15,7 @@ import { PaginatedTableComponent } from './components/paginated-table/paginated-
 import { OrderFormComponent } from './components/order-form/order-form.component';
 import { ServiceOrderFormComponent } from './components/service-order-form/service-order-form.component';
 import { ParameterOrderFormComponent } from './components/parameter-order-form/parameter-order-form.component';
-import { CollapsibleComponent } from './components/collapsible/collapsible.component';
+import { CollapsableComponent } from './components/collapsable/collapsable.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +28,7 @@ import { CollapsibleComponent } from './components/collapsible/collapsible.compo
     OrderFormComponent,
     ServiceOrderFormComponent,
     ParameterOrderFormComponent,
-    CollapsibleComponent
+    CollapsableComponent
   ],
   imports: [
     BrowserModule,
