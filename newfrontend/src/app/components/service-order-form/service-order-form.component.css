@@ -1,4 +1,10 @@
 .serviceOrderEntriesContainer {
     display: flex;
     margin-left: 3%;
+    flex-wrap: wrap;
+    gap: 1%;
+}
+
+.serviceOrderEntry {
+    /* flex: 1; */
 }

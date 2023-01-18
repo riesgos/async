@@ -1,5 +1,5 @@
 <p style="font-weight: bold;">{{ title }}</p>
 
 <div class="serviceOrderEntriesContainer">
-    <app-parameter-order-form *ngFor="let entry of data | keyvalue" [title]="entry.key" [data]="entry.value" [formGroup]="subFormGroup"></app-parameter-order-form>
+    <app-parameter-order-form class="serviceOrderEntry" *ngFor="let entry of data | keyvalue" [title]="entry.key" [data]="entry.value" [formGroup]="subFormGroup"></app-parameter-order-form>
 </div>

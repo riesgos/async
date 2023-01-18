@@ -1,3 +1,8 @@
+"""
+A simple example of how one might go about calling the wps'es from a script
+for use in Hugo's uncertainty analysis.
+"""
+
 #%%
 from owslib.wps import WebProcessingService, monitorExecution
 

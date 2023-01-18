@@ -1,5 +1,11 @@
 # Tips
 
+## TODOs
+- invite to sprint-planning and sprint
+- link products to filestorage
+- frontend to container
+- merge
+
 ## Docker
 
 - When in office: Cable in, VPN off, Wifi off. Otherwise connection-problems between the docker-containers.
@@ -27,9 +33,6 @@
 - localhost:9090 -> filestorage
 
 
-## Notes
-
-- Good: I've observed services attempting to do a failed calculation again when a new order comes in.
 
 ## Ongoing problems
 
@@ -40,10 +43,9 @@
 
 - Attempt to re-connect to wps from wrapper a few times if network-connection is shaky.
 
-
 - It's possible for wrappers to start a process several times by accident. I just had deus being run thrice; with the following inputs:
     - [ { "id": 100, "product_type_id": 28, "name": "org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess output (100)" }, { "id": 95, "product_type_id": 27, "name": "org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess output (95)" }, { "id": 101, "product_type_id": 26, "name": "org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess output (101)" } ]	106	org.n52.gfz.riesgos.algorithm.impl.DeusProcess output (106)	[]
-    - Maybe wrappers don't check if an input-combination is currently being processed.
+    - Maybe wrappers don't check if one input-combination is currently being processed.
 
 
 - On smaller machines, lot's of OutOfMemoryError: java.lang.HeapSize
