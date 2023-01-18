@@ -4,13 +4,16 @@ import { ComplexOutput, Job, Order, Process, Product, ProductType, UserSelfInfor
 import { ApiService } from "src/app/backend_api/services";
 import { UserOrder } from "../pulsar/pulsar.service";
 
-export interface ProductInformation {
-    inputs: string[],
-    product: Product,
-    link?: string,
-    derived: string[]
-}
 
+export interface ProductInfo {
+    orderId: number,
+    processId: string,
+    paraId: string,
+    link: string,
+    complexOutputId: number,
+    baseProducts: number[],
+    derivedProducts: number[]
+}
 
 @Injectable({
     providedIn: 'root'
@@ -73,40 +76,91 @@ export interface ProductInformation {
     }
 
     getProducts() {
-        const products$ = this.apiSvc.readListApiV1ProductsGet();
+        const jobs$ = this.apiSvc.readListApiV1JobsGet({ status: 'Succeeded' });
+        const processes$ = this.getProcesses();
+        const ojr$ = this.apiSvc.readListApiV1OrderJobRefsGet();
         const complexOutputs$ = this.apiSvc.readListApiV1ComplexOutputsGet();
 
-        return forkJoin([products$, complexOutputs$]).pipe(
-            switchMap(([products, complexOutputs]) => {
+        return forkJoin([jobs$, processes$, ojr$, complexOutputs$]).pipe(
+            map(([jobs, processes, ojr, complexOutputs]) => {
+                const output: ProductInfo[] = [];
+                for (const job of jobs) {
 
-                const tasks$: Observable<ProductInformation>[] = [];
-                for (const product of products) {
-                    const details$ = this.apiSvc.readDetailApiV1ProductsProductIdGet({ product_id: product.id });
-                    const baseProds$ = this.apiSvc.readBaseProductsApiV1ProductsProductIdBaseProductsGet({ product_id: product.id });
-                    const derivedProds$ = this.apiSvc.readDervicedProductsApiV1ProductsProductIdDerivedProductsGet({ product_id: product.id });
-                    const task$: Observable<ProductInformation> = forkJoin([details$, baseProds$, derivedProds$, complexOutputs$]).pipe(map(([details, base, derived]) => {
-                        const productInfo: ProductInformation = {
-                            product: details,
-                            inputs: base.map(p => `${p.name} (${p.id})`),
-                            derived: derived.map(p => `${p.name} (${p.id})`),
-                        };
+                    const orderId = ojr.find(e => e.job_id === job.id)?.order_id;
+                    const processId = processes.find(p => p.id === job.process_id)?.wps_identifier;
+                    const complexOutput = complexOutputs.find(c => c.job_id === job.id);
+                    if (!orderId || !processId || !complexOutput) continue;
+                    const paraId = complexOutput.wps_identifier;
+                    const link = complexOutput.link;
+                    const complexOutputId = complexOutput.id;
 
-
-                        // @TODO: pretty sure that this is not the correct kind of matching.
-                        const complexOutput = complexOutputs.find(co => co.job_id === product.id);
-                        if (complexOutput) {
-                            productInfo.link = complexOutput.link;
-                        }
-
-                        return productInfo;
-                    }));
-                    tasks$.push(task$);
+                    const productData: ProductInfo = {
+                        orderId: orderId,
+                        processId: processId,
+                        paraId: paraId,
+                        link: link,
+                        complexOutputId: complexOutputId,
+                        baseProducts: [],
+                        derivedProducts: []
+                    };
+                    output.push(productData);
                 }
-
+                return output;
+            }),
+            switchMap(data => {
+                const tasks$: Observable<ProductInfo>[] = [];
+                for (const datum of data) {
+                    const baseProds$ = this.apiSvc.readBaseProductsApiV1ProductsProductIdBaseProductsGet({ product_id: datum.complexOutputId });
+                    const derivedProds$ = this.apiSvc.readDervicedProductsApiV1ProductsProductIdDerivedProductsGet({ product_id: datum.complexOutputId });
+                    const subTask$ = forkJoin([baseProds$, derivedProds$]).pipe(
+                        map(([baseProds, derivedProds]) => {
+                            datum.baseProducts = baseProds.map(p => p.id);
+                            datum.derivedProducts = derivedProds.map(p => p.id);
+                            return datum;
+                        })
+                    )
+                    tasks$.push(subTask$);
+                }
                 return forkJoin(tasks$).pipe(defaultIfEmpty([]));
             })
         );
     }
+
+//     getProductsOld() {
+//         const products$ = this.apiSvc.readListApiV1ProductsGet();
+//         const complexOutputs$ = this.apiSvc.readListApiV1ComplexOutputsGet();
+
+//         return forkJoin([products$, complexOutputs$]).pipe(
+//             switchMap(([products, complexOutputs]) => {
+// console.log(complexOutputs)
+//                 const tasks$: Observable<ProductInformation>[] = [];
+//                 for (const product of products) {
+//                     const details$ = this.apiSvc.readDetailApiV1ProductsProductIdGet({ product_id: product.id });
+//                     const baseProds$ = this.apiSvc.readBaseProductsApiV1ProductsProductIdBaseProductsGet({ product_id: product.id });
+//                     const derivedProds$ = this.apiSvc.readDervicedProductsApiV1ProductsProductIdDerivedProductsGet({ product_id: product.id });
+//                     const task$: Observable<ProductInformation> = forkJoin([details$, baseProds$, derivedProds$, complexOutputs$]).pipe(map(([details, base, derived]) => {
+//                         const productInfo: ProductInformation = {
+//                             product: details,
+//                             inputs: base.map(p => `${p.name} (${p.id})`),
+//                             derived: derived.map(p => `${p.name} (${p.id})`),
+//                         };
+
+
+//                         // @TODO: pretty sure that this is not the correct kind of matching.
+//                         const complexOutput = complexOutputs.find(co => co.job_id === product.id);
+//                         if (complexOutput) {
+//                             productInfo.link = complexOutput.link;
+//                         }
+
+//                         return productInfo;
+//                     }));
+//                     tasks$.push(task$);
+//                 }
+
+//                 return forkJoin(tasks$).pipe(defaultIfEmpty([]));
+//             })
+//         );
+//     }
   
     getProcesses() {
         return this.apiSvc.readListApiV1ProcessesGet().pipe(

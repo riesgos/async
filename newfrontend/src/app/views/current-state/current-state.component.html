@@ -21,16 +21,15 @@
 <table *ngIf="products$ | async as products; else loading">
     <tr>
         <th>BaseProducts</th>
-        <th>ProductId</th>
+        <th>complexOutputId</th>
         <th>ProductName</th>
         <th>DerivedProducts</th>
     </tr>
     <tr *ngFor="let product of products">
-        <td>{{ product.inputs | json }}</td>
-        <td>{{ product.product.id }}</td>
-        <td *ngIf="!(product.link)">{{ product.product.name }}</td>
-        <td *ngIf="product.link"><a [href]="product.link" target="_blank">{{ product.product.name }}</a></td>
-        <td>{{ product.derived | json }}</td>
+        <td>{{ product.baseProducts | json }}</td>
+        <td>{{ product.complexOutputId }}</td>
+        <td><a [href]="product.link" target="_blank">{{ product.processId + " " + product.paraId }}</a></td>
+        <td>{{ product.derivedProducts | json }}</td>
     </tr>
 </table>
 

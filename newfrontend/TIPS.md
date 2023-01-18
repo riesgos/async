@@ -1,10 +1,5 @@
 # Tips
 
-## TODOs
-- invite to sprint-planning and sprint
-- link products to filestorage
-- frontend to container
-- merge
 
 ## Docker
 
@@ -31,6 +26,27 @@
 - localhost:8082/manager
 - localhost:8082/geoserver
 - localhost:9090 -> filestorage
+
+
+Getting products:
+postgres=# 
+select co.wps_identifier, co.link, p.wps_identifier, ojr.order_id 
+    from complex_outputs as co 
+    join jobs as j on co.job_id = j.id 
+    join processes as p on j.process_id = p.id 
+    join order_job_refs as ojr on j.id = ojr.job_id;
+    
+   wps_identifier    |                                     link                                      |                    wps_identifier                     | order_id 
+---------------------+-------------------------------------------------------------------------------+-------------------------------------------------------+----------
+ selectedRows        | http://filestorage:9000/riesgosfiles/542D7AC160040F79AC93451BC6133257E3EB3871 | org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess   |        1
+ selectedRows        | http://filestorage:9000/riesgosfiles/542D7AC160040F79AC93451BC6133257E3EB3871 | org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess   |        2
+ selectedRows        | http://filestorage:9000/riesgosfiles/7B9EE041AB9C14EED5787BB37D8DBDFADA33DA0C | org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess |        2
+ selectedRows        | http://filestorage:9000/riesgosfiles/605E2A910BB53A241F70D7A515E1D227884B90E1 | org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess |        2
+ shakeMapFile        | http://filestorage:9000/riesgosfiles/B312B26FBAE05197046986FD1148E9D6DB7D10DA | org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess |        2
+ shakeMapFile        | http://filestorage:9000/riesgosfiles/6A06F49A7996BEC897729CDBE88539A23526F9D0 | org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess |        2
+ selectedRows        | http://filestorage:9000/riesgosfiles/542D7AC160040F79AC93451BC6133257E3EB3871 | org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess   |        3
+ selectedRows        | http://filestorage:9000/riesgosfiles/542D7AC160040F79AC93451BC6133257E3EB3871 | org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess   |        4
+ selectedRowsGeoJson | http://filestorage:9000/riesgosfiles/51768D5104799C07C72250C9F8E37853D4300B1D | org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess |        4
 
 
 

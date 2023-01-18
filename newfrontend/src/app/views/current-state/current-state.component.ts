@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, delay, forkJoin, map, Observable, of, interval } from 'rxjs';
 import { Job, Order, Process, Product, ProductType } from 'src/app/backend_api/models';
-import { DbService, ProductInformation } from 'src/app/services/db/db.service';
+import { DbService, ProductInfo } from 'src/app/services/db/db.service';
 
 @Component({
   selector: 'app-current-state',
@@ -11,7 +11,7 @@ import { DbService, ProductInformation } from 'src/app/services/db/db.service';
 export class CurrentStateComponent implements OnInit {
 
   public productTypes$   = new BehaviorSubject<ProductType[]>([]);
-  public products$       = new BehaviorSubject<ProductInformation[]>([]);
+  public products$       = new BehaviorSubject<ProductInfo[]>([]);
   public processes$      = new BehaviorSubject<Process[]>([]);
   public jobs$           = new BehaviorSubject<Job[]>([]);
   public orders$         = new BehaviorSubject<Order[]>([]);
@@ -19,7 +19,7 @@ export class CurrentStateComponent implements OnInit {
   constructor(private db: DbService) {}
 
   ngOnInit(): void {
-    interval(1000).subscribe(v => {
+    interval(5000).subscribe(v => {
       if (this.db.isLoggedIn()) {
         this.onRefresh();
       }
@@ -33,7 +33,7 @@ export class CurrentStateComponent implements OnInit {
       this.productTypes$.next(sorted);
     });
     this.db.getProducts().subscribe(products => {
-      const sorted = products.sort((a, b) => a.product.id > b.product.id ? -1 : 1);
+      const sorted = products.sort((a, b) => a.complexOutputId > b.complexOutputId ? -1 : 1);
       for (const entry of sorted) {
         if (entry.link) {
           entry.link = entry.link.replace('http://filestorage:9000/riesgosfiles', 'http://localhost/api/v1/files');

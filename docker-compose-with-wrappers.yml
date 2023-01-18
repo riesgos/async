@@ -219,7 +219,7 @@ services:
     networks:
       - db
       - filestorage
-      # - web
+      - web
     environment:
       ROOT_PATH: '/api/v1'
       SQLALCHEMY_DATABASE_URL: 'postgresql://postgres:postgres@db:5432/postgres'
@@ -285,17 +285,16 @@ services:
       MINIO_PORT: 9000
       MINIO_BUCKET_NAME: riesgosfiles
 
-  # frontend:
-  #   image: async-frontend
-  #   build:
-  #     context: frontend
-  #   ports:
-  #     - 4200:4200
-  #   networks:
-  #     - web
-  #   volumes:
-  #     - './frontend:/usr/src/app'
-  #     - './node-test-wss:/usr/src/node-test-wss'
+  frontend:
+    image: async-frontend
+    build:
+      context: newfrontend
+    ports:
+      - 4200:4200
+    networks:
+      - web
+    volumes:
+      - './newfrontend:/usr/src/app'
 
   reverse_proxy:
     image: nginx:1.23.2-alpine
@@ -303,7 +302,7 @@ services:
       - 80:80
     networks:
       - filestorage
-      # - web
+      - web
       - wps
     depends_on:
       - backend
@@ -421,5 +420,5 @@ networks:
   db:
   queue:
   filestorage:
-  # web:
+  web:
   wps:
