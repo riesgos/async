@@ -1,0 +1,11 @@
+
+
+<h4>{{ title }}</h4>
+<table>
+    <tr>
+        <th *ngFor="let column of columnNames">{{ column }}</th>
+    </tr>
+    <tr *ngFor="let row of rows">
+        <td *ngFor="let entry of row | keyvalue">{{ entry.value }}</td>
+    </tr>
+</table>

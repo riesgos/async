@@ -1,5 +1,6 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import org.n.riesgos.asyncwrapper.config.FilestorageConfig
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
@@ -14,8 +15,8 @@ import java.util.logging.Logger
 
 
 class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration,
-                          publisher: PulsarPublisher
-) : AbstractWrapper(publisher, wpsConfig) {
+                          publisher: PulsarPublisher, filestorageConfig: FilestorageConfig
+) : AbstractWrapper(publisher, wpsConfig, filestorageConfig) {
 
     private val wpsURL = wpsConfig.wpsURL
     private val wpsShakygroundProcessIdentifier = wpsConfig.process

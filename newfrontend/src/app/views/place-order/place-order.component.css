@@ -1,0 +1,11 @@
+.placeOrder {
+    margin: 1% 25% 1% 25%;
+    background-color: var(--accent-bg);
+    border-radius: 3%;
+    padding: 1%;
+}
+
+.buttonContainer { 
+    display: flex;
+    justify-content: space-between;
+}

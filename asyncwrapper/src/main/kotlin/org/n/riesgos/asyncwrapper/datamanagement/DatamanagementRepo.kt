@@ -25,7 +25,8 @@ class DatamanagementRepo (
         val bboxInputRepo: BboxInputRepo,
         val orderJobRefRepo: OrderJobRefRepo,
         val complexOutputRepo: ComplexOutputRepo,
-        val orderRepo: OrderRepo
+        val orderRepo: OrderRepo,
+        val storedLinkRepo: StoredLinkRepo
 ) {
     /**
      * Extracts the constraints of the order as json object.
@@ -87,20 +88,20 @@ class DatamanagementRepo (
     }
 
     /**
-     * Return true if the process with the exact input parameters
+     * Return a job id if the process with the exact input parameters
      * already has an job id in the database.
      *
      * Considers complex inputs (ref or value, or even reused outputs),
      * literal inputs, and bbox inputs.
      */
     // TODO maybe this should be synchronized (but how to do that in Kotlin?)
-    fun hasAlreadyProcessed(
+    fun jobIdHasAlreadyProcessed(
             processIdentifier: String,
             jobStatus: String,
             complexInputs: Map<String, ComplexInputConstraint>,
             literalInputs: Map<String, String>,
             bboxInputs: Map<String, BBoxInputConstraint>
-    ): Boolean {
+    ): Optional<Long> {
 
         val jobIdSet = HashSet<Long>()
         var jobIdSetNotSetYet = true
@@ -138,7 +139,7 @@ class DatamanagementRepo (
             // if we all of them are empty, we never used that complex input
             // so there is no way a job has already processed those
             if (searchForThisComplexInput.isEmpty() && searchForThisComplexInputAsValue.isEmpty() && searchForThisComplexOutputAsInput.isEmpty()) {
-                return false
+                return Optional.empty()
             }
             // If we have outputs, we want to extract the job ids, so that
             // we can check if we have a common job with the other inputs.
@@ -158,7 +159,7 @@ class DatamanagementRepo (
             // if we realized we don't have a common base set with the other inputs
             // there is no way that this exact parameter set was already executed.
             if (jobIdSet.isEmpty()) {
-                return false
+                return Optional.empty()
             }
         }
         // same question for the literal inputs
@@ -167,7 +168,7 @@ class DatamanagementRepo (
             val searchForThisLiteralInput = literalInputRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierAndValue(processIdentifier, jobStatus, literalInputKey, literalInput!!)
 
             if (searchForThisLiteralInput.isEmpty()) {
-                return false
+                return Optional.empty()
             }
             val literalInputJobIds = searchForThisLiteralInput.stream().map({ x -> x.jobId}).distinct().collect(Collectors.toSet())
             if (jobIdSetNotSetYet) {
@@ -177,7 +178,7 @@ class DatamanagementRepo (
                 jobIdSet.retainAll(literalInputJobIds)
             }
             if (jobIdSet.isEmpty()) {
-                return false
+                return Optional.empty()
             }
         }
         // same for the bbox inputs
@@ -194,7 +195,7 @@ class DatamanagementRepo (
                     bboxInput.crs
             )
             if (searchForThisBboxInput.isEmpty()) {
-                return false
+                return Optional.empty()
             }
             val literalInputJobIds = searchForThisBboxInput.stream().map { x -> x.jobId }.distinct().collect(Collectors.toSet())
             if (jobIdSetNotSetYet) {
@@ -203,7 +204,7 @@ class DatamanagementRepo (
                 jobIdSet.retainAll(literalInputJobIds)
             }
             if (jobIdSet.isEmpty()) {
-                return false
+                return Optional.empty()
             }
         }
 
@@ -269,12 +270,12 @@ class DatamanagementRepo (
             }
             if (usedWpsIdentifiersInThatJob.isEmpty()) {
                 // Now we have found a job id that had the same input parameters (and no others!)
-                return true
+                return Optional.of(jobId)
             }
         }
 
         // either we haven't found an job that has all the identifiers, or the job had more input parameters
-        return false
+        return Optional.empty()
     }
 
     /**

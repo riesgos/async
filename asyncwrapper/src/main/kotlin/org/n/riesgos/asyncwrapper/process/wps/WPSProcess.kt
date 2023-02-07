@@ -9,6 +9,7 @@ import org.n52.geoprocessing.wps.client.encoder.WPS20ExecuteEncoder
 import org.n52.geoprocessing.wps.client.model.*
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.sql.Ref
+import java.util.*
 import java.util.logging.Logger
 
 
@@ -54,7 +55,21 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
 
         for (parameterOut in expectedOutputs) { //set expected output parameters
             executeBuilder.setResponseDocument(parameterOut.wpsIdentifier, parameterOut.xmlschema, parameterOut.encoding, parameterOut.mimeType)
-            executeBuilder.setAsReference(parameterOut.wpsIdentifier, true)
+            // executeBuilder.setAsReference(parameterOut.wpsIdentifier, true)
+            //
+            // unfortunately the executeBuilder.setAsReference method doesn't deal with situations
+            // in that we could have multiple outputs for the same identifier (say multiple formats)
+
+            // So we must do that ourselves. (But we are able to check the source code so we
+            // are lucky.
+            for (output in executeBuilder.execute.getOutputs()) {
+                if (output.id == parameterOut.wpsIdentifier) {
+                    output.transmissionMode = TransmissionMode.REFERENCE
+                }
+            }
+
+
+
         }
 
         // build and send the request document
@@ -65,6 +80,7 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
             val requestText = WPS20ExecuteEncoder.encode(executeRequest)
             LOGGER.info(requestText)
 
+            // @TODO: if falure due to network-problems, repeat n times before giving up.
             val output = wpsClient.execute(url, executeRequest, wpsVersion)
 
             var result: org.n52.geoprocessing.wps.client.model.Result =
@@ -74,28 +90,31 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
                     (output as StatusInfo).result
                 }
 
-            println(result)
+            LOGGER.info("request result: ${result.toString()}")
             val outputs: List<Data> = result.outputs
-            println(outputs)
+            LOGGER.info("request outputs: ${outputs.toString()}")
             var refOutputs = HashMap<String, MutableList<ReferenceParameter>>()
 
             LOGGER.info("Start extracting results from the wps")
-            for(expectedOutput in expectedOutputs){
-                val output = getOutputById(expectedOutput.wpsIdentifier, outputs)
-                if(output != null){
-                    val complexOutput = output.asComplexReferenceData()
-                    val format = complexOutput.format
-                    val schema = emptyStringIfNull(format.schema)
-                    val outputParam = ReferenceParameter(complexOutput.id, complexOutput.reference.href.toString(), format.mimeType, format.encoding, schema)
-                    if(!refOutputs.containsKey(complexOutput.id)){
-                        refOutputs[complexOutput.id] = mutableListOf(outputParam)
-                    }else{
-                        refOutputs[complexOutput.id]!!.add(outputParam)
+            val setOutputIdentifiers = HashSet(expectedOutputs.map { it.wpsIdentifier})
+            for(expectedOutputIdentifier in setOutputIdentifiers){
+                val outputs = getOutputsById(expectedOutputIdentifier, outputs)
+                if(!outputs.isEmpty()){
+                    for (output in outputs) {
+                        val complexOutput = output.asComplexReferenceData()
+                        val format = complexOutput.format
+                        val schema = emptyStringIfNull(format.schema)
+                        val outputParam = ReferenceParameter(complexOutput.id, complexOutput.reference.href.toString(), format.mimeType, format.encoding, schema)
+                        if (!refOutputs.containsKey(complexOutput.id)) {
+                            refOutputs[complexOutput.id] = mutableListOf(outputParam)
+                        } else {
+                            refOutputs[complexOutput.id]!!.add(outputParam)
+                        }
+                        LOGGER.info("Stored result for " + complexOutput.id)
                     }
-                    LOGGER.info("Stored result for " + complexOutput.id)
                 }else{
-                    println("did not find expected outut parameter ${expectedOutput.wpsIdentifier} in wps result")
-                    throw java.lang.IllegalArgumentException("Not found wps output parameter ${expectedOutput.wpsIdentifier}")
+                    println("did not find expected output parameter ${expectedOutputIdentifier} in wps result")
+                    throw java.lang.IllegalArgumentException("Not found wps output parameter ${expectedOutputIdentifier}")
                 }
             }
 
@@ -113,14 +132,8 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
         }
     }
 
-    fun getOutputById(outputId : String, outputs : List<Data> ) : Data? {
-        for(output in outputs){
-            if(output.id == outputId){
-                return output
-            }
-        }
-
-        return null;
+    fun getOutputsById(outputId: String, outputs: List<Data>) : List<Data> {
+        return outputs.filter { it.id == outputId }
     }
 
     fun emptyStringIfNull (nullableString: String?): String {
