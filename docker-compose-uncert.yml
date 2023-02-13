@@ -1,0 +1,287 @@
+version: "3.3"
+
+# Please note: This docker-compose file needs to have the
+# jar for the wrappers in place on
+# ./asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar
+# If it is not, please run `mvn package` before.
+services:
+  deus_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'deus-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: 'shakemap-resampler-success,assetmaster-success,modelprop-success'
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'deus-success'
+      pulsar.failureTopic: 'deus-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
+      filestorage.endpoint: http://138.246.225.182
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://138.246.225.182/riesgosfiles/
+
+  assetmaster_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'assetmaster-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: ''
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'assetmaster-success'
+      pulsar.failureTopic: 'assetmaster-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess'
+      filestorage.endpoint: http://138.246.225.182
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://138.246.225.182/riesgosfiles/
+
+  modelprop_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'modelprop-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: ''
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'modelprop-success'
+      pulsar.failureTopic: 'modelprop-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
+      filestorage.endpoint: http://138.246.225.182
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://138.246.225.182/riesgosfiles/
+
+  shakyground_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'shakyground-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ShakygroundWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: 'quakeledger-success'
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'shakyground-success'
+      pulsar.failureTopic: 'shakyground-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
+      filestorage.endpoint: http://138.246.225.182
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://138.246.225.182/riesgosfiles/
+
+  shakemap_resampler_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'shakemap-resampler-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ShakemapResamplerWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: 'shakyground-success'
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'shakemap-resampler-success'
+      pulsar.failureTopic: 'shakemap-resampler-failure'
+      wps.wpsUrl: 'https://riesgos.52north.org/javaps/service'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler'
+      filestorage.endpoint: http://138.246.225.182
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://138.246.225.182/riesgosfiles/
+
+  quakeledger_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+    environment:
+      appID: 'quakeledger-asyncwrapper'
+      wrapperclass: 'org.n.riesgos.asyncwrapper.dummy.QuakeledgerWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: ''
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'quakeledger-success'
+      pulsar.failureTopic: 'quakeledger-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess'
+      filestorage.endpoint: http://138.246.225.182
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://138.246.225.182/riesgosfiles/
+
+  backend:
+    image: async-backend
+    build:
+      context: backend
+    volumes:
+      - './backend:/usr/src/app'
+    depends_on:
+      - db
+    networks:
+      - db
+      - web
+    environment:
+      ROOT_PATH: '/api/v1'
+      SQLALCHEMY_DATABASE_URL: 'postgresql://postgres:postgres@db:5432/postgres'
+
+  backend_migrations:
+    image: flyway/flyway
+    volumes:
+      - ./backend/migrations:/flyway/sql
+    networks:
+      - db
+    depends_on:
+      - db
+    command: -url=jdbc:postgresql://db:5432/postgres -schemas=public -user=postgres -password=postgres -connectRetries=60 migrate
+
+  queue:
+    image: apachepulsar/pulsar-standalone
+    ports:
+      - 8081:80
+      - 8080:8080
+      - 6650:6650
+    networks:
+      - queue
+    volumes:
+      - pulsardata:/pulsar/data
+      - pulsarconf:/pulsar/conf
+    environment:
+      LOG4J_FORMAT_MSG_NO_LOOKUPS: 'true'
+
+  db:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    networks:
+      - db
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+
+  frontend:
+    image: async-frontend
+    build:
+      context: newfrontend
+    ports:
+      - 4200:4200
+    networks:
+      - web
+    volumes:
+      - './newfrontend:/usr/src/app'
+
+  reverse_proxy:
+    image: nginx:1.23.2-alpine
+    ports:
+      - 80:80
+    networks:
+      - web
+    depends_on:
+      - backend
+    volumes:
+      - ./reverse_proxy/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./reverse_proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  postgresdata:
+  pulsardata:
+  pulsarconf:
+  shakyground-metadata:
+  quakeledger-metadata:
+  assetmaster-metadata:
+  modelprop-metadata:
+  deus-metadata:
+
+networks:
+  db:
+  queue:
+  web:

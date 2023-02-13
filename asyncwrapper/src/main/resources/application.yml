@@ -25,9 +25,9 @@ spring:
         username: postgres
         password: postgres
 filestorage:
-    endpoint: http://filestorage:9000
+    endpoint: http://138.246.225.182
     user: user
     password: password
     bucketName: riesgosfiles
-    access: http://localhost/api/v1/files/
+    access: http://138.246.225.182/api/v1/files/
 
