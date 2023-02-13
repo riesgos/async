@@ -42,3 +42,7 @@ tools/pulsar_pub_sub/target
 # System files
 .DS_Store
 Thumbs.db
+
+
+# Secrets
+.env
