@@ -1,0 +1,11 @@
+version: "3.3"
+
+services:
+
+  tester:
+    image: openjdk:17-jdk-alpine
+    entrypoint: "java -jar /app.jar"
+    network_mode: host
+    volumes:
+      - ./target/miniotest-0.0.1-SNAPSHOT.jar:/app.jar
+  

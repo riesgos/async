@@ -1,0 +1,8 @@
+
+filestorage:
+    endpoint: http://localhost
+    user: user
+    password: pw
+    bucketName: riesgosfiles
+    access: http://localhost/riesgosfiles/
+
