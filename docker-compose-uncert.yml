@@ -32,8 +32,8 @@ services:
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
       filestorage.endpoint: http://138.246.225.182
-      filestorage.user: admin
-      filestorage.password: secretpassword
+      filestorage.user: ${FILESTORAGE_USER:?error}
+      filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
       filestorage.access: http://138.246.225.182/riesgosfiles/
 
@@ -64,8 +64,8 @@ services:
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess'
       filestorage.endpoint: http://138.246.225.182
-      filestorage.user: admin
-      filestorage.password: secretpassword
+      filestorage.user: ${FILESTORAGE_USER:?error}
+      filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
       filestorage.access: http://138.246.225.182/riesgosfiles/
 
@@ -96,8 +96,8 @@ services:
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
       filestorage.endpoint: http://138.246.225.182
-      filestorage.user: admin
-      filestorage.password: secretpassword
+      filestorage.user: ${FILESTORAGE_USER:?error}
+      filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
       filestorage.access: http://138.246.225.182/riesgosfiles/
 
@@ -128,8 +128,8 @@ services:
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
       filestorage.endpoint: http://138.246.225.182
-      filestorage.user: admin
-      filestorage.password: secretpassword
+      filestorage.user: ${FILESTORAGE_USER:?error}
+      filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
       filestorage.access: http://138.246.225.182/riesgosfiles/
 
@@ -160,8 +160,8 @@ services:
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler'
       filestorage.endpoint: http://138.246.225.182
-      filestorage.user: admin
-      filestorage.password: secretpassword
+      filestorage.user: ${FILESTORAGE_USER:?error}
+      filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
       filestorage.access: http://138.246.225.182/riesgosfiles/
 
@@ -192,8 +192,8 @@ services:
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess'
       filestorage.endpoint: http://138.246.225.182
-      filestorage.user: admin
-      filestorage.password: secretpassword
+      filestorage.user: ${FILESTORAGE_USER:?error}
+      filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
       filestorage.access: http://138.246.225.182/riesgosfiles/
 
