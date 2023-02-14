@@ -36,7 +36,7 @@ import { CollapsableComponent } from './components/collapsable/collapsable.compo
     HttpClientModule,
     ReactiveFormsModule,
     ApiModule.forRoot({
-      rootUrl: 'http://localhost'
+      rootUrl: 'http://localhost/backend'
     })
   ],
   providers: [ApiService],
