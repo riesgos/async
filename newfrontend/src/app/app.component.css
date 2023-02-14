@@ -2,3 +2,9 @@
     max-width: 800px;
     margin: 0 auto 0 auto;
 }
+
+.box {
+    border-radius: 1rem;
+    box-shadow: 0.0rem 0.0rem 0.5rem var(--border);
+    margin: 0.5rem 0.5rem 1.5rem 0.5rem;
+}

@@ -3,7 +3,7 @@
 <ng-template #loading><p>... loading ...</p></ng-template>
 
 <h4>Jobs</h4>
-<table *ngIf="jobs$ | async as jobs; else loading">
+<table class="box" *ngIf="jobs$ | async as jobs; else loading">
     <tr>
         <th>JobId</th>
         <th>ProcessId</th>
@@ -18,7 +18,7 @@
 
 
 <h4>Products</h4>
-<table *ngIf="products$ | async as products; else loading">
+<table class="box" *ngIf="products$ | async as products; else loading">
     <tr>
         <th>BaseProducts</th>
         <th>complexOutputId</th>
@@ -35,7 +35,7 @@
 
 
 <h4>Product types</h4>
-<table *ngIf="productTypes$ | async as productTypes; else loading">
+<table class="box" *ngIf="productTypes$ | async as productTypes; else loading">
     <tr>
         <th>ProductTypeName</th>
     </tr>
@@ -46,7 +46,7 @@
 
 
 <h4>Processes</h4>
-<table *ngIf="processes$ | async as processes; else loading">
+<table class="box" *ngIf="processes$ | async as processes; else loading">
     <tr>
         <th>ProcessId</th>
         <th>WpsId</th>
@@ -58,7 +58,7 @@
 </table>
 
 <h4>Orders</h4>
-<table *ngIf="orders$ | async as orders; else loading">
+<table class="box" *ngIf="orders$ | async as orders; else loading">
     <tr>
         <th>OrderId</th>
         <th>Constraints</th>

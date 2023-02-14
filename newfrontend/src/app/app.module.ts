@@ -16,6 +16,7 @@ import { OrderFormComponent } from './components/order-form/order-form.component
 import { ServiceOrderFormComponent } from './components/service-order-form/service-order-form.component';
 import { ParameterOrderFormComponent } from './components/parameter-order-form/parameter-order-form.component';
 import { CollapsableComponent } from './components/collapsable/collapsable.component';
+import { LatestComponent } from './components/latest/latest.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { CollapsableComponent } from './components/collapsable/collapsable.compo
     OrderFormComponent,
     ServiceOrderFormComponent,
     ParameterOrderFormComponent,
-    CollapsableComponent
+    CollapsableComponent,
+    LatestComponent
   ],
   imports: [
     BrowserModule,
