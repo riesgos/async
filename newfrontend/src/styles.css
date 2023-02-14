@@ -19,7 +19,7 @@
     --line-height: 1.618;
   
     /* Default (light) theme */
-    --bg: #fff;
+    --bg: #ffffff;
     --accent-bg: #f5f7ff;
     --text: #212121;
     --text-light: #585858;
@@ -78,10 +78,10 @@
   
   /* Make the header bg full width, but the content inline with body */
   header {
-    background: var(--accent-bg);
-    border-bottom: 1px solid var(--border);
-    text-align: center;
-    padding: 2rem 0.5rem;
+    background: var(--text-light);
+    /* border-bottom: 1px solid var(--border); */
+    /* text-align: center; */
+    padding: 2rem 0.5rem 2rem 0.5rem;
     width: 100vw;
     position: relative;
     box-sizing: border-box;
@@ -94,6 +94,7 @@
   /* Remove margins for header text */
   header h1,
   header p {
+    color: var(--accent-bg);
     margin: 0;
   }
   
@@ -294,7 +295,7 @@
   
   td,
   th {
-    border: 1px solid var(--border);
+    /* border: 1px solid var(--border); */
     text-align: left;
     padding: 0.5rem;
   }
