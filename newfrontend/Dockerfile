@@ -6,13 +6,18 @@ WORKDIR /mybuilddir
 
 ARG FRONTEND_URL
 ARG FILESTORAGE_URL
+ARG QUEUE_URL
+ARG FASTAPI_URL
 
 COPY .:.
 
-# in angular.json, replace `"baseHref": "/frontend/"` with 
+# in angular.json, replace `"baseHref": "/frontend/"` with:
 RUN sed -i "s/FRONTEND_URL_PLACEHOLDER/${FRONTEND_URL}/" ./angular.json
-# in ./src/assets/config.json, insert frontend-url and filestorage-url
-RUN sed -i "s/FILESTORAGE_URL_PLACEHOLDER/${FILESTORAGE_URL}/" ./src/assets/config.prod.json
+# replace app-config
+RUN sed -i "s/FILESTORAGE_URL_PLACEHOLDER/${FILESTORAGE_URL}/" ./src/environments/environment.prod.json
+RUN sed -i "s/QUEUE_URL_PLACEHOLDER/${QUEUE_URL}/" ./src/environments/environment.prod.json
+RUN sed -i "s/FASTAPI_URL_PLACEHOLDER/${FASTAPI_URL}/" ./src/environments/environment.prod.json
+# sed: attempting to avoid slashes and quotation-marks ... lead to escape-hell.
 
 RUN npm ci
 # build with `behindProxy` so that we make use of the recently substituted FRONTEND_URL_PLACEHOLDER from angular.json

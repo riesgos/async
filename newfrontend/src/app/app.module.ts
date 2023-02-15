@@ -18,7 +18,7 @@ import { ParameterOrderFormComponent } from './components/parameter-order-form/p
 import { CollapsableComponent } from './components/collapsable/collapsable.component';
 import { LatestComponent } from './components/latest/latest.component';
 import { LoginComponent } from './components/login/login.component';
-import { ConfigService } from './services/config/config.service';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -41,18 +41,10 @@ import { ConfigService } from './services/config/config.service';
     HttpClientModule,
     ReactiveFormsModule,
     ApiModule.forRoot({
-      rootUrl: '/backend'
+      rootUrl: environment.fastApiUrl
     })
   ],
   providers: [
-    {
-      multi: true,
-      provide: APP_INITIALIZER,
-      deps: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        return () => configService.loadConfig();
-      }
-    },
     ApiService
   ],
   bootstrap: [AppComponent]

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { DbService } from '../db/db.service';
 import { Consumer, Producer } from './pulsar';
 
@@ -10,9 +11,13 @@ import { Consumer, Producer } from './pulsar';
 })
 export class PulsarService {
 
-  private orders = new Producer('ws://138.246.225.182/ws/v2/producer/persistent/public/default/new-order');
+  private orders: Producer;
 
-  constructor(private db: DbService) {}
+  constructor(
+    private db: DbService,
+  ) {
+    this.orders = new Producer(`ws://${environment.queueUrl}/ws/v2/producer/persistent/public/default/new-order`);
+  }
 
   public postOrder(order: UserOrder): Observable<boolean> {
     // Step 1: send order to database
