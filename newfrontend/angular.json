@@ -58,7 +58,7 @@
               "namedChunks": true
             },
             "behindProxy": {
-              "baseHref": "/frontend/"
+              "baseHref": "FRONTEND_URL_PLACEHOLDER"
             }
           },
           "defaultConfiguration": "production"

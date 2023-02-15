@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -18,6 +18,7 @@ import { ParameterOrderFormComponent } from './components/parameter-order-form/p
 import { CollapsableComponent } from './components/collapsable/collapsable.component';
 import { LatestComponent } from './components/latest/latest.component';
 import { LoginComponent } from './components/login/login.component';
+import { ConfigService } from './services/config/config.service';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,17 @@ import { LoginComponent } from './components/login/login.component';
       rootUrl: '/backend'
     })
   ],
-  providers: [ApiService],
+  providers: [
+    {
+      multi: true,
+      provide: APP_INITIALIZER,
+      deps: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return () => configService.loadConfig();
+      }
+    },
+    ApiService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
