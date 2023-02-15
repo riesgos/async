@@ -216,7 +216,7 @@ services:
       - filestorage
       - web
     environment:
-      ROOT_PATH: '/api/v1'
+      ROOT_PATH: '/backend/api/v1'
       SQLALCHEMY_DATABASE_URL: 'postgresql://postgres:postgres@db:5432/postgres'
 
   backend_migrations:
