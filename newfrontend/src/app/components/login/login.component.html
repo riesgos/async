@@ -8,26 +8,39 @@
     <p>... authenticating ...</p>
 </ng-template>
 
-<ng-container *ngIf="(loginError$ | async) as loginError">
+<div *ngIf="(loginError$ | async) as loginError" class="form-modal">
 
-    <div>Error: {{loginError.errorMessage }}</div>
-    <div>{{ loginError.errorDetails | json }}</div>
+    <div *ngIf="(state$ | async) === 'loading'" class="loading">
+        <p>... loading ...</p>
+    </div>
+    <div *ngIf="(state$ | async) === 'done'" class="error">
+        <div>Error: {{loginError.errorMessage }}</div>
+        <div>{{ loginError.errorDetails | json }}</div>
+    </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="doLogin()">
         <h4>Login</h4>
-        <label>Email</label>
-        <input type="email" formControlName="email" placeholder="your email">
-        <label>Password</label>
-        <input type="password" formControlName="password" placeholder="your password">
+        <div class="textInput">
+            <label>Email</label>
+            <input type="email" formControlName="email" placeholder="your email">
+        </div>
+        <div class="textInput">
+            <label>Password</label>
+            <input type="password" formControlName="password" placeholder="your password">
+        </div>
         <button type="submit">Login</button>
     </form>
 
     <form [formGroup]="registerForm" (ngSubmit)="doRegister()">
         <h4>Registration</h4>
-        <label>Email</label>
-        <input type="email" formControlName="email" placeholder="your email">
-        <label>Password</label>
-        <input type="password" formControlName="password" placeholder="your password">
+        <div class="textInput">
+            <label>Email</label>
+            <input type="email" formControlName="email" placeholder="your email">
+        </div>
+        <div class="textInput">
+            <label>Password</label>
+            <input type="password" formControlName="password" placeholder="your password">
+        </div>
         <button type="submit">Register</button>
     </form>
-</ng-container>
+</div>

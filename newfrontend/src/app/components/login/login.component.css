@@ -1,0 +1,27 @@
+.form-modal {
+    position: absolute;
+    background: white;
+    z-index: 2;
+    box-shadow: 0px 0px 10px #0000005c;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0 auto 0 auto;
+    margin-left: 25%;
+    width: 50%;
+}
+
+.form-modal .error {
+    background: #ffd7008f;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.form-modal form {
+    margin-left: 10%;
+    width: 80%; 
+}
+
+.form-modal .textInput label {
+    width: 20rem;
+    display: inline-block;
+}

@@ -11,6 +11,7 @@ import { CredentialsError, DbService, isAuthenticationError, isSuccessfulAuthent
 })
 export class LoginComponent implements OnInit {
 
+  public state$ = new BehaviorSubject<'loading' | 'done'>('loading');
   public loginResult$ = new BehaviorSubject<UserSelfInformation | null>(null);
   public loginError$ = new BehaviorSubject<CredentialsError | null>(null);
 
@@ -27,12 +28,14 @@ export class LoginComponent implements OnInit {
   }
 
   constructor(public db: DbService) {
+    this.state$.next('loading');
     this.db.login('a@b.com', '1234').subscribe(result => {
       this.handleRegistrationResult(result);
     });
   }
 
   private handleRegistrationResult(result: UserSelfInformation | CredentialsError) {
+    this.state$.next('done');
     if (isSuccessfulAuthentication(result)) {
       this.loginResult$.next(result);
       this.loginError$.next(null);
@@ -44,6 +47,7 @@ export class LoginComponent implements OnInit {
   doLogin() {
     const email = this.loginForm.value.email!;
     const password = this.loginForm.value.password!;
+    this.state$.next('loading');
     this.db.login(email, password).subscribe(result => {
       this.handleRegistrationResult(result);
     })
@@ -52,6 +56,7 @@ export class LoginComponent implements OnInit {
   doRegister() {
     const email = this.registerForm.value.email!;
     const password = this.registerForm.value.password!;
+    this.state$.next('loading');
     this.db.register(email, password).subscribe(result => {
       this.handleRegistrationResult(result);
     })
