@@ -36,7 +36,7 @@ services:
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${FILESTORAGE_HOSTNAME:?error}/riesgosfiles/
+      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
 
   assetmaster_wrapper:
     image: spring-boot-image
@@ -69,7 +69,7 @@ services:
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${FILESTORAGE_HOSTNAME:?error}/riesgosfiles/
+      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
 
   modelprop_wrapper:
     image: spring-boot-image
@@ -102,7 +102,7 @@ services:
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${FILESTORAGE_HOSTNAME:?error}/riesgosfiles/
+      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
 
   shakyground_wrapper:
     image: spring-boot-image
@@ -135,7 +135,7 @@ services:
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${FILESTORAGE_HOSTNAME:?error}/riesgosfiles/
+      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
 
   shakemap_resampler_wrapper:
     image: spring-boot-image
@@ -168,7 +168,7 @@ services:
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${FILESTORAGE_HOSTNAME:?error}/riesgosfiles/
+      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
 
   quakeledger_wrapper:
     image: spring-boot-image
@@ -201,7 +201,7 @@ services:
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${FILESTORAGE_HOSTNAME:?error}/riesgosfiles/
+      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
 
   backend:
     image: async-backend
@@ -288,9 +288,9 @@ services:
       context: newfrontend
     args:
       - FRONTEND_URL = /frontend
-      - FILESTORAGE_URL = ${FILESTORAGE_HOSTNAME:?error}
-      - QUEUE_URL = ${FILESTORAGE_HOSTNAME:?error}
-      - FASTAPI_URL = ${FILESTORAGE_HOSTNAME:?error}/backend/
+      - FILESTORAGE_URL = ${SERVER_BASE_URL:?error}
+      - QUEUE_URL = ${SERVER_BASE_URL:?error}
+      - FASTAPI_URL = ${SERVER_BASE_URL:?error}/backend/
     networks:
       - web
 

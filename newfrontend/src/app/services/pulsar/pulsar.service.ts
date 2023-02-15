@@ -16,7 +16,8 @@ export class PulsarService {
   constructor(
     private db: DbService,
   ) {
-    this.orders = new Producer(`ws://${environment.queueUrl}/ws/v2/producer/persistent/public/default/new-order`);
+    const queueIp = environment.queueUrl.replace('http://', '').replace('https://', '');
+    this.orders = new Producer(`ws://${queueIp}/ws/v2/producer/persistent/public/default/new-order`);
   }
 
   public postOrder(order: UserOrder): Observable<boolean> {
