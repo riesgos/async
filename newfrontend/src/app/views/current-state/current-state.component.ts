@@ -36,7 +36,7 @@ export class CurrentStateComponent implements OnInit {
       const sorted = products.sort((a, b) => a.complexOutputId > b.complexOutputId ? -1 : 1);
       for (const entry of sorted) {
         if (entry.link) {
-          entry.link = entry.link.replace('http://filestorage:9000/riesgosfiles', 'http://localhost/api/v1/files');
+          entry.link = entry.link.replace(/.*\/riesgosfiles\//, '/api/v1/files/');
         }
       }
       this.products$.next(sorted);
