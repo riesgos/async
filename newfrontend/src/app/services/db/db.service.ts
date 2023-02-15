@@ -15,6 +15,20 @@ export interface ProductInfo {
     derivedProducts: number[]
 }
 
+export interface CredentialsError {
+    url: string,
+    errorMessage: string,
+    errorDetails: any
+}
+
+export function isSuccessfulAuthentication(result: any): result is UserSelfInformation {
+    return 'email' in result && 'id' in result;
+}
+
+export function isAuthenticationError(result: any): result is CredentialsError {
+    return !isSuccessfulAuthentication(result); // 'url' in result && 'status' in result && 'statusText' in result && 'error' in result;
+}
+
 @Injectable({
     providedIn: 'root'
   })
@@ -24,28 +38,45 @@ export interface ProductInfo {
     constructor(private apiSvc: ApiService) {
     }
 
-    private register(email: string, password: string) {
+    public register(email: string, password: string): Observable<UserSelfInformation | CredentialsError> {
         return this.apiSvc.registerUserApiV1UsersRegisterPost({
             body: { email, password }
         }).pipe(
-            tap(result => this.userSelfInformation = result)
+            tap(result => this.userSelfInformation = result),
+            map(result => {
+                console.log('registered: ', result);
+                return result;
+            }),
+            catchError(error => {
+                console.log(`Error on registration: `, error);
+                const errMsg = {
+                    url: error.url,
+                    errorMessage: error.message,
+                    errorDetails: error.error
+                };
+                return of(errMsg);
+            }),
         )
     }
 
-    public login(email: string, password: string) {
+    public login(email: string, password: string): Observable<UserSelfInformation | CredentialsError> {
       return this.apiSvc.loginUserApiV1UsersLoginPost({
         body: { email, password }
       }).pipe(
-        switchMap(result => {
-            console.log(result)
-            if (result) return of(result);
-            return this.register(email, password);
+        tap(result => this.userSelfInformation = result),
+        map(result => {
+            console.log('login:', result)
+            return result;
         }),
         catchError(error => {
             console.log(`Error logging in: `, error);
-            return this.register(email, password);
+            const errMsg = {
+                url: error.url,
+                errorMessage: error.message,
+                errorDetails: error.error
+            };
+            return of(errMsg);
         }),
-        tap(result => this.userSelfInformation = result)
       )
     }
 

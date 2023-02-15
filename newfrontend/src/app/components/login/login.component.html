@@ -1,15 +1,33 @@
 
-<ng-container *ngIf="(loginResult$ | async) as loginResult; else loginFormTemplate">
+<ng-container *ngIf="(loginResult$ | async) as loginResult; else loadingTemplate">
     <div>You're logged in as {{ loginResult.email }}</div>
 </ng-container>
 
 
-<ng-template #loginFormTemplate>
+<ng-template #loadingTemplate>
+    <p>... authenticating ...</p>
+</ng-template>
+
+<ng-container *ngIf="(loginError$ | async) as loginError">
+
+    <div>Error: {{loginError.errorMessage }}</div>
+    <div>{{ loginError.errorDetails | json }}</div>
+
     <form [formGroup]="loginForm" (ngSubmit)="doLogin()">
+        <h4>Login</h4>
         <label>Email</label>
         <input type="email" formControlName="email" placeholder="your email">
         <label>Password</label>
         <input type="password" formControlName="password" placeholder="your password">
         <button type="submit">Login</button>
     </form>
-</ng-template>
+
+    <form [formGroup]="registerForm" (ngSubmit)="doRegister()">
+        <h4>Registration</h4>
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="your email">
+        <label>Password</label>
+        <input type="password" formControlName="password" placeholder="your password">
+        <button type="submit">Register</button>
+    </form>
+</ng-container>
