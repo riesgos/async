@@ -286,12 +286,13 @@ services:
     image: async-frontend
     build:
       context: newfrontend
-    ports:
-      - 4200:4200
+    args:
+      - FRONTEND_URL = /frontend
+      - FILESTORAGE_URL = ${FILESTORAGE_HOSTNAME:?error}
+      - QUEUE_URL = ${FILESTORAGE_HOSTNAME:?error}
+      - FASTAPI_URL = ${FILESTORAGE_HOSTNAME:?error}/backend/
     networks:
       - web
-    volumes:
-      - './newfrontend:/usr/src/app'
 
   reverse_proxy:
     image: nginx:1.23.2-alpine
