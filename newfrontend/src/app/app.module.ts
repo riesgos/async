@@ -40,7 +40,7 @@ import { LoginComponent } from './components/login/login.component';
     HttpClientModule,
     ReactiveFormsModule,
     ApiModule.forRoot({
-      rootUrl: 'http://localhost/backend'
+      rootUrl: '/backend'
     })
   ],
   providers: [ApiService],

@@ -19,3 +19,38 @@
    - sources: list of product-id's of all the products that have been used to calculate this data
    - configuration-values?
 - WPS'es wrapped in [wrapper](https://github.com/arnevogt/asyncwrapper)
+
+
+
+
+## Deployment at LRZ
+
+
+         outside vm   │ inside vm                                       inside vm  │ outside vm
+                      │                                                            │
+                      │                                                            │
+                      │                                                            │
+                      │                                                  /riesgosfiles/<id>
+                      │                                                     ┌──────┼┐       ┌─────┐
+                      │                    ┌─────────────┐◄─────────────────┼ proxy│┼───────┤wps  │
+                      │                    │filestorage  │                  └──────┼┘       └─────┘
+                      │                    └─────────────┘◄─────────────┐          │           ▲
+                      │                                                 │          │           │
+                      │                                                 │          │           │
+                      │                                                 │          │           │
+                      │                                                 │          │           │
+┌──────────┐          │                   ┌──────────────┐          ┌───┴─────┐    │           │
+│ browser  ├──────────┼──────────────────►│ queue        │◄─────────┤ wrapper ├────┼───────────┘
+└────┬─────┘          │                   └──────────────┘          └───┬─────┘    │
+     │                │                                                 │          │
+     │         /backend/api                                             │          │
+     │         ┌────┴─┼┐   ┌───────────┐     ┌──────────────┐           │          │
+     └────────►│ proxy│┼──►│ fast-api  │───► │ database     │◄──────────┘          │
+     order     └──────┼┘   └───────────┘     └──────────────┘     jobForOrder      │
+                      │ order                                                      │
+                      │                                                            │
+                      │                                                            │
+
+
+
+                      
