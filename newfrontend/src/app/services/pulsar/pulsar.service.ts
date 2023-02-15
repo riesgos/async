@@ -10,25 +10,9 @@ import { Consumer, Producer } from './pulsar';
 })
 export class PulsarService {
 
-  // https://pulsar.apache.org/docs/next/client-libraries-websocket/
-  // ws://broker-service-url:8080/ws/v2/producer/persistent/:tenant/:namespace/:topic
-  // ws://broker-service-url:8080/ws/v2/consumer/persistent/:tenant/:namespace/:topic/:subscription
-  private orders = new Producer('ws://localhost:8080/ws/v2/producer/persistent/public/default/new-order');
+  private orders = new Producer('ws://138.246.225.182/ws/v2/producer/persistent/public/default/new-order');
 
-  // private quakeledgerErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/quakeledger-failure/shared');
-  // private assetmasterErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/assetmaster-failure/shared');
-  // private modelpropErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/modelprop-failure/shared');
-  // private shakygroundErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/shakyground-failure/shared');
-  // private deusErrors = new Consumer('ws://localhost:8080/ws/v2/consumer/persistent/public/default/deus-failure/shared');
-
-  constructor(private db: DbService) {
-    // this.quakeledgerErrors.readMessages().subscribe(data => console.log(`quakeledger-Errors: `, data));
-    // this.assetmasterErrors.readMessages().subscribe(data => console.log(`assetmaster-Errors: `, data));
-    // this.modelpropErrors.readMessages().subscribe(data => console.log(`modelprop-Errors: `, data));
-    // this.shakygroundErrors.readMessages().subscribe(data => console.log(`Shakyground-Errors: `, data));
-    // this.deusErrors.readMessages().subscribe(data => console.log(`Deus-Errors: `, data));
-  }
-
+  constructor(private db: DbService) {}
 
   public postOrder(order: UserOrder): Observable<boolean> {
     // Step 1: send order to database
