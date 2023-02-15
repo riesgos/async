@@ -1,0 +1,15 @@
+
+<ng-container *ngIf="(loginResult$ | async) as loginResult; else loginFormTemplate">
+    <div>You're logged in as {{ loginResult.email }}</div>
+</ng-container>
+
+
+<ng-template #loginFormTemplate>
+    <form [formGroup]="loginForm" (ngSubmit)="doLogin()">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="your email">
+        <label>Password</label>
+        <input type="password" formControlName="password" placeholder="your password">
+        <button type="submit">Login</button>
+    </form>
+</ng-template>

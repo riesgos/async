@@ -17,6 +17,7 @@ import { ServiceOrderFormComponent } from './components/service-order-form/servi
 import { ParameterOrderFormComponent } from './components/parameter-order-form/parameter-order-form.component';
 import { CollapsableComponent } from './components/collapsable/collapsable.component';
 import { LatestComponent } from './components/latest/latest.component';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { LatestComponent } from './components/latest/latest.component';
     ServiceOrderFormComponent,
     ParameterOrderFormComponent,
     CollapsableComponent,
-    LatestComponent
+    LatestComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

@@ -22,7 +22,6 @@ export interface ProductInfo {
     private userSelfInformation: UserSelfInformation | undefined;
 
     constructor(private apiSvc: ApiService) {
-        this.login('a@b.com', '1234').subscribe(result => console.log(`Logged in: `, result));
     }
 
     private register(email: string, password: string) {
@@ -33,11 +32,12 @@ export interface ProductInfo {
         )
     }
 
-    private login(email: string, password: string) {
+    public login(email: string, password: string) {
       return this.apiSvc.loginUserApiV1UsersLoginPost({
         body: { email, password }
       }).pipe(
         switchMap(result => {
+            console.log(result)
             if (result) return of(result);
             return this.register(email, password);
         }),
