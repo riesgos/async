@@ -1,19 +1,23 @@
 package org.n.riesgos.asyncwrapper.process.wps
 
+import org.n.riesgos.asyncwrapper.config.RetryConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.process.*
 import org.n.riesgos.asyncwrapper.process.Process
 import org.n52.geoprocessing.wps.client.ExecuteRequestBuilder
+import org.n52.geoprocessing.wps.client.WPSClientException
 import org.n52.geoprocessing.wps.client.WPSClientSession
 import org.n52.geoprocessing.wps.client.encoder.WPS20ExecuteEncoder
 import org.n52.geoprocessing.wps.client.model.*
 import org.n52.geoprocessing.wps.client.model.execution.Data
-import java.sql.Ref
 import java.util.*
 import java.util.logging.Logger
 
 
-class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: String, private val expectedOutputs : List<WPSOutputDefinition>) : Process {
+class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: String, private val expectedOutputs : List<WPSOutputDefinition>, private val retryConfig : RetryConfiguration) : Process {
+
+    private var retryAttempts = 0;
+    constructor(wpsClient : WPSClientSession, url: String, processID: String, wpsVersion: String, expectedOutputs : List<WPSOutputDefinition>) : this(wpsClient, url, processID, wpsVersion, expectedOutputs, RetryConfiguration(3, 3000))
 
     companion object {
         val LOGGER = Logger.getLogger("WPSProcess")
@@ -80,51 +84,40 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
             val requestText = WPS20ExecuteEncoder.encode(executeRequest)
             LOGGER.info(requestText)
 
-            // @TODO: if falure due to network-problems, repeat n times before giving up.
-            val output = wpsClient.execute(url, executeRequest, wpsVersion)
+            var processOutput : ProcessOutput? = null;
+            //if failure due to network-problems, repeat n times before giving up.
 
-            var result: org.n52.geoprocessing.wps.client.model.Result =
-                if (output is org.n52.geoprocessing.wps.client.model.Result) {
-                    output
-                } else {
-                    (output as StatusInfo).result
-                }
+            if (this.retryConfig.attempts < 1 || this.retryConfig.backoff_millis < 1){
+                throw IllegalArgumentException("invalid retry configuration, values < 1 not allowed")
+            }
 
-            LOGGER.info("request result: ${result.toString()}")
-            val outputs: List<Data> = result.outputs
-            LOGGER.info("request outputs: ${outputs.toString()}")
-            var refOutputs = HashMap<String, MutableList<ReferenceParameter>>()
-
-            LOGGER.info("Start extracting results from the wps")
-            val setOutputIdentifiers = HashSet(expectedOutputs.map { it.wpsIdentifier})
-            for(expectedOutputIdentifier in setOutputIdentifiers){
-                val outputs = getOutputsById(expectedOutputIdentifier, outputs)
-                if(!outputs.isEmpty()){
-                    for (output in outputs) {
-                        val complexOutput = output.asComplexReferenceData()
-                        val format = complexOutput.format
-                        val schema = emptyStringIfNull(format.schema)
-                        val outputParam = ReferenceParameter(complexOutput.id, complexOutput.reference.href.toString(), format.mimeType, format.encoding, schema)
-                        if (!refOutputs.containsKey(complexOutput.id)) {
-                            refOutputs[complexOutput.id] = mutableListOf(outputParam)
-                        } else {
-                            refOutputs[complexOutput.id]!!.add(outputParam)
-                        }
-                        LOGGER.info("Stored result for " + complexOutput.id)
+            while(this.retryAttempts < this.retryConfig.attempts) {
+                try {
+                    this.retryAttempts++
+                    LOGGER.info("execute WPS process ${this.processID} (attempt: ${this.retryAttempts})")
+                    val wpsOutput = wpsClient.execute(url, executeRequest, wpsVersion)
+                    processOutput = parseProcessOutput(wpsOutput) //attempt successful
+                    LOGGER.info("executed WPS process ${this.processID} (needed ${this.retryAttempts} attempt(s))")
+                    return processOutput
+                } catch (e: WPSClientException) {
+                    //failed attempt
+                    if(this.retryAttempts < this.retryConfig.attempts) {
+                        LOGGER.info("sleep for ${this.retryConfig.backoff_millis} millis until next attempt")
+                        Thread.sleep(this.retryConfig.backoff_millis) //wait until next attempt
+                    }else{
+                        //reached retry limit
+                        throw java.lang.Exception("WPS process ${this.processID} ultimately failed after ${this.retryAttempts} attempts", e)
                     }
-                }else{
-                    println("did not find expected output parameter ${expectedOutputIdentifier} in wps result")
-                    throw java.lang.IllegalArgumentException("Not found wps output parameter ${expectedOutputIdentifier}")
+                } catch (e: Exception) {
+                    //generic error -> no retry
+                    println(e.message)
+                    print(e.stackTrace)
+                    throw e
                 }
             }
 
+            throw Exception("unable to execute WPS process ${this.processID} (attempts: ${this.retryAttempts})")
 
-            var processOut = ProcessOutput(
-                processID,
-                HashMap<String, InlineParameter>(),
-                refOutputs
-            )
-            return processOut
         }catch (e : Exception){
             println(e.message)
             print(e.stackTrace)
@@ -132,14 +125,63 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
         }
     }
 
-    fun getOutputsById(outputId: String, outputs: List<Data>) : List<Data> {
+    private fun getOutputsById(outputId: String, outputs: List<Data>) : List<Data> {
         return outputs.filter { it.id == outputId }
     }
 
-    fun emptyStringIfNull (nullableString: String?): String {
+    private fun emptyStringIfNull (nullableString: String?): String {
         if (nullableString == null) {
             return ""
         }
         return nullableString
+    }
+
+    private fun parseProcessOutput(wpsOutput: Any): ProcessOutput {
+        var result: org.n52.geoprocessing.wps.client.model.Result =
+            if (wpsOutput is org.n52.geoprocessing.wps.client.model.Result) {
+                wpsOutput
+            } else {
+                (wpsOutput as StatusInfo).result
+            }
+
+        LOGGER.info("request result: ${result.toString()}")
+        val outputs: List<Data> = result.outputs
+        LOGGER.info("request outputs: ${outputs.toString()}")
+        var refOutputs = HashMap<String, MutableList<ReferenceParameter>>()
+
+        LOGGER.info("Start extracting results from the wps")
+        val setOutputIdentifiers = HashSet(expectedOutputs.map { it.wpsIdentifier })
+        for (expectedOutputIdentifier in setOutputIdentifiers) {
+            val outputs = getOutputsById(expectedOutputIdentifier, outputs)
+            if (outputs.isNotEmpty()) {
+                for (output in outputs) {
+                    val complexOutput = output.asComplexReferenceData()
+                    val format = complexOutput.format
+                    val schema = emptyStringIfNull(format.schema)
+                    val outputParam = ReferenceParameter(
+                        complexOutput.id,
+                        complexOutput.reference.href.toString(),
+                        format.mimeType,
+                        format.encoding,
+                        schema
+                    )
+                    if (!refOutputs.containsKey(complexOutput.id)) {
+                        refOutputs[complexOutput.id] = mutableListOf(outputParam)
+                    } else {
+                        refOutputs[complexOutput.id]!!.add(outputParam)
+                    }
+                    LOGGER.info("Stored result for " + complexOutput.id)
+                }
+            } else {
+                println("did not find expected output parameter $expectedOutputIdentifier in wps result")
+                throw java.lang.IllegalArgumentException("Not found wps output parameter $expectedOutputIdentifier")
+            }
+        }
+
+        return ProcessOutput(
+            processID,
+            HashMap(),
+            refOutputs
+        )
     }
 }
