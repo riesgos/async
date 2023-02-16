@@ -231,10 +231,6 @@ services:
 
   queue:
     image: apachepulsar/pulsar-standalone
-    ports:
-      - 8081:80
-      - 8080:8080
-      - 6650:6650
     networks:
       - queue
     volumes:
@@ -246,10 +242,8 @@ services:
   db:
     image: postgres:14.1-alpine
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - 5432:5432
+      - POSTGRES_USER=${DATABASE_USER:?error}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:?error}
     networks:
       - db
     volumes:
@@ -261,8 +255,6 @@ services:
       - filestoragedata:/data
     networks:
       - filestorage
-    ports:
-      - 9090:9090
     environment:
       MINIO_ROOT_USER: ${FILESTORAGE_USER:?error}
       MINIO_ROOT_PASSWORD: ${FILESTORAGE_PASSWORD:?error}
@@ -292,8 +284,6 @@ services:
         - FASTAPI_URL=${SERVER_BASE_URL:?error}/backend/
     networks:
       - web
-    ports:
-      - 1234:80
 
   reverse_proxy:
     image: nginx:1.23.2-alpine
