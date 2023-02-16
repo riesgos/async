@@ -283,16 +283,17 @@ services:
       MINIO_BUCKET_NAME: riesgosfiles
 
   frontend:
-    image: async-frontend
     build:
       context: newfrontend
       args:
-        - FRONTEND_URL = /frontend
-        - FILESTORAGE_URL = ${SERVER_BASE_URL:?error}
-        - QUEUE_URL = ${SERVER_BASE_URL:?error}
-        - FASTAPI_URL = ${SERVER_BASE_URL:?error}/backend/
+        - FRONTEND_PATH=/frontend
+        - FILESTORAGE_URL=${SERVER_BASE_URL:?error}
+        - QUEUE_URL=${SERVER_BASE_URL:?error}
+        - FASTAPI_URL=${SERVER_BASE_URL:?error}/backend/
     networks:
       - web
+    ports:
+      - 1234:80
 
   reverse_proxy:
     image: nginx:1.23.2-alpine
