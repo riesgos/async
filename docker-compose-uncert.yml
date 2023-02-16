@@ -286,7 +286,7 @@ services:
     build:
       context: newfrontend
       args:
-        - FRONTEND_PATH=/frontend
+        - FRONTEND_PATH=/frontend/     # <-- must end with slash for relative `src` attributes to be correctly resolved
         - FILESTORAGE_URL=${SERVER_BASE_URL:?error}
         - QUEUE_URL=${SERVER_BASE_URL:?error}
         - FASTAPI_URL=${SERVER_BASE_URL:?error}/backend/
