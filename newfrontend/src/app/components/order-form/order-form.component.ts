@@ -104,7 +104,6 @@ export class OrderFormComponent implements OnInit {
 
   submit() {
     const order = this.dataModelToUserOrder(this.formGroup.value);
-    console.log(`submitting order: `, order);
     this.pulsar.postOrder(order).subscribe(success => console.log(`order transmitted with ${success ? 'success' : 'failure'}`));
   }
 

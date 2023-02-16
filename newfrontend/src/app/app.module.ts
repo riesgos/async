@@ -41,7 +41,7 @@ import { environment } from 'src/environments/environment';
     HttpClientModule,
     ReactiveFormsModule,
     ApiModule.forRoot({
-      rootUrl: environment.fastApiUrl
+      rootUrl: new URL(environment.fastApiUrl.replace(/([^:]\/)\/+/g, "$1").replace(/\/$/, '')).toString()  // making sure that properly formatted url
     })
   ],
   providers: [

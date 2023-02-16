@@ -16,18 +16,20 @@ export class PulsarService {
   constructor(
     private db: DbService,
   ) {
-    const queueIp = environment.queueUrl.replace('http://', '').replace('https://', '');
+    const queueIp = environment.queueUrl.replace('http://', '').replace('https://', '').replace(/\/$/, '');
     this.orders = new Producer(`ws://${queueIp}/ws/v2/producer/persistent/public/default/new-order`);
   }
 
   public postOrder(order: UserOrder): Observable<boolean> {
     // Step 1: send order to database
+    console.log("Sending order to db...", order);
     return this.db.placeOrder(order).pipe(
       // Step 2: after confirmation from db, notify pulsar of order-id
       switchMap(completeOrder => {
         const orderString = JSON.stringify({
           orderId: completeOrder.id
         });
+        console.log("... completed sending order to db. Sending order to queue ...", orderString);
         return this.orders.postMessage(orderString);
       }),
 
