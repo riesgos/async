@@ -102,7 +102,7 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
                 } catch (e: WPSClientException) {
                     //failed attempt
                     if(this.retryAttempts < this.retryConfig.attempts) {
-                        LOGGER.info("sleep for ${this.retryConfig.backoff_millis} millis until next attempt")
+                        LOGGER.info("attempt failed, sleep for ${this.retryConfig.backoff_millis} millis until next attempt")
                         Thread.sleep(this.retryConfig.backoff_millis) //wait until next attempt
                     }else{
                         //reached retry limit
