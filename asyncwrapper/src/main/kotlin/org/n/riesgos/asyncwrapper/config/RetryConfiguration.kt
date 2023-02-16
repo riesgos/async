@@ -1,3 +1,7 @@
 package org.n.riesgos.asyncwrapper.config
 
-data class RetryConfiguration(var attempts: Int, var backoff_millis: Long)
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.ConstructorBinding
+
+
+data class RetryConfiguration(var attempts: Int = 3, var backoff_millis: Long = 3000)

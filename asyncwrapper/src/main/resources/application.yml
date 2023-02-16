@@ -19,6 +19,9 @@ wps:
         -
             identifier: complexOutput
             mimeType: text/xml
+    retryConfiguration:
+        attempts: 10
+        backoff_millis: 1000
 spring:
     datasource:
         url: jdbc:postgresql://localhost:5432/postgres

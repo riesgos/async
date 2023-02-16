@@ -332,7 +332,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         // TODO: Extract the version from the implementations themselves
         try {
             val wpsClientService = WPSClientService(wpsConfiguration)
-            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs())
+            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs(), wpsConfiguration.retryConfiguration)
             LOGGER.info("Start calling the wps itself under ${getWpsUrl()}/${getWpsIdentifier()}")
             val wpsOutputs = wpsProcess.runProcess(wpsInputs)
             LOGGER.info("Finished calling the wps itself")
