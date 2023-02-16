@@ -1,3 +1,6 @@
+// Please don't replace the *_PLACEHOLDER values manually.
+// Those are meant to be replaced by docker during the build-process.
+
 export const environment = {
   production: true,
   filestorageUrl: "FILESTORAGE_URL_PLACEHOLDER",

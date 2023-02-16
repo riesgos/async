@@ -286,11 +286,11 @@ services:
     image: async-frontend
     build:
       context: newfrontend
-    args:
-      - FRONTEND_URL = /frontend
-      - FILESTORAGE_URL = ${SERVER_BASE_URL:?error}
-      - QUEUE_URL = ${SERVER_BASE_URL:?error}
-      - FASTAPI_URL = ${SERVER_BASE_URL:?error}/backend/
+      args:
+        - FRONTEND_URL = /frontend
+        - FILESTORAGE_URL = ${SERVER_BASE_URL:?error}
+        - QUEUE_URL = ${SERVER_BASE_URL:?error}
+        - FASTAPI_URL = ${SERVER_BASE_URL:?error}/backend/
     networks:
       - web
 
