@@ -11,16 +11,32 @@ import { Consumer, Producer } from './pulsar';
 })
 export class PulsarService {
 
-  private orders: Producer;
+  private orders!: Producer;
 
   constructor(
     private db: DbService,
   ) {
+    this.connectToQueue();
+  }
+  
+  public connectToQueue() {
+    if (this.orders) return;
     const queueIp = environment.queueUrl.replace('http://', '').replace('https://', '').replace(/\/$/, '');
-    this.orders = new Producer(`ws://${queueIp}/ws/v2/producer/persistent/public/default/new-order`);
+    try {
+      const queueAddress = `ws://${queueIp}/ws/v2/producer/persistent/public/default/new-order`;
+      console.log(`Attempting to connect to queue at ${queueAddress}`);
+      this.orders = new Producer(queueAddress);
+    } catch (error) {
+      console.error(error);
+      setTimeout(() => {
+        this.connectToQueue();
+      }, 3000); 
+    }
   }
 
   public postOrder(order: UserOrder): Observable<boolean> {
+    if (!this.orders) throw Error(`Cannot post order to queue: Connection to queue has not yet been established.`);
+
     // Step 1: send order to database
     console.log("Sending order to db...", order);
     return this.db.placeOrder(order).pipe(
