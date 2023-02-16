@@ -21,9 +21,9 @@ services:
     environment:
       appID: 'deus-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusWrapper'
-      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
-      spring.datasource.username: 'postgres'
-      spring.datasource.password: 'postgres'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
+      spring.datasource.username: '${DATABASE_USER:?error}'
+      spring.datasource.password: '${DATABASE_PASSWORD:?error}'
       pulsar.pulsarURL: 'pulsar://queue:6650'
       pulsar.inputTopics: 'shakemap-resampler-success,assetmaster-success,modelprop-success'
       pulsar.orderTopic: 'new-order'
@@ -54,9 +54,9 @@ services:
     environment:
       appID: 'assetmaster-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper'
-      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
-      spring.datasource.username: 'postgres'
-      spring.datasource.password: 'postgres'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
+      spring.datasource.username: '${DATABASE_USER:?error}'
+      spring.datasource.password: '${DATABASE_PASSWORD:?error}'
       pulsar.pulsarURL: 'pulsar://queue:6650'
       pulsar.inputTopics: ''
       pulsar.orderTopic: 'new-order'
@@ -87,9 +87,9 @@ services:
     environment:
       appID: 'modelprop-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper'
-      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
-      spring.datasource.username: 'postgres'
-      spring.datasource.password: 'postgres'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
+      spring.datasource.username: '${DATABASE_USER:?error}'
+      spring.datasource.password: '${DATABASE_PASSWORD:?error}'
       pulsar.pulsarURL: 'pulsar://queue:6650'
       pulsar.inputTopics: ''
       pulsar.orderTopic: 'new-order'
@@ -120,9 +120,9 @@ services:
     environment:
       appID: 'shakyground-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ShakygroundWrapper'
-      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
-      spring.datasource.username: 'postgres'
-      spring.datasource.password: 'postgres'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
+      spring.datasource.username: '${DATABASE_USER:?error}'
+      spring.datasource.password: '${DATABASE_PASSWORD:?error}'
       pulsar.pulsarURL: 'pulsar://queue:6650'
       pulsar.inputTopics: 'quakeledger-success'
       pulsar.orderTopic: 'new-order'
@@ -153,9 +153,9 @@ services:
     environment:
       appID: 'shakemap-resampler-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ShakemapResamplerWrapper'
-      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
-      spring.datasource.username: 'postgres'
-      spring.datasource.password: 'postgres'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
+      spring.datasource.username: '${DATABASE_USER:?error}'
+      spring.datasource.password: '${DATABASE_PASSWORD:?error}'
       pulsar.pulsarURL: 'pulsar://queue:6650'
       pulsar.inputTopics: 'shakyground-success'
       pulsar.orderTopic: 'new-order'
@@ -186,9 +186,9 @@ services:
     environment:
       appID: 'quakeledger-asyncwrapper'
       wrapperclass: 'org.n.riesgos.asyncwrapper.dummy.QuakeledgerWrapper'
-      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
-      spring.datasource.username: 'postgres'
-      spring.datasource.password: 'postgres'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
+      spring.datasource.username: '${DATABASE_USER:?error}'
+      spring.datasource.password: '${DATABASE_PASSWORD:?error}'
       pulsar.pulsarURL: 'pulsar://queue:6650'
       pulsar.inputTopics: ''
       pulsar.orderTopic: 'new-order'
@@ -217,7 +217,7 @@ services:
       - web
     environment:
       ROOT_PATH: '/backend/api/v1'
-      SQLALCHEMY_DATABASE_URL: 'postgresql://postgres:postgres@db:5432/postgres'
+      SQLALCHEMY_DATABASE_URL: 'postgresql://${DATABASE_USER:?error}:${DATABASE_PASSWORD:?error}@db:5432/${DATABASE_USER:?error}'
 
   backend_migrations:
     image: flyway/flyway
@@ -227,7 +227,7 @@ services:
       - db
     depends_on:
       - db
-    command: -url=jdbc:postgresql://db:5432/postgres -schemas=public -user=postgres -password=postgres -connectRetries=60 migrate
+    command: -url=jdbc:postgresql://db:5432/${DATABASE_USER:?error} -schemas=public -user=${DATABASE_USER:?error} -password=${DATABASE_PASSWORD:?error} -connectRetries=60 migrate
 
   queue:
     image: apachepulsar/pulsar-standalone
