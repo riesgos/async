@@ -4,6 +4,7 @@ import org.n.riesgos.asyncwrapper.config.RetryConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.process.*
 import org.n.riesgos.asyncwrapper.process.Process
+import org.n.riesgos.asyncwrapper.utils.retry
 import org.n52.geoprocessing.wps.client.ExecuteRequestBuilder
 import org.n52.geoprocessing.wps.client.WPSClientException
 import org.n52.geoprocessing.wps.client.WPSClientSession
@@ -12,6 +13,7 @@ import org.n52.geoprocessing.wps.client.model.*
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 import java.util.logging.Logger
+
 
 
 class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: String, private val expectedOutputs : List<WPSOutputDefinition>, private val retryConfig : RetryConfiguration) : Process {
@@ -84,39 +86,22 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
             val requestText = WPS20ExecuteEncoder.encode(executeRequest)
             LOGGER.info(requestText)
 
-            var processOutput : ProcessOutput? = null;
             //if failure due to network-problems, repeat n times before giving up.
 
-            if (this.retryConfig.attempts < 1 || this.retryConfig.backoff_millis < 1){
+            if (this.retryConfig.maxRetries < 1 || this.retryConfig.backoffMillis < 1){
                 throw IllegalArgumentException("invalid retry configuration, values < 1 not allowed")
             }
 
-            while(this.retryAttempts < this.retryConfig.attempts) {
-                try {
-                    this.retryAttempts++
-                    LOGGER.info("execute WPS process ${this.processID} (attempt: ${this.retryAttempts})")
-                    val wpsOutput = wpsClient.execute(url, executeRequest, wpsVersion)
-                    processOutput = parseProcessOutput(wpsOutput) //attempt successful
-                    LOGGER.info("executed WPS process ${this.processID} (needed ${this.retryAttempts} attempt(s))")
-                    return processOutput
-                } catch (e: WPSClientException) {
-                    //failed attempt
-                    if(this.retryAttempts < this.retryConfig.attempts) {
-                        LOGGER.info("attempt failed, sleep for ${this.retryConfig.backoff_millis} millis until next attempt")
-                        Thread.sleep(this.retryConfig.backoff_millis) //wait until next attempt
-                    }else{
-                        //reached retry limit
-                        throw java.lang.Exception("WPS process ${this.processID} ultimately failed after ${this.retryAttempts} attempts", e)
-                    }
-                } catch (e: Exception) {
-                    //generic error -> no retry
-                    println(e.message)
-                    print(e.stackTrace)
-                    throw e
-                }
-            }
+           //execute wps process, retry if (network) error
+           val processOutput = retry<ProcessOutput, WPSClientException>(WPSClientException::class.java, retryConfig.maxRetries, retryConfig.backoffMillis) {
+               LOGGER.info("execute WPS process ${this.processID} (retries: $it)")
+               val wpsOutput = wpsClient.execute(url, executeRequest, wpsVersion)
+               val processOutput = parseProcessOutput(wpsOutput) //attempt successful
+               LOGGER.info("executed WPS process ${this.processID} (needed $it retries")
+               return@retry processOutput
+           }
 
-            throw Exception("unable to execute WPS process ${this.processID} (attempts: ${this.retryAttempts})")
+            return processOutput
 
         }catch (e : Exception){
             println(e.message)
