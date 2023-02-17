@@ -111,6 +111,11 @@ export class AppStateService {
                         payload: results
                     });
                 }
+            }, error => {
+                this.action({
+                    type: 'loginFailure',
+                    payload: error
+                })
             });
         }
 
@@ -128,6 +133,11 @@ export class AppStateService {
                         payload: results
                     });
                 }
+            }, error => {
+                this.action({
+                    type: 'loginFailure',
+                    payload: error
+                })
             });
         }
 

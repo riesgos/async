@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, delay, forkJoin, map, Observable, of, interval } from 'rxjs';
-import { Job, Order, Process, Product, ProductType } from 'src/app/backend_api/models';
+import { BehaviorSubject, interval } from 'rxjs';
+import { Job, Order, Process, ProductType } from 'src/app/backend_api/models';
 import { DbService, ProductInfo } from 'src/app/services/db/db.service';
 
 @Component({
@@ -34,11 +34,6 @@ export class CurrentStateComponent implements OnInit {
     });
     this.db.getProducts().subscribe(products => {
       const sorted = products.sort((a, b) => a.complexOutputId > b.complexOutputId ? -1 : 1);
-      for (const entry of sorted) {
-        if (entry.link) {
-          entry.link = entry.link.replace(/.*\/riesgosfiles\//, '/api/v1/files/');
-        }
-      }
       this.products$.next(sorted);
     });
     this.db.getProcesses().subscribe(processes => {

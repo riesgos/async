@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  filestorageUrl: "http://localhost/",
-  queueUrl: "http://localhost/",
-  fastApiUrl: "http://localhost/backend/"
+  filestorageUrl: "http://127.0.0.1/",
+  queueUrl: "http://127.0.0.1/queue/",
+  fastApiUrl: "http://127.0.0.1/backend/"
 };
 
 /*

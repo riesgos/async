@@ -15,7 +15,7 @@ export class ParameterOrderFormComponent implements OnInit {
   public formControl = new FormControl();
   public subFormGroup = new FormGroup({});
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     if (this.isString(this.data)) {
@@ -25,7 +25,7 @@ export class ParameterOrderFormComponent implements OnInit {
     
     else if (this.isArray(this.data)) {
       if (this.data.length > 0) {
-        this.formControl.setValue((this.data as Array<string>)[0]);
+        this.formControl.setValue((this.data as Array<any>)[0]);
       }
       this.formGroup.addControl(this.title, this.formControl);
     }
@@ -40,7 +40,7 @@ export class ParameterOrderFormComponent implements OnInit {
     return (typeof data === 'string');
   }
 
-  public isArray(data: any): data is string[] {
+  public isArray(data: any): data is any[] {
     return Array.isArray(data);
   }
 
