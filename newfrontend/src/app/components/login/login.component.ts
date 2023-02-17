@@ -50,7 +50,15 @@ export class LoginComponent implements OnInit {
   }
 
   doRegister() {
-    this.doLogin();
+    const email = this.loginForm.value.email!;
+    const password = this.loginForm.value.password!;
+    this.state.action({
+      type: 'registerStart',
+      payload: {
+        email: email,
+        password: password
+      }
+    });
   }
 
 }

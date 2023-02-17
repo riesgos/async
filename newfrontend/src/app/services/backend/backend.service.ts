@@ -36,6 +36,14 @@ export class BackendService {
     );
   }
 
+  public register(email: string, password: string): Observable<UserSelfInformation | CredentialsError> {
+    return this.db.register(email, password).pipe(
+      mergeMap((results) => {
+        return this.connect(email, password);
+      })
+    );
+  }
+
   public postOrder(order: UserOrder): Observable<boolean> {
     if (!this.orders.isConnected()) throw Error(`Cannot post order to queue: Connection to queue has not yet been established.`);
     if (!this.db.isLoggedIn()) throw Error(`Cannot post order to db: Connection to db has not yet been established.`);

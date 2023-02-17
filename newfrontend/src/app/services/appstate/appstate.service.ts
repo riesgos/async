@@ -39,6 +39,24 @@ export interface LoginFailureAction {
     payload: CredentialsError
 }
 
+export interface RegisterAction {
+    type: 'registerStart',
+    payload: {
+        email: string,
+        password: string
+    }
+}
+
+export interface RegisterSuccessAction {
+    type: 'registerSuccess',
+    payload: UserSelfInformation
+}
+
+export interface RegisterFailureAction {
+    type: 'registerFailure',
+    payload: CredentialsError
+}
+
 export interface OrderAction {
     type: 'orderStart',
     payload: UserOrder[]
@@ -53,6 +71,7 @@ export interface OrderFailureAction {
 }
 
 export type Action = LoginAction | LoginSuccessAction | LoginFailureAction |
+                     RegisterAction | RegisterSuccessAction | RegisterFailureAction |
                      OrderAction | OrderSuccessAction | OrderFailureAction;
 
 
@@ -95,6 +114,23 @@ export class AppStateService {
             });
         }
 
+        if (action.type === 'registerStart') {
+            const creds = action.payload;
+            this.backend.register(creds.email, creds.password).subscribe(results => {
+                if (isSuccessfulAuthentication(results)) {
+                    this.action({
+                        type: 'registerSuccess',
+                        payload: results
+                    });
+                } else if (isAuthenticationError(results)) {
+                    this.action({
+                        type: 'registerFailure',
+                        payload: results
+                    });
+                }
+            });
+        }
+
 
         if (action.type === 'orderStart') {
             const orders = action.payload;
@@ -119,14 +155,14 @@ export class AppStateService {
 
     private reduceState(action: Action, currentState: AppState): AppState {
 
-        if (action.type === 'loginStart') {
+        if (action.type === 'loginStart' || action.type === 'registerStart') {
             currentState.authentication = 'ongoing';
         }
-        if (action.type === 'loginSuccess') {
+        if (action.type === 'loginSuccess' || action.type === 'registerSuccess') {
             currentState.authentication = 'authenticated';
             currentState.authenticationData = action.payload;
         }
-        if (action.type === 'loginFailure') {
+        if (action.type === 'loginFailure' || action.type === 'registerFailure') {
             currentState.authentication = 'error';
             currentState.authenticationData = action.payload;
         }
