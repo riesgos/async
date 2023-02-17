@@ -1,41 +1,44 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, mergeMap, switchMap } from 'rxjs/operators';
+import { UserSelfInformation } from 'src/app/backend_api/models';
 import { environment } from 'src/environments/environment';
-import { DbService } from '../db/db.service';
-import { Consumer, Producer } from './pulsar';
+import { CredentialsError, DbService, isAuthenticationError, isSuccessfulAuthentication } from '../db/db.service';
+import { Consumer, Producer } from '../pulsar/pulsar';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class PulsarService {
+export class BackendService {
 
-  private orders!: Producer;
-
-  constructor(
-    private db: DbService,
-  ) {
-    this.connectToQueue();
-  }
+  private orders = new Producer();
+  constructor(private db: DbService) {}
   
-  public connectToQueue() {
-    if (this.orders) return;
-    const queueIp = environment.queueUrl.replace('http://', '').replace('https://', '').replace(/\/$/, '');
-    try {
-      const queueAddress = `ws://${queueIp}/ws/v2/producer/persistent/public/default/new-order`;
-      console.log(`Attempting to connect to queue at ${queueAddress}`);
-      this.orders = new Producer(queueAddress);
-    } catch (error) {
-      console.error(error);
-      setTimeout(() => {
-        this.connectToQueue();
-      }, 3000); 
-    }
+  public connect(email: string, password: string): Observable<UserSelfInformation | CredentialsError> {
+    return this.db.login(email, password).pipe(
+      mergeMap(results => {
+
+        let queueConnection$ = of(false);
+        if (isSuccessfulAuthentication(results)) {
+          const queueIp = environment.queueUrl.replace('http://', '').replace('https://', '').replace(/\/$/, '');
+          const queueAddress = `ws://${queueIp}/ws/v2/producer/persistent/public/default/new-order`;
+          console.log(`Attempting to connect to queue at ${queueAddress}`);
+          queueConnection$ = this.orders.connect(queueAddress);
+        }
+
+        return forkJoin([of(results), queueConnection$]);
+      }),
+      
+      map(([dbConnection, queueConnection]) => {
+        return dbConnection;
+      })
+    );
   }
 
   public postOrder(order: UserOrder): Observable<boolean> {
-    if (!this.orders) throw Error(`Cannot post order to queue: Connection to queue has not yet been established.`);
+    if (!this.orders.isConnected()) throw Error(`Cannot post order to queue: Connection to queue has not yet been established.`);
+    if (!this.db.isLoggedIn()) throw Error(`Cannot post order to db: Connection to db has not yet been established.`);
 
     // Step 1: send order to database
     console.log("Sending order to db...", order);
@@ -55,7 +58,7 @@ export class PulsarService {
   }
 
   ngOnDestroy() {
-    this.orders.close();
+    this.orders?.close();
   }
 }
 

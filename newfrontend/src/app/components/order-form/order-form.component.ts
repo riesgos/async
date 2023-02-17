@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BboxParameterConstraints, ComplexParameterConstraints, LiteralParameterConstraints, ParameterConstraints, PulsarService, UserOrder } from 'src/app/services/pulsar/pulsar.service';
+import { AppStateService } from 'src/app/services/appstate/appstate.service';
+import { UserOrder, ParameterConstraints, LiteralParameterConstraints, BboxParameterConstraints, ComplexParameterConstraints } from 'src/app/services/backend/backend.service';
 
 
  /**
@@ -91,7 +92,7 @@ export class OrderFormComponent implements OnInit {
   public model = dataModel;
   public formGroup = new FormGroup({});
 
-  constructor(private pulsar: PulsarService) { }
+  constructor(private state: AppStateService) { }
 
   ngOnInit(): void {
     // this.formGroup.valueChanges.subscribe(v => console.log('new value', v));
@@ -104,7 +105,10 @@ export class OrderFormComponent implements OnInit {
 
   submit() {
     const order = this.dataModelToUserOrder(this.formGroup.value);
-    this.pulsar.postOrder(order).subscribe(success => console.log(`order transmitted with ${success ? 'success' : 'failure'}`));
+    this.state.action({
+      type: 'orderStart',
+      payload: [order]
+    });
   }
 
   private dataModelToUserOrder(model: DataModel): UserOrder {

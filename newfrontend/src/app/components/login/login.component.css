@@ -10,18 +10,18 @@
     width: 50%;
 }
 
-.form-modal .error {
+.error {
     background: #ffd7008f;
     padding: 0.5rem;
     border-radius: 0.5rem;
 }
 
-.form-modal form {
+form {
     margin-left: 10%;
     width: 80%; 
 }
 
-.form-modal .textInput label {
+.textInput label {
     width: 20rem;
     display: inline-block;
 }

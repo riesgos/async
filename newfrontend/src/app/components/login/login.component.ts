@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { UserSelfInformation } from 'src/app/backend_api/models';
-import { CredentialsError, DbService, isAuthenticationError, isSuccessfulAuthentication } from 'src/app/services/db/db.service';
+import { map, Observable } from 'rxjs';
+import { AppStateService, AppState } from 'src/app/services/appstate/appstate.service';
+
 
 @Component({
   selector: 'app-login',
@@ -11,10 +11,11 @@ import { CredentialsError, DbService, isAuthenticationError, isSuccessfulAuthent
 })
 export class LoginComponent implements OnInit {
 
-  public state$ = new BehaviorSubject<'loading' | 'done'>('loading');
-  public loginResult$ = new BehaviorSubject<UserSelfInformation | null>(null);
-  public loginError$ = new BehaviorSubject<CredentialsError | null>(null);
 
+  public loginState$: Observable<{ 
+    state: AppState["authentication"],
+    data: AppState["authenticationData"]
+  }>;
   public loginForm = new FormGroup({
     'email': new FormControl('a@b.com', [Validators.required, Validators.email]),
     'password': new FormControl('1234', [Validators.required, Validators.minLength(3)]),
@@ -24,42 +25,32 @@ export class LoginComponent implements OnInit {
     'password': new FormControl('1234', [Validators.required, Validators.minLength(3)]),
   });
 
-  ngOnInit(): void {
+
+  constructor(private state: AppStateService) {
+    this.loginState$ = state.state.pipe(map(s => {
+      return {
+        state: s.authentication,
+        data: s.authenticationData
+      }
+    }));
   }
 
-  constructor(public db: DbService) {
-    this.state$.next('loading');
-    this.db.login('a@b.com', '1234').subscribe(result => {
-      this.handleRegistrationResult(result);
-    });
-  }
-
-  private handleRegistrationResult(result: UserSelfInformation | CredentialsError) {
-    this.state$.next('done');
-    if (isSuccessfulAuthentication(result)) {
-      this.loginResult$.next(result);
-      this.loginError$.next(null);
-    } else if (isAuthenticationError(result)) {
-      this.loginError$.next(result);
-    }
-  }
+  ngOnInit(): void {}
 
   doLogin() {
     const email = this.loginForm.value.email!;
     const password = this.loginForm.value.password!;
-    this.state$.next('loading');
-    this.db.login(email, password).subscribe(result => {
-      this.handleRegistrationResult(result);
-    })
+    this.state.action({
+      type: 'loginStart',
+      payload: {
+        email: email,
+        password: password
+      }
+    });
   }
 
   doRegister() {
-    const email = this.registerForm.value.email!;
-    const password = this.registerForm.value.password!;
-    this.state$.next('loading');
-    this.db.register(email, password).subscribe(result => {
-      this.handleRegistrationResult(result);
-    })
+    this.doLogin();
   }
 
 }

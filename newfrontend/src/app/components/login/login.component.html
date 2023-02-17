@@ -1,23 +1,41 @@
 
-<ng-container *ngIf="(loginResult$ | async) as loginResult; else loadingTemplate">
-    <div>You're logged in as {{ loginResult.email }}</div>
+<ng-container *ngIf="loginState$ | async as loginState; else loadingTemplate">
+    <ng-container [ngSwitch]="loginState.state">
+        
+        <div class="form-modal" *ngSwitchCase="'none'">
+            <ng-container [ngTemplateOutlet]="loginFormTemplate"></ng-container>
+        </div>
+        
+        <div class="form-modal" *ngSwitchCase="'ongoing'">
+            <ng-container [ngTemplateOutlet]="busyTemplate"></ng-container>
+        </div>
+        
+        <div class="form-modal" *ngSwitchCase="'error'">
+            <ng-container [ngTemplateOutlet]="errorTemplate" [ngTemplateOutletContext]="{ loginError: loginState.data }"></ng-container>
+            <ng-container [ngTemplateOutlet]="loginFormTemplate"></ng-container>
+        </div>
+        
+        <ng-container *ngSwitchCase="'authenticated'" [ngTemplateOutlet]="loggedInTemplate" [ngTemplateOutletContext]="{ loginState: loginState.data }"></ng-container>
+
+    </ng-container>
 </ng-container>
 
 
+
 <ng-template #loadingTemplate>
-    <p>... authenticating ...</p>
+    <p>... loading ...</p>
 </ng-template>
 
-<div *ngIf="(loginError$ | async) as loginError" class="form-modal">
+<ng-template #loggedInTemplate let-loginState="loginState">
+    <div>You're logged in as {{ loginState.email }}</div>
+</ng-template>
 
-    <div *ngIf="(state$ | async) === 'loading'" class="loading">
-        <p>... loading ...</p>
-    </div>
-    <div *ngIf="(state$ | async) === 'done'" class="error">
-        <div>Error: {{loginError.errorMessage }}</div>
-        <div>{{ loginError.errorDetails | json }}</div>
-    </div>
+<ng-template #busyTemplate>
+    <p>... connecting ...</p>
+</ng-template>
 
+
+<ng-template #loginFormTemplate>
     <form [formGroup]="loginForm" (ngSubmit)="doLogin()">
         <h4>Login</h4>
         <div class="textInput">
@@ -43,4 +61,13 @@
         </div>
         <button type="submit">Register</button>
     </form>
-</div>
+</ng-template>
+
+<ng-template #errorTemplate let-loginError="loginError">
+    <div class="error">
+        <div>Error: {{loginError.errorMessage }}</div>
+        <div>{{ loginError.errorDetails | json }}</div>
+    </div>
+</ng-template>
+
+

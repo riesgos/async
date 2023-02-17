@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { PulsarService, UserOrder } from 'src/app/services/pulsar/pulsar.service';
+import { AppStateService } from 'src/app/services/appstate/appstate.service';
+import { UserOrder } from 'src/app/services/backend/backend.service';
 
 
 
@@ -13,7 +14,7 @@ export class PlaceOrderComponent implements OnInit {
 
   public orders: UserOrder[] = [];
 
-  constructor(private pulsar: PulsarService) {}
+  constructor(private state: AppStateService) {}
 
   handleNewData(orders: UserOrder[]) {
     console.log(`read new orders: `, orders);
@@ -21,9 +22,10 @@ export class PlaceOrderComponent implements OnInit {
   }
 
   onSendOrderClicked() {
-    for (const order of this.orders) {
-      this.pulsar.postOrder(order).subscribe(success => console.log(`order transmitted with ${success ? 'success' : 'failure'}`));
-    }
+    this.state.action({
+      type: 'orderStart',
+      payload: this.orders
+    });
   }
 
   ngOnInit(): void { }

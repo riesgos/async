@@ -32,14 +32,32 @@ export class Consumer {
 
 export class Producer {
 
-    private ws: WebSocket;
+    private ws?: WebSocket;
 
-    constructor(url: string) {
-        this.ws = new WebSocket(url);
+    connect(url: string): Observable<boolean> {
+        return new Observable(subscriber => {
+            this.ws = new WebSocket(url);
+            this.ws.onopen = function (ev: Event) {
+                subscriber.next(true);
+                subscriber.complete();
+            };
+            this.ws.onerror = function (ev: Event) {
+                subscriber.error(ev);
+                subscriber.complete();
+            }
+        });
+    }
+
+    public isConnected(): boolean {
+        return !!(this.ws) && !!(this.ws.OPEN);
     }
 
     public postMessage(body: string, properties?: { [key: string]: string }, context?: string): Observable<Response> {
         return new Observable(subscriber => {
+            if (!this.isConnected()) {
+                subscriber.error(`Not connected`);
+                subscriber.complete();
+            }
 
             // 1. create message
             const message: Message = {
@@ -49,7 +67,7 @@ export class Producer {
             }
 
             // 3. react to responses
-            this.ws.onmessage = function (response: MessageEvent<string>) {
+            this.ws!.onmessage = function (response: MessageEvent<string>) {
                 const data: Response = JSON.parse(response.data);
                 console.log("WS got data:", data)
                 if (data.errorCode !== 0) {
@@ -62,12 +80,12 @@ export class Producer {
 
             // 2. send message
             console.log(`Sending message through websocket: `, body, message);
-            this.ws.send(JSON.stringify(message));
+            this.ws!.send(JSON.stringify(message));
         });
     }
 
     public close() {
-        this.ws.close();
+        this.ws?.close();
     }
 }
 
