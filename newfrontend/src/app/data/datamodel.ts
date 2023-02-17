@@ -39,8 +39,11 @@ const eqEvents = [
 
 export const dataModel: DataModel = {
 
-    quakeledger: {
-        event: {
+
+    shakyground: {
+        gmpe: ['MontalvaEtAl2016SInter', 'GhofraniAtkinson2014', 'AbrahamsonEtAl2015SInter', 'YoungsEtAl1997SInterNSHMP2008'],
+        vsgrid: ['USGSSlopeBasedTopographyProxy', 'FromSeismogeotechnicsMicrozonation'],
+        quakeMLFile: {
             "type": "Feature",
             "geometry": {
                 "type": "Point",
@@ -68,12 +71,6 @@ export const dataModel: DataModel = {
             },
             "id": "quakeml:quakeledger/80674883"
         }
-    },
-
-    shakyground: {
-        gmpe: ['MontalvaEtAl2016SInter', 'GhofraniAtkinson2014', 'AbrahamsonEtAl2015SInter', 'YoungsEtAl1997SInterNSHMP2008'],
-        vsgrid: ['USGSSlopeBasedTopographyProxy', 'FromSeismogeotechnicsMicrozonation']
-        // quakeMLFile: any
         // shakeMapFile: any
     },
 

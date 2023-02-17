@@ -1,8 +1,9 @@
 .serviceOrderEntriesContainer {
     display: flex;
-    margin-left: 3%;
+    padding-left: 3%;
     flex-wrap: wrap;
     gap: 1%;
+    border-left: 1px solid #5959592b;
 }
 
 .serviceOrderEntry {

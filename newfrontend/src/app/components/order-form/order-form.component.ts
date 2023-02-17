@@ -78,21 +78,51 @@ export class OrderFormComponent implements OnInit {
     for (const parameterName in serviceData) {
       const parameterData = serviceData[parameterName];
 
+      // case 1: literal data
       if (typeof parameterData === 'string') {
         literalInputs[parameterName] = [parameterData];
-      } else if (Array.isArray(parameterData)) {
+      } 
+      
+      // case 2: array-data
+      else if (Array.isArray(parameterData)) {
         console.error(`Got back an array from form. We expect a string or an object.`, parameterData);
-      } else {
+      } 
+      
+      // case 3: complex data
+      else {
         const datum = parameterData[parameterName];
-        console.log(datum)
+        console.log(`converting complex form-data into user-constraint: `, datum);
+
+        // case 3.1: bbox
         if (typeof datum === 'object' && 'crs' in datum && 'lower_corner_x' in datum) {
             //@ts-ignore
           bboxInputs[parameterName] = [{
             ...datum
           }];
-        } else {
+        }
+
+        // case 3.2: eq-event
+        if (typeof datum === 'object' && 'type' in datum && 'geometry' in datum && 'properties' in datum) {
+          // @ts-ignore
+          datum.geometry = datum.geometry.geometry;
+          // @ts-ignore
+          datum.properties = datum.properties.properties;
+          // @ts-ignore
+          datum.geometry.coordinates = JSON.parse(datum.geometry.coordinates);
+          complexInputs[parameterName] = [{
+            encoding: 'UTF-8',
+            input_value: JSON.stringify(datum),
+            mime_type: 'application/vnd.geo+json',
+            xmlschema: ''
+          }];
+        }
+        
+        
+        else {
           console.error(`Don't know how to parse this into a ParameterConstraint:`, datum);
         } 
+
+
       }
     }
 
