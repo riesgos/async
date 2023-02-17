@@ -32,7 +32,7 @@ class CollectJsonFilesTask:
 class SetConnectionTimoutForServerXml:
     def run(self):
 
-        filepath = "/wps/server-config/server.xml"
+        filepath = "/tomcat/conf/server.xml"
 
         et = ElementTree.parse(filepath)
         server = et.getroot()
@@ -41,6 +41,14 @@ class SetConnectionTimoutForServerXml:
         connector.attrib["connectionTimeout"] = "180000"
 
         et.write(filepath)
+
+class TriggerReloadOfWps:
+    def run(self):
+        # According to https://stackoverflow.com/a/32367339
+        # It is enought to touch the web.xml to trigger a
+        # restart of the webapp.
+        filepath = "/tomcat/webapps/wps/WEB-INF/web.xml"
+        os.system(f"touch {filepath}")
 
 
 class ReplaceHostAndPortInWpsData:
@@ -64,8 +72,7 @@ class ReplaceHostAndPortInWpsData:
     def set_hostname_and_hostport(
         self, base_url, hostname, hostport, initial_username, initial_password
     ):
-        s = requests.Session()
-
+        s = requests.Session() 
         resp = s.get(f"{base_url}/login")
         resp.raise_for_status()
         csrf_token = self.get_csrf(resp)
@@ -146,6 +153,7 @@ def main():
     print("Collected json configurations")
     ReplaceHostAndPortInWpsData().run()
     print("Updated hostname and port of wps")
+    TriggerReloadOfWps().run()
 
 
 if __name__ == "__main__":
