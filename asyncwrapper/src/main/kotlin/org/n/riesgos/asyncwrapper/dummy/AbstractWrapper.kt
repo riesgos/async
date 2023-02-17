@@ -329,10 +329,30 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         LOGGER.info("Start mapping to wps inputs")
         val wpsInputMapper = InputMapper(getWpsIdentifier())
         val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, complexOutputsAsInputs, literalInputs, bboxInputs)
+        var wpsProcess: WPSProcess? = null
+        var wpsProcessException: Exception? = null
+        var getCapabilitiesTries = 0
+        while (wpsProcess == null && getCapabilitiesTries < 10) {
+            try {
+                val wpsClientService = WPSClientService(wpsConfiguration)
+                wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs())
+            } catch (ex: Exception) {
+                wpsProcessException = ex
+                getCapabilitiesTries += 1
+                Thread.sleep(1000L)
+            }
+        }
         // TODO: Extract the version from the implementations themselves
         try {
-            val wpsClientService = WPSClientService(wpsConfiguration)
-            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs(), wpsConfiguration.retryConfiguration)
+            if (wpsProcess == null) {
+                if (wpsProcessException != null) {
+                    throw wpsProcessException
+                } else {
+                    throw Exception("Not able to connect to wps server")
+                }
+            }
+
+            // In order to make sure it is not the WPS Server itself, we now fetch the wps capabilities explicitly
             LOGGER.info("Start calling the wps itself under ${getWpsUrl()}/${getWpsIdentifier()}")
             val wpsOutputs = wpsProcess.runProcess(wpsInputs)
             LOGGER.info("Finished calling the wps itself")
@@ -440,7 +460,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
     /**
      * Helper function to fetch the content of an url as byte array.
      */
-    private fun fetchContent(link: String): ByteArray {
+    private fun  fetchContent(link: String): ByteArray {
         val client = HttpClient.newBuilder().build()
         val request = HttpRequest.newBuilder().uri(URI.create(link)).build()
         val response = client.send(request, HttpResponse.BodyHandlers.ofByteArray())

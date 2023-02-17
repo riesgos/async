@@ -10,7 +10,8 @@ class WPSClientService(val config : WPSConfiguration) {
 
     @Synchronized
     fun establishWPSConnection() : WPSClientSession{
-        val wpsClient = WPSClientSession.getInstance()
+        //val wpsClient = WPSClientSession.getInstance()
+        val wpsClient = WPSClientSession()
         //connect session
         var connected = true;
         if(!wpsClient.serviceAlreadyRegistered(config.wpsURL)) {
