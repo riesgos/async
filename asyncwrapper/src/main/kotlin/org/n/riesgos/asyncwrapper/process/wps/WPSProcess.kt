@@ -26,7 +26,12 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
     override fun runProcess(input: ProcessInput): ProcessOutput {
 
         // take a look at the process description
-        val processDescription = wpsClient.getProcessDescription(url, processID, wpsVersion)
+        val processDescription = retry<org.n52.geoprocessing.wps.client.model.Process, WPSClientException>(WPSClientException::class.java, retryConfig.maxRetries, retryConfig.backoffMillis) {
+            LOGGER.info("retrieve wps process description for ${this.processID} (retries: $it)")
+            val processDescription = getCompleteProcessDescription()
+            LOGGER.info("retrieved wps process description for ${this.processID} (retries: $it)")
+            return@retry processDescription
+        }
 
         // create the request, add literal input
         val executeBuilder = ExecuteRequestBuilder(processDescription)
@@ -167,5 +172,18 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
             HashMap(),
             refOutputs
         )
+    }
+
+    /**
+     * check if wpsClient retrieved complete process description from server
+     */
+    private fun getCompleteProcessDescription() : org.n52.geoprocessing.wps.client.model.Process{
+        val processDescription = wpsClient.getProcessDescription(url, processID, wpsVersion)
+        //description not complete if network error
+        if(processDescription.inputs == null || processDescription.outputs == null){
+            throw WPSClientException("could not retrieve complete process description for process $processID")
+        }
+
+        return processDescription
     }
 }
