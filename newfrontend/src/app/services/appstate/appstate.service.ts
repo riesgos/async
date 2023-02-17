@@ -70,6 +70,7 @@ export class AppStateService {
         this.fireOffSideEffects(action);
         const newState = this.reduceState(action, this.state.value);
         this.state.next(newState);
+        console.log(`Handled action of type ${action.type}. New state: `, newState);
     }
 
 

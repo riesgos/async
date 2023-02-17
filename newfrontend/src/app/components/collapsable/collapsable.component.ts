@@ -12,9 +12,7 @@ export class CollapsableComponent implements OnInit {
   constructor() {
   }
 
-  ngOnInit(): void {
-    console.log('init')
-  }
+  ngOnInit(): void {}
 
 
 }
