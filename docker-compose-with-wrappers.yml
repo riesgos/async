@@ -341,7 +341,8 @@ services:
       - "riesgos-wps-hsqldb-dev:/usr/local/tomcat/webapps/wps/WEB-INF/classes/db/data"
       # And we need to store the server.xml, as we want to overwrite the
       # timeout settings.
-      - "riesgos-wps-server-config:/usr/local/tomcat/conf"
+      #- "riesgos-wps-server-config:/usr/local/tomcat/conf"
+      - "tomcat-folder:/usr/local/tomcat"
     networks:
       - wps
       - filestorage
@@ -397,7 +398,7 @@ services:
       - "modelprop-metadata:/wps/processes/modelprop"
       - "deus-metadata:/wps/processes/deus"    
       - "./shakemap_sampler/metadata:/wps/processes/shakemap_sampler"
-      - "riesgos-wps-server-config:/wps/server-config"
+      - "tomcat-folder:/tomcat"
     networks:
       - wps
 
@@ -409,13 +410,12 @@ volumes:
   filestoragedata:
   riesgos-wps-hsqldb-dev:
   riesgos-wps-json-config:
-  riesgos-wps-server-config:
+  tomcat-folder:
   shakyground-metadata:
   quakeledger-metadata:
   assetmaster-metadata:
   modelprop-metadata:
   deus-metadata:
-
 networks:
   db:
   queue:
