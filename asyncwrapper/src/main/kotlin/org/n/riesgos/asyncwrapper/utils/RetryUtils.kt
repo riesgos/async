@@ -13,20 +13,20 @@ package org.n.riesgos.asyncwrapper.utils
  * }
  *
  */
-fun <R, E> retry(exceptionToRetry: Class<E>, maxTries: Int, sleepTimeMilliSeconds: Long, func: (Int) -> R): R where E: Exception {
-    var currentTry = 0
+fun <R, E> retry(exceptionToRetry: Class<E>, maxRetries: Int, sleepTimeMilliSeconds: Long, func: (Int) -> R): R where E: Exception {
+    var retryCount = 0
     var lastException: Throwable? = null
 
-    while(currentTry < maxTries) {
+    while(retryCount <= maxRetries) { //first run is not a retry (max runs = maxRetries + 1)
         try {
-            val result = func(currentTry)
+            val result = func(retryCount)
             return result
         } catch (ex: Exception) {
             if (!(exceptionToRetry.isInstance(ex))) {
                 throw ex
             }
             // ignore this specific exception and retry
-            currentTry += 1
+            retryCount++
             lastException = ex
             Thread.sleep(sleepTimeMilliSeconds)
         }
