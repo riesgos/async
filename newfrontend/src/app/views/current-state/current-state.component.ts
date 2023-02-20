@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, interval } from 'rxjs';
 import { Job, Order, Process, ProductType } from 'src/app/backend_api/models';
+import { AppStateService } from 'src/app/services/appstate/appstate.service';
 import { DbService, ProductInfo } from 'src/app/services/db/db.service';
 import { LogsService } from 'src/app/services/logs/logs.service';
 
@@ -25,17 +26,19 @@ export class CurrentStateComponent implements OnInit {
   public orders$         = new BehaviorSubject<Order[]>([]);
   public logs$           = new BehaviorSubject<{[key: string]: string[]}>({});
 
-  constructor(private db: DbService, private logs: LogsService) {}
+  constructor(private state: AppStateService, private db: DbService, private logs: LogsService) {}
 
   ngOnInit(): void {
-    // interval(5000).subscribe(v => {
-    //   if (this.db.isLoggedIn()) {
-    //     this.refreshDbData();
-    //   }
-    //   if (this.logs.isConnected()) {
-    //     this.refreshLogData();
-    //   }
-    // });
+    this.state.state.subscribe(s => {
+      setTimeout(() => {
+        if (this.db.isLoggedIn()) {
+          this.refreshDbData();
+        }
+        if (this.logs.isConnected()) {
+          this.refreshLogData();
+        }
+      }, 5000);
+    });
   }
 
 
