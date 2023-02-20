@@ -1,0 +1,5 @@
+logs/*
+logs/current
+logs/lock
+logs/state
+logs/*.u
