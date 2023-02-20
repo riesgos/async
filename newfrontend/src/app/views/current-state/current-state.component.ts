@@ -28,14 +28,14 @@ export class CurrentStateComponent implements OnInit {
   constructor(private db: DbService, private logs: LogsService) {}
 
   ngOnInit(): void {
-    interval(5000).subscribe(v => {
-      if (this.db.isLoggedIn()) {
-        this.refreshDbData();
-      }
-      if (this.logs.isConnected()) {
-        this.refreshLogData();
-      }
-    });
+    // interval(5000).subscribe(v => {
+    //   if (this.db.isLoggedIn()) {
+    //     this.refreshDbData();
+    //   }
+    //   if (this.logs.isConnected()) {
+    //     this.refreshLogData();
+    //   }
+    // });
   }
 
 

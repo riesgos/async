@@ -20,10 +20,6 @@ export class LoginComponent implements OnInit {
     'email': new FormControl('a@b.com', [Validators.required, Validators.email]),
     'password': new FormControl('1234', [Validators.required, Validators.minLength(3)]),
   });
-  public registerForm = new FormGroup({
-    'email': new FormControl('a@b.com', [Validators.required, Validators.email]),
-    'password': new FormControl('1234', [Validators.required, Validators.minLength(3)]),
-  });
 
 
   constructor(private state: AppStateService) {
@@ -48,17 +44,5 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-
-  // doRegister() {
-  //   const email = this.loginForm.value.email!;
-  //   const password = this.loginForm.value.password!;
-  //   this.state.action({
-  //     type: 'registerStart',
-  //     payload: {
-  //       email: email,
-  //       password: password
-  //     }
-  //   });
-  // }
 
 }

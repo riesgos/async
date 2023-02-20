@@ -19,6 +19,8 @@ import { CollapsableComponent } from './components/collapsable/collapsable.compo
 import { LatestComponent } from './components/latest/latest.component';
 import { LoginComponent } from './components/login/login.component';
 import { environment } from 'src/environments/environment';
+import { TabsComponent } from './components/tabs/tabs.component';
+import { TabComponent } from './components/tabs/tab.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { environment } from 'src/environments/environment';
     ParameterOrderFormComponent,
     CollapsableComponent,
     LatestComponent,
-    LoginComponent
+    LoginComponent,
+    TabsComponent,
+    TabComponent
   ],
   imports: [
     BrowserModule,
