@@ -4,6 +4,7 @@ import { map, mergeMap, switchMap } from 'rxjs/operators';
 import { UserSelfInformation } from 'src/app/backend_api/models';
 import { environment } from 'src/environments/environment';
 import { CredentialsError, DbService, isAuthenticationError, isSuccessfulAuthentication } from '../db/db.service';
+import { LogsService } from '../logs/logs.service';
 import { Consumer, Producer } from '../pulsar/pulsar';
 
 
@@ -13,33 +14,27 @@ import { Consumer, Producer } from '../pulsar/pulsar';
 export class BackendService {
 
   private orders = new Producer();
-  constructor(private db: DbService) {}
+  constructor(private db: DbService, private logs: LogsService) {}
   
   public connect(email: string, password: string): Observable<UserSelfInformation | CredentialsError> {
     return this.db.login(email, password).pipe(
       mergeMap(results => {
 
         let queueConnection$ = of(false);
+        let logConnection$ = of(false);
         if (isSuccessfulAuthentication(results)) {
           const queueIp = environment.queueUrl.replace('http://', '').replace('https://', '').replace(/\/$/, '');
           const queueAddress = `ws://${queueIp}/ws/v2/producer/persistent/public/default/new-order`;
           console.log(`Attempting to connect to queue at ${queueAddress}`);
           queueConnection$ = this.orders.connect(queueAddress);
+          logConnection$ = this.logs.connect(email, password);
         }
 
-        return forkJoin([of(results), queueConnection$]);
+        return forkJoin([of(results), queueConnection$, logConnection$]);
       }),
       
       map(([dbConnection, queueConnection]) => {
         return dbConnection;
-      })
-    );
-  }
-
-  public register(email: string, password: string): Observable<UserSelfInformation | CredentialsError> {
-    return this.db.register(email, password).pipe(
-      mergeMap((results) => {
-        return this.connect(email, password);
       })
     );
   }

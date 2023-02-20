@@ -119,29 +119,6 @@ export class AppStateService {
             });
         }
 
-        if (action.type === 'registerStart') {
-            const creds = action.payload;
-            this.backend.register(creds.email, creds.password).subscribe(results => {
-                if (isSuccessfulAuthentication(results)) {
-                    this.action({
-                        type: 'registerSuccess',
-                        payload: results
-                    });
-                } else if (isAuthenticationError(results)) {
-                    this.action({
-                        type: 'registerFailure',
-                        payload: results
-                    });
-                }
-            }, error => {
-                this.action({
-                    type: 'loginFailure',
-                    payload: error
-                })
-            });
-        }
-
-
         if (action.type === 'orderStart') {
             const orders = action.payload;
             const processes$ = orders.map(o => this.backend.postOrder(o));

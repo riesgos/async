@@ -71,4 +71,17 @@
     </tr>
 </table>
 
+
+<h4>Logs</h4>
+<ng-container *ngIf="logs$ | async as logs">
+    <ng-container *ngFor="let entry of logs | keyvalue">
+        <h5>{{ entry.key }}</h5>
+        <table class="box">
+            <tr *ngFor="let logEntry of entry.value; let i = index">
+                <td>{{ i }}</td><td>{{ logEntry }}</td>
+            </tr>
+        </table>
+    </ng-container>
+</ng-container>
+
 </div>

@@ -14,10 +14,12 @@ ARG FRONTEND_PATH
 ARG FILESTORAGE_URL
 ARG QUEUE_URL
 ARG FASTAPI_URL
+ARG LOGS_URL
 RUN test -n "$FRONTEND_PATH"
 RUN test -n "$FILESTORAGE_URL"
 RUN test -n "$QUEUE_URL"
 RUN test -n "$FASTAPI_URL"
+RUN test -n "$LOGS_URL"
 
 # sed: attempting to avoid slashes and quotation-marks ... lead to escape-hell. 
 # using alternative delimiter | so that ARG's may contain slashes.
@@ -27,6 +29,7 @@ RUN sed -i "s|FRONTEND_PATH_PLACEHOLDER|${FRONTEND_PATH}|" ./angular.json
 RUN sed -i "s|FILESTORAGE_URL_PLACEHOLDER|${FILESTORAGE_URL}|" ./src/environments/environment.prod.ts
 RUN sed -i "s|QUEUE_URL_PLACEHOLDER|${QUEUE_URL}|" ./src/environments/environment.prod.ts
 RUN sed -i "s|FASTAPI_URL_PLACEHOLDER|${FASTAPI_URL}|" ./src/environments/environment.prod.ts
+RUN sed -i "s|LOGS_URL_PLACEHOLDER|${LOGS_URL}|" ./src/environments/environment.prod.ts
 
 # build with `behindProxy` so that we make use of the recently substituted FRONTEND_PATH_PLACEHOLDER from angular.json
 # build with `production` so that we fetch config.js, not config.dev.js, with the recently substituted FILESTORAGE_URL_PLACEHOLDER

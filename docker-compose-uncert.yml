@@ -293,6 +293,7 @@ services:
         - FILESTORAGE_URL=${SERVER_BASE_URL:?error}
         - QUEUE_URL=${SERVER_BASE_URL:?error}/queue/
         - FASTAPI_URL=${SERVER_BASE_URL:?error}/backend/
+        - LOGS_URL=${SERVER_BASE_URL:?error}/logs/
     networks:
       - web
 
