@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { AppStateService } from './services/appstate/appstate.service';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +8,10 @@ import { Component, ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  title = 'newfrontend';
+
+  constructor(private state: AppStateService) {
+    this.state.action({
+      type: 'appStart'
+    });
+  }
 }

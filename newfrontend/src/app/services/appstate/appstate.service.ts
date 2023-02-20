@@ -4,22 +4,28 @@ import { CredentialsError, isAuthenticationError, isSuccessfulAuthentication } f
 import { BackendService, UserOrder } from "../backend/backend.service";
 import { UserSelfInformation } from "src/app/backend_api/models";
 import { allTrue } from "../../utils/utils";
+import { LocalstoreService } from "../localstore/localstore";
 
 
 
 export interface AppState {
     authentication: 'none' | 'ongoing' | 'authenticated' | 'error',
     authenticationData: null | UserSelfInformation | CredentialsError,
-    orderState: 'none' | 'sending' | 'accepted'
+    orderState: 'none' | 'sending' | 'accepted',
+    localStoreData: { [key: string]: any }
 }
 
 const initialState: AppState = {
     authentication: 'none',
     authenticationData: null,
-    orderState: 'none'
+    orderState: 'none',
+    localStoreData: {}
 };
 
 
+export interface AppStart {
+    type: 'appStart'
+}
 
 export interface LoginAction {
     type: 'loginStart',
@@ -70,9 +76,26 @@ export interface OrderFailureAction {
     type: 'orderFailure'
 }
 
-export type Action = LoginAction | LoginSuccessAction | LoginFailureAction |
+export interface SaveToLocalStoreAction {
+    type: 'saveToLocalStore',
+    payload: { [key: string]: string }
+}
+
+export interface GetFromLocalStoreAction {
+    type: 'getFromLocalStore',
+    payload: string[]
+}
+
+export interface GetFromLocalStoreResultAction {
+    type: 'getFromLocalStoreResult',
+    payload: { [key: string]: string | null }
+}
+
+export type Action = AppStart |
+                     LoginAction | LoginSuccessAction | LoginFailureAction |
                      RegisterAction | RegisterSuccessAction | RegisterFailureAction |
-                     OrderAction | OrderSuccessAction | OrderFailureAction;
+                     OrderAction | OrderSuccessAction | OrderFailureAction |
+                     SaveToLocalStoreAction | GetFromLocalStoreAction | GetFromLocalStoreResultAction;
 
 
 
@@ -83,7 +106,7 @@ export class AppStateService {
 
     public state = new BehaviorSubject<AppState>(initialState);
 
-    constructor(private backend: BackendService) {}
+    constructor(private backend: BackendService, private local: LocalstoreService) {}
 
     public action(action: Action) {
         this.fireOffSideEffects(action);
@@ -97,6 +120,29 @@ export class AppStateService {
 
     private fireOffSideEffects(action: Action) {
 
+        if (action.type === 'appStart') {
+            const localData = this.local.getAll([]);
+            this.action({
+                type: 'getFromLocalStoreResult',
+                payload: localData
+            });
+        }
+
+
+        if (action.type === 'saveToLocalStore') {
+            const data = action.payload;
+            this.local.saveAll(data);
+        }
+        if (action.type === 'getFromLocalStore') {
+            const data = action.payload;
+            const results = this.local.getAll(data);
+            this.action({
+                type: 'getFromLocalStoreResult',
+                payload: results
+            });
+        }
+
+
         if (action.type === 'loginStart') {
             const creds = action.payload;
             this.backend.connect(creds.email, creds.password).subscribe(results => {
@@ -104,6 +150,10 @@ export class AppStateService {
                     this.action({
                         type: 'loginSuccess',
                         payload: results
+                    });
+                    this.action({
+                        type: 'saveToLocalStore',
+                        payload: { email: creds.email, password: creds.password }
                     });
                 } else if (isAuthenticationError(results)) {
                     this.action({
@@ -141,6 +191,10 @@ export class AppStateService {
 
 
     private reduceState(action: Action, currentState: AppState): AppState {
+
+        if (action.type === 'getFromLocalStoreResult') {
+            currentState.localStoreData = action.payload;
+        }
 
         if (action.type === 'loginStart' || action.type === 'registerStart') {
             currentState.authentication = 'ongoing';

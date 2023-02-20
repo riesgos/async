@@ -11,7 +11,6 @@ import { AppStateService, AppState } from 'src/app/services/appstate/appstate.se
 })
 export class LoginComponent implements OnInit {
 
-
   public loginState$: Observable<{ 
     state: AppState["authentication"],
     data: AppState["authenticationData"]
@@ -29,6 +28,21 @@ export class LoginComponent implements OnInit {
         data: s.authenticationData
       }
     }));
+    state.state.pipe(map(s => {
+      return {
+        email: s.localStoreData['email'],
+        password: s.localStoreData['password']
+      }
+    })).subscribe(r => {
+      if (r.email) {
+        console.log("Setting email from locally stored value");
+        this.loginForm.controls.email.setValue(r.email);
+      }
+      if (r.password) {
+        console.log("Setting password from locally stored value");
+        this.loginForm.controls.password.setValue(r.password);
+      }
+    });
   }
 
   ngOnInit(): void {}
