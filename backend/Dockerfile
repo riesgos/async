@@ -6,7 +6,7 @@ RUN apk add python3-dev gcc libc-dev g++
 RUN /usr/local/bin/python -m pip install --upgrade pip
 
 
-RUN pip install fastapi uvicorn environs psycopg2-binary sqlalchemy pytest requests
+RUN pip install fastapi uvicorn psycopg2-binary sqlalchemy pytest requests httpx
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 

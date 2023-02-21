@@ -1,7 +1,3 @@
-import binascii
-import hashlib
-import os
-from base64 import b64encode
 from typing import List
 
 from fastapi import APIRouter, Depends, Header, HTTPException
@@ -12,6 +8,8 @@ from ..dependencies import get_db
 from ..models import User
 
 user_router = APIRouter(prefix="/users")
+
+allow_external_user_registration = False
 
 
 @user_router.get("/", response_model=List[schemas.User])
@@ -51,35 +49,31 @@ def read_detail(
     return db_user
 
 
-@user_router.post("/register", response_model=schemas.UserSelfInformation)
-def register_user(
-    user_credentials: schemas.UserCredentials, db: Session = Depends(get_db)
-):
-    existing_db_user = crud.get_user_by_email(db, email=user_credentials.email)
-    if not user_credentials.password:
-        raise HTTPException(status_code=400, detail="Password must be set")
-    if existing_db_user is not None:
-        raise HTTPException(status_code=409, detail="User exists already")
-    # We create a new password.
-    pw_salt = b64encode(os.urandom(8)).decode("ascii")
-    pw_hash = b64encode(
-        hashlib.new(
-            "sha256",
-            bytes(pw_salt + ":" + user_credentials.password, "utf-8"),
-        ).digest()
-    ).decode("ascii")
-    password_hash = pw_salt + ":" + pw_hash
+if allow_external_user_registration:
 
-    apikey = binascii.b2a_hex(os.urandom(16)).decode("ascii")
-    user = crud.create_user(
-        db,
-        User(email=user_credentials.email, password_hash=password_hash, apikey=apikey),
-    )
-    return schemas.UserSelfInformation(
-        id=user.id,
-        email=user.email,
-        apikey=user.apikey,
-    )
+    @user_router.post("/register", response_model=schemas.UserSelfInformation)
+    def register_user(
+        user_credentials: schemas.UserCredentials, db: Session = Depends(get_db)
+    ):
+        existing_db_user = crud.get_user_by_email(db, email=user_credentials.email)
+        if not user_credentials.password:
+            raise HTTPException(status_code=400, detail="Password must be set")
+        if existing_db_user is not None:
+            raise HTTPException(status_code=409, detail="User exists already")
+        password_hash = User.generate_new_password_hash(user_credentials.password)
+
+        apikey = User.generate_new_apikey()
+        user = crud.create_user(
+            db,
+            User(
+                email=user_credentials.email, password_hash=password_hash, apikey=apikey
+            ),
+        )
+        return schemas.UserSelfInformation(
+            id=user.id,
+            email=user.email,
+            apikey=user.apikey,
+        )
 
 
 @user_router.post("/login", response_model=schemas.UserSelfInformation)
@@ -89,14 +83,9 @@ def login_user(
     existing_db_user = crud.get_user_by_email(db, email=user_credentials.email)
     if not existing_db_user:
         raise HTTPException(status_code=400, detail="Wrong credentials")
-    pw_salt, check_pw_hash = existing_db_user.password_hash.split(":", 1)
-    pw_hash = b64encode(
-        hashlib.new(
-            "sha256",
-            bytes(pw_salt + ":" + user_credentials.password, "utf-8"),
-        ).digest()
-    ).decode("ascii")
-    if not pw_hash == check_pw_hash:
+    if not User.is_password_hash(
+        password=user_credentials.password, password_hash=existing_db_user.password_hash
+    ):
         raise HTTPException(status_code=400, detail="Wrong credentials")
     return schemas.UserSelfInformation(
         id=existing_db_user.id,

@@ -1,11 +1,11 @@
-from catalog_app.main import ROOT_PATH
+from catalog_app.main import config
 from catalog_app.models import BboxInput, Job, Process
 
 from ..base import cleanup_db, client, session
 
 
 def test_read_bbox_input_list_empty(client):
-    response = client.get(f"{ROOT_PATH}/bbox-inputs")
+    response = client.get(f"{config.root_path}/bbox-inputs")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -26,7 +26,7 @@ def test_read_bbox_input_list_one(session, client):
     )
     session.add_all([process, job, bbox_input])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/bbox-inputs")
+    response = client.get(f"{config.root_path}/bbox-inputs")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -67,7 +67,7 @@ def test_read_bbox_input_list_filter_wps_identifier(session, client):
     )
     session.add_all([process, job, bbox_input1, bbox_input2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/bbox-inputs?wps_identifier=bbox2")
+    response = client.get(f"{config.root_path}/bbox-inputs?wps_identifier=bbox2")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -110,7 +110,7 @@ def test_read_bbox_input_list_filter_process_id(session, client):
     )
     session.add_all([process1, process2, job1, job2, bbox_input1, bbox_input2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/bbox-inputs?process_id={process2.id}")
+    response = client.get(f"{config.root_path}/bbox-inputs?process_id={process2.id}")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -152,7 +152,7 @@ def test_read_bbox_input_list_filter_job_id(session, client):
     )
     session.add_all([process, job1, job2, bbox_input1, bbox_input2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/bbox-inputs?job_id={job2.id}")
+    response = client.get(f"{config.root_path}/bbox-inputs?job_id={job2.id}")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -190,11 +190,11 @@ def test_read_bbox_input_list_101(session, client):
         session.add(bbox_input)
         session.commit()
     # In the first page we have 100 bbox inputs.
-    response = client.get(f"{ROOT_PATH}/bbox-inputs")
+    response = client.get(f"{config.root_path}/bbox-inputs")
     assert response.status_code == 200
     assert len(response.json()) == 100
     # On the second one we have only one left.
-    response2 = client.get(f"{ROOT_PATH}/bbox-inputs?skip=100")
+    response2 = client.get(f"{config.root_path}/bbox-inputs?skip=100")
     assert response2.status_code == 200
     assert len(response2.json()) == 1
 
@@ -215,7 +215,7 @@ def test_read_bbox_input_detail_one(session, client):
     )
     session.add_all([process, job, bbox_input])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/bbox-inputs/{bbox_input.id}")
+    response = client.get(f"{config.root_path}/bbox-inputs/{bbox_input.id}")
     assert response.status_code == 200
     assert response.json() == {
         "id": bbox_input.id,
@@ -230,5 +230,5 @@ def test_read_bbox_input_detail_one(session, client):
 
 
 def test_read_bbox_input_detail_none(client):
-    response = client.get(f"{ROOT_PATH}/bbox-inputs/-123")
+    response = client.get(f"{config.root_path}/bbox-inputs/-123")
     assert response.status_code == 404

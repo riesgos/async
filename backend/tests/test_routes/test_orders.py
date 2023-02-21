@@ -1,11 +1,11 @@
-from catalog_app.main import ROOT_PATH
+from catalog_app.main import config
 from catalog_app.models import Order, User
 
 from ..base import cleanup_db, client, session
 
 
 def test_read_order_list_empty(client):
-    response = client.get(f"{ROOT_PATH}/orders")
+    response = client.get(f"{config.root_path}/orders")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -15,7 +15,7 @@ def test_read_order_list_one(session, client):
     order = Order(user=user, order_constraints={})
     session.add_all([user, order])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/orders")
+    response = client.get(f"{config.root_path}/orders")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -38,7 +38,7 @@ def test_read_order_list_filter_user_id(session, client):
     order2 = Order(user=user2, order_constraints={})
     session.add_all([user1, user2, order1, order2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/orders?user_id={user1.id}")
+    response = client.get(f"{config.root_path}/orders?user_id={user1.id}")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -57,11 +57,11 @@ def test_read_order_list_101(session, client):
         session.add(order)
         session.commit()
     # In the first page we have 100 orders.
-    response = client.get(f"{ROOT_PATH}/orders")
+    response = client.get(f"{config.root_path}/orders")
     assert response.status_code == 200
     assert len(response.json()) == 100
     # On the second one we have only one left.
-    response2 = client.get(f"{ROOT_PATH}/orders?skip=100")
+    response2 = client.get(f"{config.root_path}/orders?skip=100")
     assert response2.status_code == 200
     assert len(response2.json()) == 1
 
@@ -76,7 +76,7 @@ def test_read_order_detail_one(session, client):
     )
     session.add_all([user, order])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/orders/{order.id}")
+    response = client.get(f"{config.root_path}/orders/{order.id}")
     assert response.status_code == 200
     assert response.json() == {
         "id": order.id,
@@ -86,20 +86,21 @@ def test_read_order_detail_one(session, client):
 
 
 def test_read_order_detail_none(client):
-    response = client.get(f"{ROOT_PATH}/orders/-123")
+    response = client.get(f"{config.root_path}/orders/-123")
     assert response.status_code == 404
 
 
 def test_create_order_no_auth(client):
     response = client.post(
-        f"{ROOT_PATH}/orders/", json={"order_constraints": {"gmpe": ["Abrahamson"]}}
+        f"{config.root_path}/orders/",
+        json={"order_constraints": {"gmpe": ["Abrahamson"]}},
     )
     assert response.status_code == 401
 
 
 def test_create_order_wrong_auth(client):
     response = client.post(
-        f"{ROOT_PATH}/orders/",
+        f"{config.root_path}/orders/",
         json={
             "order_constraints": {"gmpe": ["Abrahamson"]},
         },
@@ -113,7 +114,7 @@ def test_create_order_auth(client, session):
     session.add(user)
     session.commit()
     response = client.post(
-        f"{ROOT_PATH}/orders/",
+        f"{config.root_path}/orders/",
         json={
             "order_constraints": {"gmpe": ["Abrahamson"]},
         },
