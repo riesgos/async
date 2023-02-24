@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -14,7 +14,6 @@ export class LogsService {
   constructor(private http: HttpClient) { }
 
   public connect(email: string, password: string): Observable<boolean> {
-
     return this.http.get(`${environment.logsUrl.replace(/\/$/, "")}/current`, {
       responseType: 'text',
       headers: new HttpHeaders({
@@ -23,7 +22,7 @@ export class LogsService {
       })
     }).pipe(
       map(result => {
-        if (!!result) {
+        if (result !== undefined) {
           this.email = email;
           this.password = password;
           return true;
