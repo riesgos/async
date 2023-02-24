@@ -24,21 +24,15 @@ export class CurrentStateComponent implements OnInit {
   public processes$      = new BehaviorSubject<Process[]>([]);
   public jobs$           = new BehaviorSubject<Job[]>([]);
   public orders$         = new BehaviorSubject<Order[]>([]);
-  public logs$           = new BehaviorSubject<{[key: string]: string[]}>({});
 
-  constructor(private state: AppStateService, private db: DbService, private logs: LogsService) {}
+  constructor(private state: AppStateService, private db: DbService) {}
 
   ngOnInit(): void {
-    this.state.state.subscribe(s => {
-      setTimeout(() => {
-        if (this.db.isLoggedIn()) {
-          this.refreshDbData();
-        }
-        if (this.logs.isConnected()) {
-          this.refreshLogData();
-        }
-      }, 5000);
-    });
+    interval(5000).subscribe( t => {
+      if (this.db.isLoggedIn()) {
+        this.refreshDbData();
+      }
+    })
   }
 
 
@@ -62,34 +56,6 @@ export class CurrentStateComponent implements OnInit {
     this.db.getOrders().subscribe(orders => {
       const sorted = orders.sort((a, b) => a.id > b.id ? -1 : 1);
       this.orders$.next(sorted);
-    });
-  }
-  public refreshLogData() {
-    this.logs.readLatest().subscribe(data => {
-      
-      const parsed: {[key: string]: string[]} = {};
-      const regex = /async-(.*)-1 *\| (.*)/g;
-
-      for (const entry of data) {
-
-        const matches = [... entry.matchAll(regex)];
-        if (matches && matches[0]) {
-          const container = matches[0][1];
-          const message = matches[0][2];
-  
-          if (container && !(container in parsed)) {
-            parsed[container] = [];
-          }
-          parsed[container].push(message);
-        }
-        
-      }
-
-      for (const container in parsed) {
-        parsed[container] = parsed[container].reverse().slice(0, 50);
-      }
-
-      this.logs$.next(parsed);
     });
   }
 
