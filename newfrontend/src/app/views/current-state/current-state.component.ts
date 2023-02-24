@@ -26,19 +26,14 @@ export class CurrentStateComponent implements OnInit {
   public orders$         = new BehaviorSubject<Order[]>([]);
   public logs$           = new BehaviorSubject<{[key: string]: string[]}>({});
 
-  constructor(private state: AppStateService, private db: DbService, private logs: LogsService) {}
+  constructor(private state: AppStateService, private db: DbService) {}
 
   ngOnInit(): void {
-    this.state.state.subscribe(s => {
-      setTimeout(() => {
-        if (this.db.isLoggedIn()) {
-          this.refreshDbData();
-        }
-        if (this.logs.isConnected()) {
-          this.refreshLogData();
-        }
-      }, 5000);
-    });
+    interval(5000).subscribe( t => {
+      if (this.db.isLoggedIn()) {
+        this.refreshDbData();
+      }
+    })
   }
 
 

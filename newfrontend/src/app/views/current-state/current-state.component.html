@@ -4,10 +4,6 @@
         <p>... loading ...</p>
     </ng-template>
 
-    
-    <button (click)="refreshDbData(); refreshLogData();">Refresh</button>
-
-
     <h4>Current state</h4>
     <app-tabs>
 
@@ -83,21 +79,15 @@
         </app-tab>
     </app-tabs>
 
-
-    <h4>Logs</h4>
-    <app-tabs style="margin-bottom: 10rem;">
-        <ng-container *ngIf="logs$ | async as logs">
-            <ng-container *ngFor="let entry of logs | keyvalue">
-                <app-tab [tabTitle]="entry.key">
-                    <table class="box">
-                        <tr *ngFor="let logEntry of entry.value; let i = index">
-                            <td>{{ entry.value.length - i }}</td>
-                            <td>{{ logEntry }}</td>
-                        </tr>
-                    </table>
-                </app-tab>
-            </ng-container>
-        </ng-container>
-    </app-tabs>
+        <app-tab [tabTitle]="'Product types'">
+            <table class="box" *ngIf="productTypes$ | async as productTypes; else loading">
+                <tr>
+                    <th>ProductTypeName</th>
+                </tr>
+                <tr *ngFor="let productType of productTypes">
+                    <td>{{ productType.name }}</td>
+                </tr>
+            </table>
+        </app-tab>
 
 </div>

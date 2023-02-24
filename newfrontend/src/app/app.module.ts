@@ -9,7 +9,6 @@ import { ApiModule } from './backend_api/api.module';
 import { ApiService } from './backend_api/services';
 import { CurrentStateComponent } from './views/current-state/current-state.component';
 import { PlaceOrderComponent } from './views/place-order/place-order.component';
-import { LogvizComponent } from './views/logviz/logviz.component';
 import { DropfieldComponent } from './components/dropfield/dropfield.component';
 import { PaginatedTableComponent } from './components/paginated-table/paginated-table.component';
 import { OrderFormComponent } from './components/order-form/order-form.component';
@@ -21,13 +20,13 @@ import { LoginComponent } from './components/login/login.component';
 import { environment } from 'src/environments/environment';
 import { TabsComponent } from './components/tabs/tabs.component';
 import { TabComponent } from './components/tabs/tab.component';
+import { LogsComponent } from './views/logs/logs.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CurrentStateComponent,
     PlaceOrderComponent,
-    LogvizComponent,
     DropfieldComponent,
     PaginatedTableComponent,
     OrderFormComponent,
@@ -37,7 +36,8 @@ import { TabComponent } from './components/tabs/tab.component';
     LatestComponent,
     LoginComponent,
     TabsComponent,
-    TabComponent
+    TabComponent,
+    LogsComponent
   ],
   imports: [
     BrowserModule,
