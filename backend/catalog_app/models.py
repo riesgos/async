@@ -1,3 +1,7 @@
+import binascii
+import os
+import hashlib
+import base64
 from sqlalchemy import JSON, Boolean, Column, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
@@ -20,6 +24,33 @@ class User(Base):
     apikey = Column(String(256))
     superuser = Column(Boolean, default=False)
     orders = relationship("Order", back_populates="user")
+
+    @staticmethod
+    def generate_new_password_hash(password):
+        pw_salt = base64.b64encode(os.urandom(8)).decode("ascii")
+        pw_hash = base64.b64encode(
+            hashlib.new(
+                "sha256",
+                bytes(pw_salt + ":" + password, "utf-8"),
+            ).digest()
+        ).decode("ascii")
+        password_hash = pw_salt + ":" + pw_hash
+        return password_hash
+
+    @staticmethod
+    def generate_new_apikey():
+        return binascii.b2a_hex(os.urandom(16)).decode("ascii")
+
+    @staticmethod
+    def is_password_hash(password, password_hash):
+        pw_salt, check_pw_hash = password_hash.split(":", 1)
+        pw_hash = base64.b64encode(
+            hashlib.new(
+                "sha256",
+                bytes(pw_salt + ":" + password, "utf-8"),
+            ).digest()
+        ).decode("ascii")
+        return pw_hash == check_pw_hash
 
 
 class Order(Base):

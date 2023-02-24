@@ -1,11 +1,11 @@
-from catalog_app.main import ROOT_PATH
+from catalog_app.main import config
 from catalog_app.models import Job, Order, OrderJobRef, Process, User
 
 from ..base import cleanup_db, client, session
 
 
 def test_read_product_type_list_empty(client):
-    response = client.get(f"{ROOT_PATH}/product-types")
+    response = client.get(f"{config.root_path}/product-types")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -17,7 +17,7 @@ def test_read_product_types_list_one(session, client):
     job = Job(process=process, status="Succeeded")
     session.add_all([process, job])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/product-types")
+    response = client.get(f"{config.root_path}/product-types")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -35,7 +35,7 @@ def test_read_product_types_list_one_multiple_jobs(session, client):
     job2 = Job(process=process, status="Succeeded")
     session.add_all([process, job1, job2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/product-types")
+    response = client.get(f"{config.root_path}/product-types")
     assert response.status_code == 200
     # Still just one
     assert response.json() == [
@@ -54,7 +54,7 @@ def test_read_product_types_list_no_successful_jobs(session, client):
     job2 = Job(process=process, status="failed")
     session.add_all([process, job1, job2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/product-types")
+    response = client.get(f"{config.root_path}/product-types")
     assert response.status_code == 200
     # Still just one
     assert response.json() == []
@@ -73,11 +73,11 @@ def test_read_product_types_list_101(session, client):
         session.add(job)
         session.commit()
     # In the first page we have 100 jobs.
-    response = client.get(f"{ROOT_PATH}/product-types")
+    response = client.get(f"{config.root_path}/product-types")
     assert response.status_code == 200
     assert len(response.json()) == 100
     # On the second one we have only one left.
-    response2 = client.get(f"{ROOT_PATH}/product-types?skip=100")
+    response2 = client.get(f"{config.root_path}/product-types?skip=100")
     assert response2.status_code == 200
     assert len(response2.json()) == 1
 
@@ -89,7 +89,7 @@ def test_read_product_type_detail_one(session, client):
     job = Job(process=process, status="Succeeded")
     session.add_all([process, job])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/product-types/{process.id}")
+    response = client.get(f"{config.root_path}/product-types/{process.id}")
     assert response.status_code == 200
     assert response.json() == {
         "id": process.id,
@@ -104,10 +104,10 @@ def test_read_product_type_detail_no_succesful_job(session, client):
     job = Job(process=process, status="failed")
     session.add_all([process, job])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/product-types/{process.id}")
+    response = client.get(f"{config.root_path}/product-types/{process.id}")
     assert response.status_code == 404
 
 
 def test_read_product_type_detail_none(client):
-    response = client.get(f"{ROOT_PATH}/product-types/-123")
+    response = client.get(f"{config.root_path}/product-types/-123")
     assert response.status_code == 404

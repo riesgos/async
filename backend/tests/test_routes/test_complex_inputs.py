@@ -1,11 +1,11 @@
-from catalog_app.main import ROOT_PATH
+from catalog_app.main import config
 from catalog_app.models import ComplexInput, Job, Process
 
 from ..base import cleanup_db, client, session
 
 
 def test_read_complex_input_list_empty(client):
-    response = client.get(f"{ROOT_PATH}/complex-inputs")
+    response = client.get(f"{config.root_path}/complex-inputs")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -25,7 +25,7 @@ def test_read_complex_input_list_one(session, client):
     )
     session.add_all([process, job, complex_input])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-inputs")
+    response = client.get(f"{config.root_path}/complex-inputs")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -63,7 +63,7 @@ def test_read_complex_input_list_filter_wps_identifier(session, client):
     )
     session.add_all([process, job, complex_input1, complex_input2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-inputs?wps_identifier=shakemap1")
+    response = client.get(f"{config.root_path}/complex-inputs?wps_identifier=shakemap1")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -102,7 +102,7 @@ def test_read_complex_input_list_filter_job_id(session, client):
     )
     session.add_all([process, job1, job2, complex_input1, complex_input2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-inputs?job_id={job2.id}")
+    response = client.get(f"{config.root_path}/complex-inputs?job_id={job2.id}")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -145,7 +145,7 @@ def test_read_complex_input_list_filter_process_id(session, client):
     )
     session.add_all([process1, process2, job1, job2, complex_input1, complex_input2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-inputs?process_id={process2.id}")
+    response = client.get(f"{config.root_path}/complex-inputs?process_id={process2.id}")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -181,11 +181,11 @@ def test_read_complex_input_list_101(session, client):
         session.add(complex_input)
         session.commit()
     # In the first page we have 100 complex inputs.
-    response = client.get(f"{ROOT_PATH}/complex-inputs")
+    response = client.get(f"{config.root_path}/complex-inputs")
     assert response.status_code == 200
     assert len(response.json()) == 100
     # On the second one we have only one left.
-    response2 = client.get(f"{ROOT_PATH}/complex-inputs?skip=100")
+    response2 = client.get(f"{config.root_path}/complex-inputs?skip=100")
     assert response2.status_code == 200
     assert len(response2.json()) == 1
 
@@ -205,7 +205,7 @@ def test_read_complex_input_detail_one(session, client):
     )
     session.add_all([process, job, complex_input])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-inputs/{complex_input.id}")
+    response = client.get(f"{config.root_path}/complex-inputs/{complex_input.id}")
     assert response.status_code == 200
     assert response.json() == {
         "id": complex_input.id,
@@ -219,5 +219,5 @@ def test_read_complex_input_detail_one(session, client):
 
 
 def test_read_complex_input_detail_none(client):
-    response = client.get(f"{ROOT_PATH}/complex-inputs/-123")
+    response = client.get(f"{config.root_path}/complex-inputs/-123")
     assert response.status_code == 404

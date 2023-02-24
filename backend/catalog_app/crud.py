@@ -258,6 +258,12 @@ def create_user(db: Session, user: User):
     return user
 
 
+def update_user(db: Session, user: User):
+    db.add(user)
+    db.commit()
+    return user
+
+
 def create_order(db: Session, order: Order):
     db.add(order)
     db.commit()

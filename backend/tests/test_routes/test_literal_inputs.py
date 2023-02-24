@@ -1,11 +1,11 @@
-from catalog_app.main import ROOT_PATH
+from catalog_app.main import config
 from catalog_app.models import Job, LiteralInput, Process
 
 from ..base import cleanup_db, client, session
 
 
 def test_read_literal_input_list_empty(client):
-    response = client.get(f"{ROOT_PATH}/literal-inputs")
+    response = client.get(f"{config.root_path}/literal-inputs")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -20,7 +20,7 @@ def test_read_literal_input_list_one(session, client):
     )
     session.add_all([process, job, literal_input])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/literal-inputs")
+    response = client.get(f"{config.root_path}/literal-inputs")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -43,7 +43,7 @@ def test_read_literal_input_list_filter_wps_identifier(session, client):
     literal_input2 = LiteralInput(job=job, wps_identifier="vsgrid", input_value="usgs")
     session.add_all([process, job, literal_input1, literal_input2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/literal-inputs?wps_identifier=gmpe")
+    response = client.get(f"{config.root_path}/literal-inputs?wps_identifier=gmpe")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -67,7 +67,7 @@ def test_read_literal_input_list_filter_job_id(session, client):
     literal_input2 = LiteralInput(job=job2, wps_identifier="vsgrid", input_value="usgs")
     session.add_all([process, job1, job2, literal_input1, literal_input2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/literal-inputs?job_id={job1.id}")
+    response = client.get(f"{config.root_path}/literal-inputs?job_id={job1.id}")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -92,7 +92,7 @@ def test_read_literal_input_list_filter_process_id(session, client):
     literal_input2 = LiteralInput(job=job2, wps_identifier="vsgrid", input_value="usgs")
     session.add_all([process1, process2, job1, job2, literal_input1, literal_input2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/literal-inputs?process_id={process1.id}")
+    response = client.get(f"{config.root_path}/literal-inputs?process_id={process1.id}")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -122,11 +122,11 @@ def test_read_literal_input_list_101(session, client):
         session.add(literal_input)
         session.commit()
     # In the first page we have 100 literal inputs.
-    response = client.get(f"{ROOT_PATH}/literal-inputs")
+    response = client.get(f"{config.root_path}/literal-inputs")
     assert response.status_code == 200
     assert len(response.json()) == 100
     # On the second one we have only one left.
-    response2 = client.get(f"{ROOT_PATH}/literal-inputs?skip=100")
+    response2 = client.get(f"{config.root_path}/literal-inputs?skip=100")
     assert response2.status_code == 200
     assert len(response2.json()) == 1
 
@@ -143,7 +143,7 @@ def test_read_literal_input_detail_one(session, client):
     )
     session.add_all([process, job, literal_input])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/literal-inputs/{literal_input.id}")
+    response = client.get(f"{config.root_path}/literal-inputs/{literal_input.id}")
     assert response.status_code == 200
     assert response.json() == {
         "id": literal_input.id,
@@ -154,5 +154,5 @@ def test_read_literal_input_detail_one(session, client):
 
 
 def test_read_literal_input_detail_none(client):
-    response = client.get(f"{ROOT_PATH}/literal-inputs/-123")
+    response = client.get(f"{config.root_path}/literal-inputs/-123")
     assert response.status_code == 404
