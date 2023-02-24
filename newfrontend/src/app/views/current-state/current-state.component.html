@@ -79,5 +79,15 @@
         </app-tab>
     </app-tabs>
 
+        <app-tab [tabTitle]="'Product types'">
+            <table class="box" *ngIf="productTypes$ | async as productTypes; else loading">
+                <tr>
+                    <th>ProductTypeName</th>
+                </tr>
+                <tr *ngFor="let productType of productTypes">
+                    <td>{{ productType.name }}</td>
+                </tr>
+            </table>
+        </app-tab>
 
 </div>
