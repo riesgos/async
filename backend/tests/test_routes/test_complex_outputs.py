@@ -1,11 +1,11 @@
-from catalog_app.main import ROOT_PATH
+from catalog_app.main import config
 from catalog_app.models import ComplexOutput, Job, Process
 
 from ..base import cleanup_db, client, session
 
 
 def test_read_complex_output_list_empty(client):
-    response = client.get(f"{ROOT_PATH}/complex-outputs")
+    response = client.get(f"{config.root_path}/complex-outputs")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -25,7 +25,7 @@ def test_read_complex_output_list_one(session, client):
     )
     session.add_all([process, job, complex_output])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-outputs")
+    response = client.get(f"{config.root_path}/complex-outputs")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -63,7 +63,9 @@ def test_read_complex_output_list_filter_wps_identifier(session, client):
     )
     session.add_all([process, job, complex_output1, complex_output2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-outputs?wps_identifier=shakemap1")
+    response = client.get(
+        f"{config.root_path}/complex-outputs?wps_identifier=shakemap1"
+    )
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -102,7 +104,7 @@ def test_read_complex_output_list_filter_job_id(session, client):
     )
     session.add_all([process, job1, job2, complex_output1, complex_output2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-outputs?job_id={job1.id}")
+    response = client.get(f"{config.root_path}/complex-outputs?job_id={job1.id}")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -142,7 +144,9 @@ def test_read_complex_output_list_filter_process_id(session, client):
     )
     session.add_all([process1, process2, job1, job2, complex_output1, complex_output2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-outputs?process_id={process1.id}")
+    response = client.get(
+        f"{config.root_path}/complex-outputs?process_id={process1.id}"
+    )
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -182,7 +186,7 @@ def test_read_complex_output_list_filter_mime_type(session, client):
     )
     session.add_all([process1, process2, job1, job2, complex_output1, complex_output2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-outputs?mime_type=abc")
+    response = client.get(f"{config.root_path}/complex-outputs?mime_type=abc")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -218,11 +222,11 @@ def test_read_complex_output_list_101(session, client):
         session.add(complex_output)
         session.commit()
     # In the first page we have 100 complex outputs.
-    response = client.get(f"{ROOT_PATH}/complex-outputs")
+    response = client.get(f"{config.root_path}/complex-outputs")
     assert response.status_code == 200
     assert len(response.json()) == 100
     # On the second one we have only one left.
-    response2 = client.get(f"{ROOT_PATH}/complex-outputs?skip=100")
+    response2 = client.get(f"{config.root_path}/complex-outputs?skip=100")
     assert response2.status_code == 200
     assert len(response2.json()) == 1
 
@@ -242,7 +246,7 @@ def test_read_complex_output_detail_one(session, client):
     )
     session.add_all([process, job, complex_output])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/complex-outputs/{complex_output.id}")
+    response = client.get(f"{config.root_path}/complex-outputs/{complex_output.id}")
     assert response.status_code == 200
     assert response.json() == {
         "id": complex_output.id,
@@ -256,5 +260,5 @@ def test_read_complex_output_detail_one(session, client):
 
 
 def test_read_complex_output_detail_none(client):
-    response = client.get(f"{ROOT_PATH}/complex-outputs/-123")
+    response = client.get(f"{config.root_path}/complex-outputs/-123")
     assert response.status_code == 404

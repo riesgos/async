@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from catalog_app.database import Base
 from catalog_app.dependencies import get_db
-from catalog_app.main import ROOT_PATH, app
+from catalog_app.main import app
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 

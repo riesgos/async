@@ -1,11 +1,11 @@
-from catalog_app.main import ROOT_PATH
+from catalog_app.main import config
 from catalog_app.models import Job, Order, OrderJobRef, Process, User
 
 from ..base import cleanup_db, client, session
 
 
 def test_read_job_list_empty(client):
-    response = client.get(f"{ROOT_PATH}/jobs")
+    response = client.get(f"{config.root_path}/jobs")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -17,7 +17,7 @@ def test_read_job_list_one(session, client):
     job = Job(process=process, status="pending")
     session.add_all([process, job])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/jobs")
+    response = client.get(f"{config.root_path}/jobs")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -37,7 +37,7 @@ def test_read_job_list_filter_process_id(session, client):
     job2 = Job(process=process2, status="pending")
     session.add_all([process1, process2, job1, job2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/jobs?process_id={process1.id}")
+    response = client.get(f"{config.root_path}/jobs?process_id={process1.id}")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -56,7 +56,7 @@ def test_read_job_list_filter_status(session, client):
     job2 = Job(process=process1, status="pending")
     session.add_all([process1, job1, job2])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/jobs?status=running")
+    response = client.get(f"{config.root_path}/jobs?status=running")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -82,7 +82,7 @@ def test_read_job_list_filter_order_id(session, client):
         [user, order1, order2, process1, job1, job2, order_job_ref1, order_job_ref2]
     )
     session.commit()
-    response = client.get(f"{ROOT_PATH}/jobs?order_id={order1.id}")
+    response = client.get(f"{config.root_path}/jobs?order_id={order1.id}")
     assert response.status_code == 200
     assert response.json() == [
         {
@@ -106,11 +106,11 @@ def test_read_job_list_101(session, client):
         session.add(job)
         session.commit()
     # In the first page we have 100 jobs.
-    response = client.get(f"{ROOT_PATH}/jobs")
+    response = client.get(f"{config.root_path}/jobs")
     assert response.status_code == 200
     assert len(response.json()) == 100
     # On the second one we have only one left.
-    response2 = client.get(f"{ROOT_PATH}/jobs?skip=100")
+    response2 = client.get(f"{config.root_path}/jobs?skip=100")
     assert response2.status_code == 200
     assert len(response2.json()) == 1
 
@@ -122,7 +122,7 @@ def test_read_job_detail_one(session, client):
     job = Job(process=process, status="pending")
     session.add_all([process, job])
     session.commit()
-    response = client.get(f"{ROOT_PATH}/jobs/{job.id}")
+    response = client.get(f"{config.root_path}/jobs/{job.id}")
     assert response.status_code == 200
     assert response.json() == {
         "id": job.id,
@@ -132,5 +132,5 @@ def test_read_job_detail_one(session, client):
 
 
 def test_read_job_detail_none(client):
-    response = client.get(f"{ROOT_PATH}/jobs/-123")
+    response = client.get(f"{config.root_path}/jobs/-123")
     assert response.status_code == 404
