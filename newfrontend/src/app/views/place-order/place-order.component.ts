@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PulsarService, UserOrder } from 'src/app/services/pulsar/pulsar.service';
+import { map, Observable } from 'rxjs';
+import { AppState, AppStateService } from 'src/app/services/appstate/appstate.service';
+import { UserOrder } from 'src/app/services/backend/backend.service';
 
 
 
@@ -12,8 +14,13 @@ import { PulsarService, UserOrder } from 'src/app/services/pulsar/pulsar.service
 export class PlaceOrderComponent implements OnInit {
 
   public orders: UserOrder[] = [];
+  public orderState$: Observable<AppState['orderState']>;
 
-  constructor(private pulsar: PulsarService) {}
+  constructor(private state: AppStateService) {
+    this.orderState$ = this.state.state.pipe(map(s => {
+      return s.orderState
+    }));
+  }
 
   handleNewData(orders: UserOrder[]) {
     console.log(`read new orders: `, orders);
@@ -21,9 +28,10 @@ export class PlaceOrderComponent implements OnInit {
   }
 
   onSendOrderClicked() {
-    for (const order of this.orders) {
-      this.pulsar.postOrder(order).subscribe(success => console.log(`order transmitted with ${success ? 'success' : 'failure'}`));
-    }
+    this.state.action({
+      type: 'orderStart',
+      payload: this.orders
+    });
   }
 
   ngOnInit(): void { }

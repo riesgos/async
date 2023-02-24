@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { catchError, defaultIfEmpty, forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
 import { ComplexOutput, Job, Order, Process, Product, ProductType, UserSelfInformation } from "src/app/backend_api/models";
 import { ApiService } from "src/app/backend_api/services";
-import { UserOrder } from "../pulsar/pulsar.service";
+import { UserOrder } from "../backend/backend.service";
 
 
 export interface ProductInfo {
@@ -15,6 +15,20 @@ export interface ProductInfo {
     derivedProducts: number[]
 }
 
+export interface CredentialsError {
+    url: string,
+    errorMessage: string,
+    errorDetails: any
+}
+
+export function isSuccessfulAuthentication(result: any): result is UserSelfInformation {
+    return 'email' in result && 'id' in result;
+}
+
+export function isAuthenticationError(result: any): result is CredentialsError {
+    return !isSuccessfulAuthentication(result); // 'url' in result && 'status' in result && 'statusText' in result && 'error' in result;
+}
+
 @Injectable({
     providedIn: 'root'
   })
@@ -22,30 +36,47 @@ export interface ProductInfo {
     private userSelfInformation: UserSelfInformation | undefined;
 
     constructor(private apiSvc: ApiService) {
-        this.login('a@b.com', '1234').subscribe(result => console.log(`Logged in: `, result));
     }
 
-    private register(email: string, password: string) {
+    public register(email: string, password: string): Observable<UserSelfInformation | CredentialsError> {
         return this.apiSvc.registerUserApiV1UsersRegisterPost({
             body: { email, password }
         }).pipe(
-            tap(result => this.userSelfInformation = result)
+            tap(result => this.userSelfInformation = result),
+            map(result => {
+                console.log('registered: ', result);
+                return result;
+            }),
+            catchError(error => {
+                console.log(`Error on registration: `, error);
+                const errMsg = {
+                    url: error.url,
+                    errorMessage: error.message,
+                    errorDetails: error.error
+                };
+                return of(errMsg);
+            }),
         )
     }
 
-    private login(email: string, password: string) {
+    public login(email: string, password: string): Observable<UserSelfInformation | CredentialsError> {
       return this.apiSvc.loginUserApiV1UsersLoginPost({
         body: { email, password }
       }).pipe(
-        switchMap(result => {
-            if (result) return of(result);
-            return this.register(email, password);
+        tap(result => this.userSelfInformation = result),
+        map(result => {
+            console.log('login:', result)
+            return result;
         }),
         catchError(error => {
             console.log(`Error logging in: `, error);
-            return this.register(email, password);
+            const errMsg = {
+                url: error.url,
+                errorMessage: error.message,
+                errorDetails: error.error
+            };
+            return of(errMsg);
         }),
-        tap(result => this.userSelfInformation = result)
       )
     }
 
@@ -125,42 +156,6 @@ export interface ProductInfo {
             })
         );
     }
-
-//     getProductsOld() {
-//         const products$ = this.apiSvc.readListApiV1ProductsGet();
-//         const complexOutputs$ = this.apiSvc.readListApiV1ComplexOutputsGet();
-
-//         return forkJoin([products$, complexOutputs$]).pipe(
-//             switchMap(([products, complexOutputs]) => {
-// console.log(complexOutputs)
-//                 const tasks$: Observable<ProductInformation>[] = [];
-//                 for (const product of products) {
-//                     const details$ = this.apiSvc.readDetailApiV1ProductsProductIdGet({ product_id: product.id });
-//                     const baseProds$ = this.apiSvc.readBaseProductsApiV1ProductsProductIdBaseProductsGet({ product_id: product.id });
-//                     const derivedProds$ = this.apiSvc.readDervicedProductsApiV1ProductsProductIdDerivedProductsGet({ product_id: product.id });
-//                     const task$: Observable<ProductInformation> = forkJoin([details$, baseProds$, derivedProds$, complexOutputs$]).pipe(map(([details, base, derived]) => {
-//                         const productInfo: ProductInformation = {
-//                             product: details,
-//                             inputs: base.map(p => `${p.name} (${p.id})`),
-//                             derived: derived.map(p => `${p.name} (${p.id})`),
-//                         };
-
-
-//                         // @TODO: pretty sure that this is not the correct kind of matching.
-//                         const complexOutput = complexOutputs.find(co => co.job_id === product.id);
-//                         if (complexOutput) {
-//                             productInfo.link = complexOutput.link;
-//                         }
-
-//                         return productInfo;
-//                     }));
-//                     tasks$.push(task$);
-//                 }
-
-//                 return forkJoin(tasks$).pipe(defaultIfEmpty([]));
-//             })
-//         );
-//     }
   
     getProcesses() {
         return this.apiSvc.readListApiV1ProcessesGet().pipe(

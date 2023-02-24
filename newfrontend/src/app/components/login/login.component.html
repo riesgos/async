@@ -1,0 +1,60 @@
+
+<ng-container *ngIf="loginState$ | async as loginState; else loadingTemplate">
+    <ng-container [ngSwitch]="loginState.state">
+        
+        <div class="form-modal" *ngSwitchCase="'none'">
+            <ng-container [ngTemplateOutlet]="loginFormTemplate"></ng-container>
+        </div>
+        
+        <div class="form-modal" *ngSwitchCase="'ongoing'">
+            <ng-container [ngTemplateOutlet]="busyTemplate"></ng-container>
+        </div>
+        
+        <div class="form-modal" *ngSwitchCase="'error'">
+            <ng-container [ngTemplateOutlet]="errorTemplate" [ngTemplateOutletContext]="{ loginError: loginState.data }"></ng-container>
+            <ng-container [ngTemplateOutlet]="loginFormTemplate"></ng-container>
+        </div>
+        
+        <ng-container *ngSwitchCase="'authenticated'" [ngTemplateOutlet]="loggedInTemplate" [ngTemplateOutletContext]="{ loginState: loginState.data }"></ng-container>
+
+    </ng-container>
+</ng-container>
+
+
+
+<ng-template #loadingTemplate>
+    <p>... loading ...</p>
+</ng-template>
+
+<ng-template #loggedInTemplate let-loginState="loginState">
+    <div>You're logged in as {{ loginState.email }}</div>
+</ng-template>
+
+<ng-template #busyTemplate>
+    <p>... connecting ...</p>
+</ng-template>
+
+
+<ng-template #loginFormTemplate>
+    <form [formGroup]="loginForm" (ngSubmit)="doLogin()">
+        <h4>Login</h4>
+        <div class="textInput">
+            <label>Email</label>
+            <input type="email" formControlName="email" placeholder="your email">
+        </div>
+        <div class="textInput">
+            <label>Password</label>
+            <input type="password" formControlName="password" placeholder="your password">
+        </div>
+        <button type="submit">Login</button>
+    </form>
+</ng-template>
+
+<ng-template #errorTemplate let-loginError="loginError">
+    <div class="error">
+        <div>Error: {{loginError.errorMessage }}</div>
+        <div>{{ loginError.errorDetails | json }}</div>
+    </div>
+</ng-template>
+
+

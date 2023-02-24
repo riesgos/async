@@ -46,3 +46,5 @@ Thumbs.db
 
 # Secrets
 .env
+# Data 
+./hugo/data

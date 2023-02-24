@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BboxParameterConstraints, ComplexParameterConstraints, LiteralParameterConstraints, ParameterConstraints, PulsarService, UserOrder } from 'src/app/services/pulsar/pulsar.service';
+import { dataModel } from 'src/app/data/datamodel';
+import { AppStateService } from 'src/app/services/appstate/appstate.service';
+import { UserOrder, ParameterConstraints, LiteralParameterConstraints, BboxParameterConstraints, ComplexParameterConstraints } from 'src/app/services/backend/backend.service';
 
 
  /**
@@ -22,62 +24,8 @@ export interface ServiceDataModel {
   [parameterName: string]: ParameterModel
 }
 
-export type ParameterModel = string | string[] | ServiceDataModel;
+export type ParameterModel = string | any[] | ServiceDataModel;
 
-export const dataModel: DataModel = {
-
-  quakeledger: {
-    'input-boundingbox': {
-      'lower_corner_x': '-71.8',
-      'lower_corner_y': '-33.2',
-      'upper_corner_x': '-71.4',
-      'upper_corner_y': '-33.0',
-      'crs': ['EPSG:4326']
-    },
-    mmin: '6.6',
-    mmax: '8.5',
-    zmin: '5',
-    zmax: '140',
-    p: '0.1',
-    etype: ['observed', 'deaggregation', 'stochastic', 'expert'],
-    tlon: '-71.5730623712764',
-    tlat: '-33.1299174879672'
-  },
-
-  shakyground: {
-    gmpe: ['MontalvaEtAl2016SInter', 'GhofraniAtkinson2014', 'AbrahamsonEtAl2015SInter', 'YoungsEtAl1997SInterNSHMP2008'],
-    vsgrid: ['USGSSlopeBasedTopographyProxy', 'FromSeismogeotechnicsMicrozonation']
-    // quakeMLFile: any
-    // shakeMapFile: any
-  },
-
-  assetmaster: {
-    lonmin: '-71.8',
-    lonmax: '-71.4',
-    latmin: '-33.2',
-    latmax: '-33.0',
-    schema: ['SARA_v1.0', 'Mavrouli_et_al_2014', 'Torres_Corredor_et_al_2017'],
-    assettype: ['res'],
-    querymode: ['intersects', 'within'],
-    model: ['ValpCVTBayesian', 'ValpCommuna', 'ValpRegularOriginal', 'ValpRegularGrid', 'LimaCVT1_PD30_TI70_5000', 'LimaCVT2_PD30_TI70_10000', 'LimaCVT3_PD30_TI70_50000', 'LimaCVT4_PD40_TI60_5000', 'LimaCVT5_PD40_TI60_10000', 'LimaCVT6_PD40_TI60_50000'],
-    // selectedrowsgeojson: any
-  },
-
-  'eq-modelprop': {
-    schema: ['SARA_v1.0', 'HAZUS_v1.0', 'SUPPASRI2013_v2.0', 'Mavrouli_et_al_2014', 'Torres_Corredor_et_al_2017', 'Medina_2019'],
-    assetcategory: ['buildings'],
-    losscategory: ['structural'],
-    taxonomies: ['none']
-  },
-
-  'eq-deus': {
-    schema: ['SARA_v1.0', 'HAZUS_v1.0', 'SUPPASRI2013_v2.0', 'Mavrouli_et_al_2014', 'Torres_Corredor_et_al_2017', 'Medina_2019'],
-    // intensity: any
-    // exposure: any
-    // fragility: any
-  }
-
-}
 
 
 
@@ -91,7 +39,7 @@ export class OrderFormComponent implements OnInit {
   public model = dataModel;
   public formGroup = new FormGroup({});
 
-  constructor(private pulsar: PulsarService) { }
+  constructor(private state: AppStateService) { }
 
   ngOnInit(): void {
     // this.formGroup.valueChanges.subscribe(v => console.log('new value', v));
@@ -104,8 +52,10 @@ export class OrderFormComponent implements OnInit {
 
   submit() {
     const order = this.dataModelToUserOrder(this.formGroup.value);
-    console.log(`submitting order: `, order);
-    this.pulsar.postOrder(order).subscribe(success => console.log(`order transmitted with ${success ? 'success' : 'failure'}`));
+    this.state.action({
+      type: 'orderStart',
+      payload: [order]
+    });
   }
 
   private dataModelToUserOrder(model: DataModel): UserOrder {
@@ -128,21 +78,55 @@ export class OrderFormComponent implements OnInit {
     for (const parameterName in serviceData) {
       const parameterData = serviceData[parameterName];
 
+      // case 1: literal data
       if (typeof parameterData === 'string') {
         literalInputs[parameterName] = [parameterData];
-      } else if (Array.isArray(parameterData)) {
+      } 
+      
+      // case 2: array-data
+      else if (Array.isArray(parameterData)) {
         console.error(`Got back an array from form. We expect a string or an object.`, parameterData);
-      } else {
+      } 
+      
+      // case 3: complex data
+      else {
         const datum = parameterData[parameterName];
-        console.log(datum)
+        console.log(`converting complex form-data into user-constraint: `, datum);
+
+        // case 3.1: bbox
         if (typeof datum === 'object' && 'crs' in datum && 'lower_corner_x' in datum) {
             //@ts-ignore
           bboxInputs[parameterName] = [{
             ...datum
           }];
-        } else {
+        }
+
+        // case 3.2: eq-event
+        if (typeof datum === 'object' && 'type' in datum && 'geometry' in datum && 'properties' in datum) {
+          // @ts-ignore
+          datum.geometry = datum.geometry.geometry;
+          // @ts-ignore
+          datum.properties = datum.properties.properties;
+          // @ts-ignore
+          datum.geometry.coordinates = JSON.parse(datum.geometry.coordinates);
+          const fc = {
+            type: "FeatureCollection",
+            features: [datum]
+          }
+          complexInputs[parameterName] = [{
+            encoding: 'UTF-8',
+            input_value: JSON.stringify(fc),
+            mime_type: 'application/vnd.geo+json',
+            xmlschema: ''
+          }];
+        }
+        
+        
+        else {
           console.error(`Don't know how to parse this into a ParameterConstraint:`, datum);
         } 
+
+
       }
     }
 

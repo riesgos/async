@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -13,9 +13,14 @@ import { LogvizComponent } from './views/logviz/logviz.component';
 import { DropfieldComponent } from './components/dropfield/dropfield.component';
 import { PaginatedTableComponent } from './components/paginated-table/paginated-table.component';
 import { OrderFormComponent } from './components/order-form/order-form.component';
-import { ServiceOrderFormComponent } from './components/service-order-form/service-order-form.component';
-import { ParameterOrderFormComponent } from './components/parameter-order-form/parameter-order-form.component';
+import { ServiceOrderFormComponent } from './components/order-form/service-order-form/service-order-form.component';
+import { ParameterOrderFormComponent } from './components/order-form/parameter-order-form/parameter-order-form.component';
 import { CollapsableComponent } from './components/collapsable/collapsable.component';
+import { LatestComponent } from './components/latest/latest.component';
+import { LoginComponent } from './components/login/login.component';
+import { environment } from 'src/environments/environment';
+import { TabsComponent } from './components/tabs/tabs.component';
+import { TabComponent } from './components/tabs/tab.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +33,11 @@ import { CollapsableComponent } from './components/collapsable/collapsable.compo
     OrderFormComponent,
     ServiceOrderFormComponent,
     ParameterOrderFormComponent,
-    CollapsableComponent
+    CollapsableComponent,
+    LatestComponent,
+    LoginComponent,
+    TabsComponent,
+    TabComponent
   ],
   imports: [
     BrowserModule,
@@ -36,10 +45,12 @@ import { CollapsableComponent } from './components/collapsable/collapsable.compo
     HttpClientModule,
     ReactiveFormsModule,
     ApiModule.forRoot({
-      rootUrl: 'http://localhost'
+      rootUrl: new URL(environment.fastApiUrl.replace(/([^:]\/)\/+/g, "$1").replace(/\/$/, '')).toString()  // making sure that properly formatted url
     })
   ],
-  providers: [ApiService],
+  providers: [
+    ApiService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
