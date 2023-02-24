@@ -109,9 +109,13 @@ export class OrderFormComponent implements OnInit {
           datum.properties = datum.properties.properties;
           // @ts-ignore
           datum.geometry.coordinates = JSON.parse(datum.geometry.coordinates);
+          const fc = {
+            type: "FeatureCollection",
+            features: [datum]
+          }
           complexInputs[parameterName] = [{
             encoding: 'UTF-8',
-            input_value: JSON.stringify(datum),
+            input_value: JSON.stringify(fc),
             mime_type: 'application/vnd.geo+json',
             xmlschema: ''
           }];

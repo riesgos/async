@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ServiceDataModel } from '../order-form/order-form.component';
+import { ServiceDataModel } from '../../order-form/order-form.component';
 
 /**
    * Data-model. 

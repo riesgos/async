@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ParameterModel, ServiceDataModel } from '../order-form/order-form.component';
+import { ParameterModel, ServiceDataModel } from '../../order-form/order-form.component';
 
 @Component({
   selector: 'app-parameter-order-form',

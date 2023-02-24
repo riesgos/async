@@ -85,7 +85,7 @@
 
 
     <h4>Logs</h4>
-    <app-tabs>
+    <app-tabs style="margin-bottom: 10rem;">
         <ng-container *ngIf="logs$ | async as logs">
             <ng-container *ngFor="let entry of logs | keyvalue">
                 <app-tab [tabTitle]="entry.key">

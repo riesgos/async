@@ -132,6 +132,10 @@ export class AppStateService {
         if (action.type === 'saveToLocalStore') {
             const data = action.payload;
             this.local.saveAll(data);
+            this.action({
+                type: 'getFromLocalStore',
+                payload: [...Object.keys(data)]
+            });
         }
         if (action.type === 'getFromLocalStore') {
             const data = action.payload;

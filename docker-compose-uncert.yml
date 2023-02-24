@@ -218,6 +218,8 @@ services:
     environment:
       ROOT_PATH: '/backend/api/v1'
       SQLALCHEMY_DATABASE_URL: 'postgresql://${DATABASE_USER:?error}:${DATABASE_PASSWORD:?error}@db:5432/${DATABASE_USER:?error}'
+      BACKEND_USER_EMAIL: ${BACKEND_USER_EMAIL:?error}
+      BACKEND_USER_PASSWORD: ${BACKEND_USER_PASSWORD:?error}
 
   backend_migrations:
     image: flyway/flyway

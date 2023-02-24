@@ -98,6 +98,9 @@ export const dataModel: DataModel = {
         // intensity: any
         // exposure: any
         // fragility: any
-    }
+    },
 
+    shakemapresampler: {
+        'random_seed': '1234'
+    }
 };
