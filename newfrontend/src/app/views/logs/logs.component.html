@@ -12,19 +12,58 @@
         </table>
     </app-tab>
 
-    <app-tab [tabTitle]="'queue'">
-        <table class="box">
-            <tr *ngFor="let logEntry of logs['queue']; let i = index">
-                <td>{{ logs['queue'].length - i }}</td>
-                <td>{{ logEntry }}</td>
-            </tr>
-        </table>
-    </app-tab>
 
     <app-tab [tabTitle]="'db'">
         <table class="box">
             <tr *ngFor="let logEntry of logs['db']; let i = index">
                 <td>{{ logs['db'].length - i }}</td>
+                <td>{{ logEntry }}</td>
+            </tr>
+        </table>
+    </app-tab>
+
+    <app-tab [tabTitle]="'modelprop_wrapper'">
+        <table class="box">
+            <tr *ngFor="let logEntry of logs['modelprop_wrapper']; let i = index">
+                <td>{{ logs['modelprop_wrapper'].length - i }}</td>
+                <td>{{ logEntry }}</td>
+            </tr>
+        </table>
+    </app-tab>
+
+    <app-tab [tabTitle]="'assetmaster_wrapper'">
+        <table class="box">
+            <tr *ngFor="let logEntry of logs['assetmaster_wrapper']; let i = index">
+                <td>{{ logs['assetmaster_wrapper'].length - i }}</td>
+                <td>{{ logEntry }}</td>
+            </tr>
+        </table>
+    </app-tab>
+
+    <app-tab [tabTitle]="'shakyground_wrapper'">
+        <table class="box">
+            <tr *ngFor="let logEntry of logs['shakyground_wrapper']; let i = index">
+                <td>{{ logs['shakyground_wrapper'].length - i }}</td>
+                <td>{{ logEntry }}</td>
+            </tr>
+        </table>
+    </app-tab>
+
+    
+    <app-tab [tabTitle]="'shakemap_resampler_wrapper'">
+        <table class="box">
+            <tr *ngFor="let logEntry of logs['shakemap_resampler_wrapper']; let i = index">
+                <td>{{ logs['shakemap_resampler_wrapper'].length - i }}</td>
+                <td>{{ logEntry }}</td>
+            </tr>
+        </table>
+    </app-tab>
+
+
+    <app-tab [tabTitle]="'deus_wrapper'">
+        <table class="box">
+            <tr *ngFor="let logEntry of logs['deus_wrapper']; let i = index">
+                <td>{{ logs['deus_wrapper'].length - i }}</td>
                 <td>{{ logEntry }}</td>
             </tr>
         </table>

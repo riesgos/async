@@ -3,6 +3,26 @@ import { BehaviorSubject, interval } from 'rxjs';
 import { AppStateService } from 'src/app/services/appstate/appstate.service';
 import { LogsService } from 'src/app/services/logs/logs.service';
 
+interface Log {
+    "db": string[],
+    "backend": string[],
+    "modelprop_wrapper": string[],
+    "assetmaster_wrapper": string[],
+    "shakyground_wrapper": string[],
+    "shakemap_resampler_wrapper": string[],
+    "deus_wrapper": string[],
+};
+
+const emptyLog: Log = {
+  "db": [],
+  "backend": [],
+  "modelprop_wrapper": [],
+  "assetmaster_wrapper": [],
+  "shakyground_wrapper": [],
+  "shakemap_resampler_wrapper": [],
+  "deus_wrapper": [],
+};
+
 @Component({
   selector: 'app-logs',
   templateUrl: './logs.component.html',
@@ -10,8 +30,7 @@ import { LogsService } from 'src/app/services/logs/logs.service';
 })
 export class LogsComponent implements OnInit {
 
-  // public logs$ = new BehaviorSubject<{[key: string]: string[]}>({});
-  public logs: {[key: string]: string[]} = {};
+  public logs: Log = emptyLog;
 
 
   constructor(private stateSvc: AppStateService, private logsSvc: LogsService) { }
@@ -27,25 +46,20 @@ export class LogsComponent implements OnInit {
   public refreshLogData() {
     this.logsSvc.readLatest().subscribe(data => {
       
-      const parsed: {[key: string]: string[]} = {};
-      const regex = /async-(.*)-1 *\| (.*)/g;
+      const parsed: Log = emptyLog;
 
       for (const entry of data) {
-
-        const matches = [... entry.matchAll(regex)];
-        if (matches && matches[0]) {
-          const container = matches[0][1];
-          const message = matches[0][2];
-  
-          if (container && !(container in parsed)) {
-            parsed[container] = [];
+        for (const key in parsed) {
+          if (entry.startsWith(`async-${key}`)) {
+            // @ts-ignore
+            parsed[key].push(entry);
+            continue;
           }
-          parsed[container].push(message);
         }
-        
       }
 
       for (const container in parsed) {
+        // @ts-ignore
         parsed[container] = parsed[container].reverse().slice(0, 50);
       }
 
