@@ -66,7 +66,6 @@ export class LogsComponent implements OnInit {
                     // @ts-ignore
         parsed[container] = parsed[container].reverse().slice(0, 50);
       }
-console.log(parsed);
       this.logs = parsed;
     });
   }
