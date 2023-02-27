@@ -59,34 +59,6 @@ export class CurrentStateComponent implements OnInit {
       this.orders$.next(sorted);
     });
   }
-  public refreshLogData() {
-    this.logs.readLatest().subscribe(data => {
-      
-      const parsed: {[key: string]: string[]} = {};
-      const regex = /async-(.*)-1 *\| (.*)/g;
-
-      for (const entry of data) {
-
-        const matches = [... entry.matchAll(regex)];
-        if (matches && matches[0]) {
-          const container = matches[0][1];
-          const message = matches[0][2];
-  
-          if (container && !(container in parsed)) {
-            parsed[container] = [];
-          }
-          parsed[container].push(message);
-        }
-        
-      }
-
-      for (const container in parsed) {
-        parsed[container] = parsed[container].reverse().slice(0, 50);
-      }
-
-      this.logs$.next(parsed);
-    });
-  }
 
   public getProcessById(id: number) {
     return this.processes$.value.find(v => v.id === id);
