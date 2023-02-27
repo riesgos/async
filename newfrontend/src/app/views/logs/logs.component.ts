@@ -13,15 +13,19 @@ interface Log {
     "deus_wrapper": string[],
 };
 
-const emptyLog: Log = {
-  "db": [],
-  "backend": [],
-  "modelprop_wrapper": [],
-  "assetmaster_wrapper": [],
-  "shakyground_wrapper": [],
-  "shakemap_resampler_wrapper": [],
-  "deus_wrapper": [],
-};
+function createEmptyLog(): Log {
+  const emptyLog: Log = {
+    "db": [],
+    "backend": [],
+    "modelprop_wrapper": [],
+    "assetmaster_wrapper": [],
+    "shakyground_wrapper": [],
+    "shakemap_resampler_wrapper": [],
+    "deus_wrapper": [],
+  };
+  return emptyLog;
+}
+
 
 @Component({
   selector: 'app-logs',
@@ -30,7 +34,7 @@ const emptyLog: Log = {
 })
 export class LogsComponent implements OnInit {
 
-  public logs: Log = emptyLog;
+  public logs: Log = createEmptyLog();
 
 
   constructor(private stateSvc: AppStateService, private logsSvc: LogsService) { }
@@ -46,7 +50,7 @@ export class LogsComponent implements OnInit {
   public refreshLogData() {
     this.logsSvc.readLatest().subscribe(data => {
       
-      const parsed: Log = emptyLog;
+      const parsed: Log = createEmptyLog();
 
       for (const entry of data) {
         for (const key in parsed) {
@@ -59,10 +63,10 @@ export class LogsComponent implements OnInit {
       }
 
       for (const container in parsed) {
-        // @ts-ignore
+                    // @ts-ignore
         parsed[container] = parsed[container].reverse().slice(0, 50);
       }
-
+console.log(parsed);
       this.logs = parsed;
     });
   }
