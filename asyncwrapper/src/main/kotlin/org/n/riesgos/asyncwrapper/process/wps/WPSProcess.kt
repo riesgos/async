@@ -17,9 +17,6 @@ import java.util.logging.Logger
 
 
 class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: String, private val expectedOutputs : List<WPSOutputDefinition>, private val retryConfig : RetryConfiguration) : Process {
-
-    constructor(wpsClient : WPSClientSession, url: String, processID: String, wpsVersion: String, expectedOutputs : List<WPSOutputDefinition>) : this(wpsClient, url, processID, wpsVersion, expectedOutputs, RetryConfiguration(3, 3000))
-
     companion object {
         val LOGGER = Logger.getLogger("WPSProcess")
     }

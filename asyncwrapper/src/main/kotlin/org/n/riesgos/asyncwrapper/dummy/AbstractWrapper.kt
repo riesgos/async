@@ -336,7 +336,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         val wpsProcess = retry<WPSProcess, WPSClientException>(WPSClientException::class.java, wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis) {
             WPSProcess.LOGGER.info("retrieve getCapabilities document from  ${wpsConfiguration.wpsURL} (retries: $it)")
             val wpsClientService = WPSClientService(wpsConfiguration)
-            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs())
+            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs(),wpsConfiguration.retryConfiguration)
             WPSProcess.LOGGER.info("retrieved wps process description for ${wpsConfiguration.wpsURL} (retries: $it)")
             return@retry wpsProcess
         }
