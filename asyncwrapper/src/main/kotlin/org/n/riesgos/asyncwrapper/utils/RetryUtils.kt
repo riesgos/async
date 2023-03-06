@@ -28,7 +28,9 @@ fun <R, E> retry(exceptionToRetry: Class<E>, maxRetries: Int, sleepTimeMilliSeco
             // ignore this specific exception and retry
             retryCount++
             lastException = ex
-            Thread.sleep(sleepTimeMilliSeconds)
+            if(retryCount <= maxRetries) { //no need to sleep if final retry failed
+                Thread.sleep(sleepTimeMilliSeconds)
+            }
         }
     }
     throw lastException as Throwable
