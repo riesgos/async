@@ -16,7 +16,7 @@ import org.n.riesgos.asyncwrapper.pulsar.MessageParser
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n.riesgos.asyncwrapper.utils.retry
 import org.n52.geoprocessing.wps.client.WPSClientException
-import org.n52.geoprocessing.wps.client.model.Process
+import java.io.IOException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -334,10 +334,10 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, complexOutputsAsInputs, literalInputs, bboxInputs)
 
         val wpsProcess = retry<WPSProcess>(wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis, { ex -> ex is WPSClientException }) {
-            WPSProcess.LOGGER.info("retrieve getCapabilities document from  ${wpsConfiguration.wpsURL} (retries: $it)")
+            LOGGER.info("retrieve getCapabilities document from  ${wpsConfiguration.wpsURL} (retries: $it)")
             val wpsClientService = WPSClientService(wpsConfiguration)
             val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs(),wpsConfiguration.retryConfiguration)
-            WPSProcess.LOGGER.info("retrieved wps process description for ${wpsConfiguration.wpsURL} (retries: $it)")
+            LOGGER.info("retrieved getCapabilities document from ${wpsConfiguration.wpsURL} (retries: $it)")
             return@retry wpsProcess
         }
 
@@ -454,7 +454,13 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
     private fun  fetchContent(link: String): ByteArray {
         val client = HttpClient.newBuilder().build()
         val request = HttpRequest.newBuilder().uri(URI.create(link)).build()
-        val response = client.send(request, HttpResponse.BodyHandlers.ofByteArray())
+        val response =  retry<HttpResponse<ByteArray>>(wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis, { ex -> ex is IOException }) {
+            LOGGER.info("fetch content from  $link (retries: $it)")
+            val response = client.send(request, HttpResponse.BodyHandlers.ofByteArray())
+            LOGGER.info("fetched content from $link (retries: $it)")
+            return@retry response
+        }
+
         return response.body()
     }
 
