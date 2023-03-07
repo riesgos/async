@@ -14,6 +14,9 @@ import org.n.riesgos.asyncwrapper.process.wps.WPSClientService
 import org.n.riesgos.asyncwrapper.process.wps.WPSProcess
 import org.n.riesgos.asyncwrapper.pulsar.MessageParser
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
+import org.n.riesgos.asyncwrapper.utils.retry
+import org.n52.geoprocessing.wps.client.WPSClientException
+import org.n52.geoprocessing.wps.client.model.Process
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -329,29 +332,17 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         LOGGER.info("Start mapping to wps inputs")
         val wpsInputMapper = InputMapper(getWpsIdentifier())
         val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, complexOutputsAsInputs, literalInputs, bboxInputs)
-        var wpsProcess: WPSProcess? = null
-        var wpsProcessException: Exception? = null
-        var getCapabilitiesTries = 0
-        while (wpsProcess == null && getCapabilitiesTries < 10) {
-            try {
-                val wpsClientService = WPSClientService(wpsConfiguration)
-                wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs())
-            } catch (ex: Exception) {
-                wpsProcessException = ex
-                getCapabilitiesTries += 1
-                Thread.sleep(1000L)
-            }
+
+        val wpsProcess = retry<WPSProcess, WPSClientException>(WPSClientException::class.java, wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis) {
+            WPSProcess.LOGGER.info("retrieve getCapabilities document from  ${wpsConfiguration.wpsURL} (retries: $it)")
+            val wpsClientService = WPSClientService(wpsConfiguration)
+            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs(),wpsConfiguration.retryConfiguration)
+            WPSProcess.LOGGER.info("retrieved wps process description for ${wpsConfiguration.wpsURL} (retries: $it)")
+            return@retry wpsProcess
         }
+
         // TODO: Extract the version from the implementations themselves
         try {
-            if (wpsProcess == null) {
-                if (wpsProcessException != null) {
-                    throw wpsProcessException
-                } else {
-                    throw Exception("Not able to connect to wps server")
-                }
-            }
-
             // In order to make sure it is not the WPS Server itself, we now fetch the wps capabilities explicitly
             LOGGER.info("Start calling the wps itself under ${getWpsUrl()}/${getWpsIdentifier()}")
             val wpsOutputs = wpsProcess.runProcess(wpsInputs)
