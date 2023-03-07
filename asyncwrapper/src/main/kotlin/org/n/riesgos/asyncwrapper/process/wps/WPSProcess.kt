@@ -87,12 +87,6 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
             val requestText = WPS20ExecuteEncoder.encode(executeRequest)
             LOGGER.info(requestText)
 
-            //if failure due to network-problems, repeat n times before giving up.
-
-            if (this.retryConfig.maxRetries < 1 || this.retryConfig.backoffMillis < 1){
-                throw IllegalArgumentException("invalid retry configuration, values < 1 not allowed")
-            }
-
            //execute wps process, retry if (network) error
            val processOutput = retry<ProcessOutput>(retryConfig.maxRetries, retryConfig.backoffMillis, this::isWPSClientException) {
                LOGGER.info("execute WPS process ${this.processID} (retries: $it)")
