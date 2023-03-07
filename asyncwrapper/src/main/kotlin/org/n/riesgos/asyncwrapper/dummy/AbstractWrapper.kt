@@ -1,5 +1,7 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import io.minio.errors.InternalException
+import io.minio.errors.ServerException
 import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.config.FilestorageConfig
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
@@ -432,7 +434,13 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         // Now, we know that we haven't found any existing link for it.
         // so we are going to upload it.
         val fileStorage = FileStorage(filestorageConfig.endpoint, filestorageConfig.user, filestorageConfig.password)
-        fileStorage.upload(filestorageConfig.bucketName, checksum, content, mimeType)
+        retry(wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis, { ex ->
+            ex is IOException || ex is ServerException || ex is InternalException
+        }) {
+            LOGGER.info("upload content to file storage at ${filestorageConfig.endpoint} to bucket ${filestorageConfig.bucketName} as user ${filestorageConfig.user} (retries: $it)")
+            fileStorage.upload(filestorageConfig.bucketName, checksum, content, mimeType)
+            LOGGER.info("successfully uploaded content to file storage at ${filestorageConfig.endpoint} to bucket ${filestorageConfig.bucketName} as user ${filestorageConfig.user} (retries: $it)")
+        }
         val accessLink = filestorageConfig.access + checksum
 
         // As Uploading takes time, we still want to check if we have an entry for that in the db now.
