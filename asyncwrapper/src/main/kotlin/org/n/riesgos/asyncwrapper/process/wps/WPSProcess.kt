@@ -23,7 +23,7 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
     override fun runProcess(input: ProcessInput): ProcessOutput {
 
         // take a look at the process description
-        val processDescription = retry<org.n52.geoprocessing.wps.client.model.Process, WPSClientException>(WPSClientException::class.java, retryConfig.maxRetries, retryConfig.backoffMillis) {
+        val processDescription = retry<org.n52.geoprocessing.wps.client.model.Process>(retryConfig.maxRetries, retryConfig.backoffMillis, this::isWPSClientException) {
             LOGGER.info("retrieve wps process description for ${this.processID} (retries: $it)")
             val processDescription = getCompleteProcessDescription()
             LOGGER.info("retrieved wps process description for ${this.processID} (retries: $it)")
@@ -94,7 +94,7 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
             }
 
            //execute wps process, retry if (network) error
-           val processOutput = retry<ProcessOutput, WPSClientException>(WPSClientException::class.java, retryConfig.maxRetries, retryConfig.backoffMillis) {
+           val processOutput = retry<ProcessOutput>(retryConfig.maxRetries, retryConfig.backoffMillis, this::isWPSClientException) {
                LOGGER.info("execute WPS process ${this.processID} (retries: $it)")
                val wpsOutput = wpsClient.execute(url, executeRequest, wpsVersion)
                val processOutput = parseProcessOutput(wpsOutput) //attempt successful
@@ -182,5 +182,9 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
         }
 
         return processDescription
+    }
+
+    private fun isWPSClientException(ex: Exception) : Boolean{
+        return ex is WPSClientException
     }
 }
