@@ -33,4 +33,7 @@ filestorage:
     password: password
     bucketName: riesgosfiles
     access: http://138.246.225.182/api/v1/files/
+    retryConfiguration:
+        maxRetries: 10
+        backoffMillis: 1000
 

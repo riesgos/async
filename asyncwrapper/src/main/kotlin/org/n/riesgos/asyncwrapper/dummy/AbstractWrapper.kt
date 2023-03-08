@@ -1,7 +1,10 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import io.minio.errors.ErrorResponseException
 import io.minio.errors.InternalException
+import io.minio.errors.InvalidResponseException
 import io.minio.errors.ServerException
+import io.minio.errors.XmlParserException
 import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.config.FilestorageConfig
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
@@ -434,8 +437,8 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         // Now, we know that we haven't found any existing link for it.
         // so we are going to upload it.
         val fileStorage = FileStorage(filestorageConfig.endpoint, filestorageConfig.user, filestorageConfig.password)
-        retry(wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis, { ex ->
-            ex is IOException || ex is ServerException || ex is InternalException
+        retry(filestorageConfig.retryConfiguration.maxRetries, filestorageConfig.retryConfiguration.backoffMillis, { ex ->
+            ex is IOException || ex is XmlParserException || ex is InvalidResponseException ||ex is ErrorResponseException
         }) {
             LOGGER.info("upload content to file storage at ${filestorageConfig.endpoint} to bucket ${filestorageConfig.bucketName} as user ${filestorageConfig.user} (retries: $it)")
             fileStorage.upload(filestorageConfig.bucketName, checksum, content, mimeType)
@@ -462,7 +465,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
     private fun  fetchContent(link: String): ByteArray {
         val client = HttpClient.newBuilder().build()
         val request = HttpRequest.newBuilder().uri(URI.create(link)).build()
-        val response =  retry<HttpResponse<ByteArray>>(wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis, { ex -> ex is IOException }) {
+        val response =  retry<HttpResponse<ByteArray>>(filestorageConfig.retryConfiguration.maxRetries, filestorageConfig.retryConfiguration.backoffMillis, { ex -> ex is IOException }) {
             LOGGER.info("fetch content from  $link (retries: $it)")
             val response = client.send(request, HttpResponse.BodyHandlers.ofByteArray())
             LOGGER.info("fetched content from $link (retries: $it)")
