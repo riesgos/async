@@ -1,5 +1,10 @@
 package org.n.riesgos.asyncwrapper.dummy
 
+import io.minio.errors.ErrorResponseException
+import io.minio.errors.InternalException
+import io.minio.errors.InvalidResponseException
+import io.minio.errors.ServerException
+import io.minio.errors.XmlParserException
 import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.config.FilestorageConfig
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
@@ -16,7 +21,7 @@ import org.n.riesgos.asyncwrapper.pulsar.MessageParser
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n.riesgos.asyncwrapper.utils.retry
 import org.n52.geoprocessing.wps.client.WPSClientException
-import org.n52.geoprocessing.wps.client.model.Process
+import java.io.IOException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -333,11 +338,11 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         val wpsInputMapper = InputMapper(getWpsIdentifier())
         val wpsInputs = wpsInputMapper.mapInputs(complexInputs, complexInputsAsValues, complexOutputsAsInputs, literalInputs, bboxInputs)
 
-        val wpsProcess = retry<WPSProcess, WPSClientException>(WPSClientException::class.java, wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis) {
-            WPSProcess.LOGGER.info("retrieve getCapabilities document from  ${wpsConfiguration.wpsURL} (retries: $it)")
+        val wpsProcess = retry<WPSProcess>(wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis, { ex -> ex is WPSClientException }) {
+            LOGGER.info("retrieve getCapabilities document from  ${wpsConfiguration.wpsURL} (retries: $it)")
             val wpsClientService = WPSClientService(wpsConfiguration)
             val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs(),wpsConfiguration.retryConfiguration)
-            WPSProcess.LOGGER.info("retrieved wps process description for ${wpsConfiguration.wpsURL} (retries: $it)")
+            LOGGER.info("retrieved getCapabilities document from ${wpsConfiguration.wpsURL} (retries: $it)")
             return@retry wpsProcess
         }
 
@@ -432,7 +437,13 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         // Now, we know that we haven't found any existing link for it.
         // so we are going to upload it.
         val fileStorage = FileStorage(filestorageConfig.endpoint, filestorageConfig.user, filestorageConfig.password)
-        fileStorage.upload(filestorageConfig.bucketName, checksum, content, mimeType)
+        retry(filestorageConfig.retryConfiguration.maxRetries, filestorageConfig.retryConfiguration.backoffMillis, { ex ->
+            ex is IOException || ex is XmlParserException || ex is InvalidResponseException ||ex is ErrorResponseException
+        }) {
+            LOGGER.info("upload content to file storage at ${filestorageConfig.endpoint} to bucket ${filestorageConfig.bucketName} as user ${filestorageConfig.user} (retries: $it)")
+            fileStorage.upload(filestorageConfig.bucketName, checksum, content, mimeType)
+            LOGGER.info("successfully uploaded content to file storage at ${filestorageConfig.endpoint} to bucket ${filestorageConfig.bucketName} as user ${filestorageConfig.user} (retries: $it)")
+        }
         val accessLink = filestorageConfig.access + checksum
 
         // As Uploading takes time, we still want to check if we have an entry for that in the db now.
@@ -454,7 +465,13 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
     private fun  fetchContent(link: String): ByteArray {
         val client = HttpClient.newBuilder().build()
         val request = HttpRequest.newBuilder().uri(URI.create(link)).build()
-        val response = client.send(request, HttpResponse.BodyHandlers.ofByteArray())
+        val response =  retry<HttpResponse<ByteArray>>(filestorageConfig.retryConfiguration.maxRetries, filestorageConfig.retryConfiguration.backoffMillis, { ex -> ex is IOException }) {
+            LOGGER.info("fetch content from  $link (retries: $it)")
+            val response = client.send(request, HttpResponse.BodyHandlers.ofByteArray())
+            LOGGER.info("fetched content from $link (retries: $it)")
+            return@retry response
+        }
+
         return response.body()
     }
 
