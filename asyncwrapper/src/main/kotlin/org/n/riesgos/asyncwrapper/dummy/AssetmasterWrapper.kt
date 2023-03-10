@@ -69,6 +69,10 @@ class AssetmasterWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         return wpsURL
     }
 
+    override fun getWpsDialect(): String {
+        return wpsConfiguration.dialect
+    }
+
     override fun getDefaultLiteralConstraints(): Map<String, List<String>> {
         val defaultConstraints = HashMap<String, List<String>>()
         defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA, WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS)

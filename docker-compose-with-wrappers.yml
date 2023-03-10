@@ -168,6 +168,7 @@ services:
       wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler'
+      wps.dialect: 'javaps'
       filestorage.endpoint: http://filestorage:9000
       filestorage.user: admin
       filestorage.password: secretpassword

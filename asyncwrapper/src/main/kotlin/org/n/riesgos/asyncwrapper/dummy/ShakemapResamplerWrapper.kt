@@ -58,6 +58,10 @@ class ShakemapResamplerWrapper (private val datamanagementRepo: DatamanagementRe
         return wpsURL
     }
 
+    override fun getWpsDialect(): String {
+        return wpsConfiguration.dialect
+    }
+
     override fun getDefaultLiteralConstraints(): Map<String, List<String>> {
         return HashMap<String, List<String>>()
     }

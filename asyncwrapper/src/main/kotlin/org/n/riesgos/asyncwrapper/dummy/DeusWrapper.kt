@@ -72,6 +72,10 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
         return wpsURL
     }
 
+    override fun getWpsDialect(): String {
+        return wpsConfiguration.dialect
+    }
+
     override fun getDefaultLiteralConstraints (): Map<String, List<String>> {
         val defaultConstraints = HashMap<String, List<String>>()
         // While we could have literal inputs here, we are not going to use them.

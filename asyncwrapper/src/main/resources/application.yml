@@ -15,6 +15,10 @@ wps:
     wpsURL : https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService
     wpsVersion : 2.0.0
     process : org.n52.wps.server.algorithm.test.EchoProcess
+    # Currently we support string values here.
+    # In case of '52nwps' we have some different handling for setting the
+    # reference parameter schemas & encoding.
+    dialect: 52nwps
     outputs:
         -
             identifier: complexOutput

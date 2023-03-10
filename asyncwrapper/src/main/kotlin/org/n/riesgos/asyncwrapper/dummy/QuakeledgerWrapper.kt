@@ -57,6 +57,10 @@ class QuakeledgerWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig:
         return wpsURL
     }
 
+    override fun getWpsDialect(): String {
+        return wpsConfiguration.dialect
+    }
+
     override fun getDefaultLiteralConstraints(): Map<String, List<String>> {
         return HashMap<String, List<String>>().with(WPS_PROCESS_INPUT_IDENTIFIER_QUAKELEDGER_ETYPE, WPS_PROCESS_INPUT_IDENTIFIER_QUAKELEDGER_ETYPE_OPTIONS)
     }

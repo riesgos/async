@@ -164,6 +164,7 @@ services:
       wps.wpsUrl: 'https://riesgos.52north.org/javaps/service'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler'
+      wps.dialect: 'javaps'
       filestorage.endpoint: http://filestorage:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
