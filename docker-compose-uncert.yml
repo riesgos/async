@@ -32,11 +32,11 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
-      filestorage.endpoint: http://filestorage:9000
+      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
+      filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/
 
   assetmaster_wrapper:
     image: spring-boot-image
@@ -65,11 +65,11 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess'
-      filestorage.endpoint: http://filestorage:9000
+      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
+      filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/
 
   modelprop_wrapper:
     image: spring-boot-image
@@ -98,11 +98,11 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
-      filestorage.endpoint: http://filestorage:9000
+      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
+      filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/
 
   shakyground_wrapper:
     image: spring-boot-image
@@ -131,11 +131,11 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
-      filestorage.endpoint: http://filestorage:9000
+      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
+      filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/
 
   shakemap_resampler_wrapper:
     image: spring-boot-image
@@ -165,11 +165,11 @@ services:
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler'
       wps.dialect: 'javaps'
-      filestorage.endpoint: http://filestorage:9000
+      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
+      filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/
 
   quakeledger_wrapper:
     image: spring-boot-image
@@ -198,11 +198,11 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess'
-      filestorage.endpoint: http://filestorage:9000
+      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
-      filestorage.access: ${SERVER_BASE_URL:?error}/riesgosfiles/
+      filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/
 
   backend:
     image: async-backend
@@ -281,8 +281,8 @@ services:
     build:
       context: ./logs
       args:
-        - USERNAME=${DATABASE_USER:?error}
-        - PASSWORD=${DATABASE_PASSWORD:?error}
+        - USERNAME=${LOGS_USER_EMAIL:?error}
+        - PASSWORD=${LOGS_USER_PASSWORD:?error}
     networks:
       - web
     volumes:
@@ -293,10 +293,10 @@ services:
       context: newfrontend
       args:
         - FRONTEND_PATH=/frontend/     # <-- must end with slash for relative `src` attributes to be correctly resolved
-        - FILESTORAGE_URL=${SERVER_BASE_URL:?error}
-        - QUEUE_URL=${SERVER_BASE_URL:?error}/queue/
-        - FASTAPI_URL=${SERVER_BASE_URL:?error}/backend/
-        - LOGS_URL=${SERVER_BASE_URL:?error}/logs/
+        - FILESTORAGE_URL=${FILESTORAGE_SERVER:?error}
+        - QUEUE_URL=${QUEUE_SERVER:?error}/queue/
+        - FASTAPI_URL=${BACKEND_SERVER:?error}/backend/
+        - LOGS_URL=${LOGS_SERVER:?error}/logs/
     networks:
       - web
 

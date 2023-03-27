@@ -1,14 +1,55 @@
 #! /bin/bash
+ 
 
+COMPOSE_FILE=docker-compose-uncert.yml
+
+
+read -p "Pull latest state? [y|n] " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    VOLUME_FLAGS="-v"
+fi
+
+VOLUME_FLAGS=""
+read -p "Remove volumes? [y|n] " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    VOLUME_FLAGS="-v"
+fi
+
+RECOMPILE_WRAPPER=false
+read -p "Recompile wrapper? [y|n] " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    RECOMPILE_WRAPPER=true
+fi
+
+RECOMPILE_FRONTEND=false
+read -p "Recompile frontend (required e.g. if server-urls have changed)? [y|n] " -n 1 -r
+echo    # move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    RECOMPILE_FRONTEND=true
+fi
+
+# stop all
+kill -9 $(pidof multilog)
+docker compose -f $COMPOSE_FILE down $VOLUME_FLAGS
+rm logs/logs/*
+
+# recompile
+if [ "$RECOMPILE_WRAPPER" = true ]; then
+    cd asyncwrapper
+    docker compose run mvn mvn package -DskipTests=true
+    cd ..
+fi
 
 ## start
-sudo docker compose -f docker-compose-uncert.yml up -d 
-sudo docker compose -f docker-compose-uncert.yml logs --follow --tail 10 | multilog s1048576 n10 ./logs/logs &
-
-
-## stop
-# kill -9 $(pidof multilog)
-# sudo docker compose -f docker-compose-uncert.yml down
-
-## restart
-# kill -9 $(pidof multilog)  && sudo docker compose -f docker-compose-uncert.yml down && sudo docker compose -f docker-compose-uncert.yml up -d
+docker compose -f $COMPOSE_FILE up -d 
+if [ "$RECOMPILE_FRONTEND" = true ]; then
+    docker compose -f $COMPOSE_FILE up --build --no-deps frontend -d
+fi
+docker compose -f $COMPOSE_FILE logs --follow --tail 10 | multilog s1048576 n10 ./logs/logs &

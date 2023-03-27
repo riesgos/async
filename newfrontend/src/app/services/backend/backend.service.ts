@@ -13,7 +13,9 @@ import { Consumer, Producer } from '../pulsar/pulsar';
 })
 export class BackendService {
 
-  private orders = new Producer();
+  private queueIp = environment.queueUrl.replace('http://', '').replace('https://', '').replace(/\/$/, '');
+  private queueAddress = `ws://${this.queueIp}/ws/v2/producer/persistent/public/default/new-order`;
+  private orders = new Producer(this.queueAddress);
   constructor(private db: DbService, private logs: LogsService) {}
   
   public connect(email: string, password: string): Observable<UserSelfInformation | CredentialsError> {
@@ -23,10 +25,8 @@ export class BackendService {
         let queueConnection$ = of(false);
         let logConnection$ = of(false);
         if (isSuccessfulAuthentication(results)) {
-          const queueIp = environment.queueUrl.replace('http://', '').replace('https://', '').replace(/\/$/, '');
-          const queueAddress = `ws://${queueIp}/ws/v2/producer/persistent/public/default/new-order`;
-          console.log(`Attempting to connect to queue at ${queueAddress}`);
-          queueConnection$ = this.orders.connect(queueAddress);
+          console.log(`Attempting to connect to queue at ${this.queueAddress}`);
+          queueConnection$ = this.orders.connect();
           logConnection$ = this.logs.connect(email, password);
         }
 
@@ -40,7 +40,6 @@ export class BackendService {
   }
 
   public postOrder(order: UserOrder): Observable<boolean> {
-    if (!this.orders.isConnected()) throw Error(`Cannot post order to queue: Connection to queue has not yet been established.`);
     if (!this.db.isLoggedIn()) throw Error(`Cannot post order to db: Connection to db has not yet been established.`);
 
     // Step 1: send order to database
