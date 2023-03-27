@@ -32,7 +32,7 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
-      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
+      filestorage.endpoint: http://filestorage:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
@@ -65,7 +65,7 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess'
-      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
+      filestorage.endpoint: http://filestorage:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
@@ -98,7 +98,7 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
-      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
+      filestorage.endpoint: http://filestorage:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
@@ -131,7 +131,7 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ShakygroundProcess'
-      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
+      filestorage.endpoint: http://filestorage:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
@@ -165,7 +165,7 @@ services:
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.shakemap_sampler'
       wps.dialect: 'javaps'
-      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
+      filestorage.endpoint: http://filestorage:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
@@ -198,7 +198,7 @@ services:
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.QuakeledgerProcess'
-      filestorage.endpoint: ${FILESTORAGE_SERVER:?error}:9000
+      filestorage.endpoint: http://filestorage:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
       filestorage.password: ${FILESTORAGE_PASSWORD:?error}
       filestorage.bucketName: riesgosfiles
