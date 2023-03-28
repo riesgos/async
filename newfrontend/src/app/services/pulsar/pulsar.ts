@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { Observable, switchMap } from "rxjs";
 
 
 export class Consumer {
@@ -34,10 +34,14 @@ export class Producer {
 
     private ws?: WebSocket;
 
-    connect(url: string): Observable<boolean> {
+    constructor(private url: string) {}
+
+    connect(): Observable<boolean> {
+        console.log(`Producer: connecting to ${this.url}...`);
         return new Observable(subscriber => {
-            this.ws = new WebSocket(url);
+            this.ws = new WebSocket(this.url);
             this.ws.onopen = function (ev: Event) {
+                console.log(`... producer: connected successfully to ${this.url}.`);
                 subscriber.next(true);
                 subscriber.complete();
             };
@@ -53,7 +57,7 @@ export class Producer {
     }
 
     public postMessage(body: string, properties?: { [key: string]: string }, context?: string): Observable<Response> {
-        return new Observable(subscriber => {
+        const post$ = new Observable<Response>(subscriber => {
             if (!this.isConnected()) {
                 subscriber.error(`Not connected`);
                 subscriber.complete();
@@ -82,6 +86,12 @@ export class Producer {
             console.log(`Sending message through websocket: `, body, message);
             this.ws!.send(JSON.stringify(message));
         });
+
+        if (this.isConnected()) {
+            return post$;
+        } else {
+            return this.connect().pipe(switchMap(connected => post$));
+        }
     }
 
     public close() {

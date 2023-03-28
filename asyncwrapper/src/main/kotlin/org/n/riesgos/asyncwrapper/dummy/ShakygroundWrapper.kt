@@ -60,6 +60,10 @@ class ShakygroundWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
         return wpsURL
     }
 
+    override fun getWpsDialect(): String {
+        return wpsConfiguration.dialect
+    }
+
     override fun getDefaultLiteralConstraints (): Map<String, List<String>> {
         val defaultConstraints = HashMap<String, List<String>>()
         defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_GMPE, WPS_PROCESS_INPUT_IDENTIFIER_SHAKYGROUND_GMPE_OPTIONS)

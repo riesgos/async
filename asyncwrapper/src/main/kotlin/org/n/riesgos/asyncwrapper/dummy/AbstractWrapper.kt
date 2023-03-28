@@ -112,6 +112,11 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
      */
     abstract fun getWpsUrl(): String
 
+    /**
+     * The wps dialect of the server.
+     */
+    abstract fun getWpsDialect(): String
+
 
     abstract fun getRequestedOutputs(): List<WPSOutputDefinition>
 
@@ -341,7 +346,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         val wpsProcess = retry<WPSProcess>(wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis, { ex -> ex is WPSClientException }) {
             LOGGER.info("retrieve getCapabilities document from  ${wpsConfiguration.wpsURL} (retries: $it)")
             val wpsClientService = WPSClientService(wpsConfiguration)
-            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getRequestedOutputs(),wpsConfiguration.retryConfiguration)
+            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), "2.0.0", getWpsDialect(), getRequestedOutputs(),wpsConfiguration.retryConfiguration)
             LOGGER.info("retrieved getCapabilities document from ${wpsConfiguration.wpsURL} (retries: $it)")
             return@retry wpsProcess
         }

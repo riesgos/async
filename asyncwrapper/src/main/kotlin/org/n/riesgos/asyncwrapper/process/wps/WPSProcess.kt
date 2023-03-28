@@ -16,7 +16,7 @@ import java.util.logging.Logger
 
 
 
-class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: String, private val expectedOutputs : List<WPSOutputDefinition>, private val retryConfig : RetryConfiguration) : Process {
+class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: String, private val dialect: String, private val expectedOutputs : List<WPSOutputDefinition>, private val retryConfig : RetryConfiguration) : Process {
     companion object {
         val LOGGER = Logger.getLogger("WPSProcess")
     }
@@ -45,7 +45,11 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
                     // complex reference inputs.
                     // (It complains about the mime type then & that it doesn't find generators for it).
                     // Maybe this is just a weird setting of our very own server.
-                    executeBuilder.addComplexDataReference(parameterIn, data.link, null, null, data.mimeType)
+                    if (dialect == "52nwps") {
+                        executeBuilder.addComplexDataReference(parameterIn, data.link, null, null, data.mimeType)
+                    } else {
+                        executeBuilder.addComplexDataReference(parameterIn, data.link, data.schema, data.encoding, data.mimeType)
+                    }
                 }
             }else if(it is LiteralInputDescription){
                 if (input.inlineParameters.containsKey(parameterIn)) {
