@@ -1,5 +1,11 @@
 #! /bin/bash
  
+set -x           # for debugging only: print out current line before executing it
+set -o errexit   # abort on nonzero exitstatus
+set -o nounset   # abort on unbound variable
+set -o pipefail  # don't hide errors within pipes
+
+
 
 COMPOSE_FILE=docker-compose-uncert.yml
 
