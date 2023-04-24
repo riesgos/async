@@ -14,7 +14,7 @@ read -p "Pull latest state? [y|n] " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    VOLUME_FLAGS="-v"
+    git pull
 fi
 
 VOLUME_FLAGS=""
