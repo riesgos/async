@@ -70,12 +70,22 @@ class TsunamiWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig: WPS
         val magConstraints = literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_MAGNITUDE, ArrayList())
 
         //order contains one triple of mag, lat, lon
-        val literalInputValues = HashMap<String, String>()
-        literalInputValues[WPS_PROCESS_INPUT_IDENTIFIER_LONGITUDE] = lonConstraints[0]
-        literalInputValues[WPS_PROCESS_INPUT_IDENTIFIER_LATITUDE] = latConstraints[0]
-        literalInputValues[WPS_PROCESS_INPUT_IDENTIFIER_MAGNITUDE] = magConstraints[0]
+        if(latConstraints.size == 1 && lonConstraints.size == 1 && magConstraints.size == 1) {
+            val literalInputValues = HashMap<String, String>()
+            literalInputValues[WPS_PROCESS_INPUT_IDENTIFIER_LONGITUDE] = lonConstraints[0]
+            literalInputValues[WPS_PROCESS_INPUT_IDENTIFIER_LATITUDE] = latConstraints[0]
+            literalInputValues[WPS_PROCESS_INPUT_IDENTIFIER_MAGNITUDE] = magConstraints[0]
 
-       return listOf(JobConstraints(literalInputValues,  HashMap<String, ComplexInputConstraint>(), HashMap<String, BBoxInputConstraint>()))
+            return listOf(
+                JobConstraints(
+                    literalInputValues,
+                    HashMap<String, ComplexInputConstraint>(),
+                    HashMap<String, BBoxInputConstraint>()
+                )
+            )
+        }else{
+            throw IllegalArgumentException("order must contain exactly one triple of latitude, addlongitude and magnitude")
+        }
     }
 
 
