@@ -102,14 +102,13 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
                 "application/json"
         )
                 .stream()
-                // it doesn't make a real difference at the moment
-                // but we want to run this deus wrapper only for exposure models that
+                // We want to run this deus wrapper only for exposure models that
                 // were created for the earthquake setting.
                 .filter { x ->
                     createdWithLiteralInput(
                         x,
-                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA,
-                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS
+                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA,
+                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS
                     )
                 }
             .collect(Collectors.toList())
@@ -123,8 +122,8 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
                 .filter { x ->
                     createdWithLiteralInput(
                         x,
-                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA,
-                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS
+                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA,
+                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS
                     )
                 }
             .collect(Collectors.toList())
