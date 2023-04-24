@@ -42,7 +42,7 @@ then
 fi
 
 # stop all
-if ps -p $(pidof multilog) > /dev/null; then
+if [[ ! -z "$(pidof multilog)" ]];  then
     kill -9 $(pidof multilog)
 fi
 docker compose -f $COMPOSE_FILE down $VOLUME_FLAGS
