@@ -124,7 +124,6 @@ services:
       spring.datasource.username: '${DATABASE_USER:?error}'
       spring.datasource.password: '${DATABASE_PASSWORD:?error}'
       pulsar.pulsarURL: 'pulsar://queue:6650'
-      # TODO Listen to tsunami once we got the wrapper
       pulsar.inputTopics: ''
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'modelprop-ts-success'
