@@ -107,8 +107,8 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
                 .filter { x ->
                     createdWithLiteralInput(
                         x,
-                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA,
-                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS
+                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA,
+                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS
                     )
                 }
             .collect(Collectors.toList())
@@ -122,8 +122,8 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
                 .filter { x ->
                     createdWithLiteralInput(
                         x,
-                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA,
-                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS
+                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA,
+                        WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS
                     )
                 }
             .collect(Collectors.toList())
