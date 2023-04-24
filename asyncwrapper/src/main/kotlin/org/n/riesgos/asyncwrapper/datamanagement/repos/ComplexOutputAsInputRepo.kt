@@ -97,4 +97,27 @@ class ComplexOutputAsInputRepo (val jdbcTemplate: JdbcTemplate) {
             return complexOutputAsInput
         }
     }
+
+    fun findInputsByJobId (jobId: Long): List<ComplexOutputAsInput> {
+        val sql = """
+            select
+                complex_outputs_as_inputs.id,
+                complex_outputs_as_inputs.job_id,
+                complex_outputs_as_inputs.wps_identifier,
+                complex_outputs_as_inputs.complex_output_id,
+                complex_outputs.job_id as output_job_id,
+                complex_outputs.wps_identifier as output_wps_identifier,
+                complex_outputs.link as output_link,
+                complex_outputs.mime_type as output_mime_type,
+                complex_outputs.xmlschema as output_xmlschema,
+                complex_outputs.encoding as output_encoding
+            from complex_outputs_as_inputs
+            where complex_outputs_as_inputs.job_id = ?
+        """.trimIndent()
+        return jdbcTemplate.query(
+                sql,
+                ComplexOutputAsInputRowMapper(),
+                jobId
+        )
+    }
 }
