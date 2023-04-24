@@ -16,7 +16,7 @@ import java.util.*
 import java.util.stream.Collectors
 
 
-class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, publisher: PulsarPublisher, filestorageConfig: FilestorageConfig) : AbstractWrapper(
+class DeusEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration, publisher: PulsarPublisher, filestorageConfig: FilestorageConfig) : AbstractWrapper(
     publisher, wpsConfig, filestorageConfig
 ) {
 
