@@ -46,12 +46,12 @@ if ps -p $(pidof multilog) > /dev/null; then
     kill -9 $(pidof multilog)
 fi
 docker compose -f $COMPOSE_FILE down $VOLUME_FLAGS
-rm logs/logs/*
+rm -rf logs/logs/*
 
 # recompile
 if [ "$RECOMPILE_WRAPPER" = true ]; then
     cd asyncwrapper
-    docker compose run mvn mvn package -DskipTests=true
+    docker compose run mvn mvn clean package -DskipTests=true
     cd ..
 fi
 
