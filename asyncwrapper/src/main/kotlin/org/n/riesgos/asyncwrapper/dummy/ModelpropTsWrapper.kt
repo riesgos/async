@@ -27,7 +27,7 @@ class ModelpropTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig:
         val WPS_PROCESS_OUTPUT_IDENTIFIER_MODELPROP_SELECTEDROWS = "selectedRows"
 
         // same as the Modelprop Eq Wrapper, but different allowed constraints for the schema
-        val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS = Arrays.asList("SUPPASRI2013_v2.0", "Medina_2019")
+        val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TS_SCHEMA_OPTIONS = Arrays.asList("SUPPASRI2013_v2.0", "Medina_2019")
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_ASSETCATEGORY_OPTIONS = Arrays.asList("buildings")
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_LOSSCATEGORY_OPTIONS = Arrays.asList("structural")
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TAXONOMIES_OPTIONS = Arrays.asList("none")
@@ -62,7 +62,7 @@ class ModelpropTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig:
 
     override fun getDefaultLiteralConstraints (): Map<String, List<String>> {
         val defaultConstraints = HashMap<String, List<String>>()
-        defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS)
+        defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TS_SCHEMA_OPTIONS)
         defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_ASSETCATEGORY, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_ASSETCATEGORY_OPTIONS)
         defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_LOSSCATEGORY, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_LOSSCATEGORY_OPTIONS)
         defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TAXONOMIES, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TAXONOMIES_OPTIONS)
