@@ -102,8 +102,7 @@ class DeusWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSCo
                 "application/json"
         )
                 .stream()
-                // it doesn't make a real difference at the moment
-                // but we want to run this deus wrapper only for exposure models that
+                // We want to run this deus wrapper only for exposure models that
                 // were created for the earthquake setting.
                 .filter { x ->
                     createdWithLiteralInput(
