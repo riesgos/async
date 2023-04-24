@@ -84,7 +84,7 @@ class TsunamiWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig: WPS
                 )
             )
         }else{
-            throw IllegalArgumentException("order must contain exactly one triple of latitude, addlongitude and magnitude")
+            throw IllegalArgumentException("order must contain exactly one triple of latitude, longitude and magnitude")
         }
     }
 
