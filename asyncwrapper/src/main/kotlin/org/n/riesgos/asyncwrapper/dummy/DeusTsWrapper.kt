@@ -11,6 +11,7 @@ import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
 import org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS
 import org.n.riesgos.asyncwrapper.dummy.ModelpropTsWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA
 import org.n.riesgos.asyncwrapper.dummy.ModelpropTsWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TS_SCHEMA_OPTIONS
+import org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_EQ_SCHEMA_OPTIONS
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import java.util.*
 import java.util.stream.Collectors
@@ -44,6 +45,7 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
 
         val WPS_PROCESS_IDENTIFIER_MODELPROP = "org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess"
         val WPS_PROCESS_OUTPUT_IDENTIFIER_MODELPROP_SELECTEDROWS = "selectedRows"
+        val WPS_PROCESS_IDENTIFIER_ASSETMASTER =  "org.n52.gfz.riesgos.algorithm.impl.AssetmasterProcess"
 
 
         // Different to earthquake deus.
@@ -102,6 +104,7 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
                 .filter { x ->
                     createdWithLiteralInput(
                         x,
+                        WPS_PROCESS_IDENTIFIER_MODELPROP,
                         WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA,
                         WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TS_SCHEMA_OPTIONS
                     )
@@ -141,6 +144,7 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
             if (
                     createdWithLiteralInput(
                             output,
+                            WPS_PROCESS_IDENTIFIER_ASSETMASTER,
                             WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA,
                             WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS)
             ) {
@@ -161,9 +165,9 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
         return HashMap<String, MutableList<BBoxInputConstraint>>()
     }
 
-    fun createdWithLiteralInput (complexOutput: ComplexOutput, wpsInputIdentifier: String, options: List<String>) : Boolean {
+    fun createdWithLiteralInput (complexOutput: ComplexOutput, wpsProcessIndentifier: String, wpsInputIdentifier: String, options: List<String>) : Boolean {
         val asInput = ComplexInputConstraint(complexOutput.link, null, complexOutput.mimeType, complexOutput.xmlschema, complexOutput.encoding)
-        val literalInputs = datamanagementRepo.findLiteralInputsForComplexOutput(asInput, wpsInputIdentifier)
+        val literalInputs = datamanagementRepo.findLiteralInputsForComplexOutput(asInput, wpsProcessIndentifier, wpsInputIdentifier)
         return literalInputs.stream().allMatch { x ->
             options.contains(x.inputValue)
         }
@@ -174,21 +178,66 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
         for (intensityConstraint in complexInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_INTENSITY, ArrayList())) {
             for (fragilityConstraint in complexInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_FRAGILITY, ArrayList())) {
                 for (exposureConstraint in complexInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_EXPOSURE, ArrayList())) {
-                    // Ok, we got the exposure model.
-                    // We are sure that it is in an schema for earthquakes.
-                    // In general we would be check back in the time line what the fragility model schema was
-                    // that was applied to the first run of deus, but this is rather complex.
+                    // Ok, extracting the schema is a little bit hard.
+                    //
+                    // The schema value is the one that describes in which the schema currently is.
+                    //
+                    // For the first deus run (eq case) this is defined by the schema of the assetmaster call that was
+                    // used to extract the exposure model.
+                    //
+                    // For the second one, it is defined by the modelprop schema that was used for the first deus
+                    // run - as this defines the possible schema mapping.
+                    //
+                    // Example:
+                    // 1. Assetmaster for eq used sara
+                    //    Modelprop for eq used sara
+                    //    Deus for eq got sara & returned sara
+                    //
+                    // -> in this case use sara as input schema for the tsunami deus.
+                    //
+                    // 2. Assetmaster for eq used sara
+                    //    Modelprop for eq used hazus
+                    //    Deus for eq got sara & returned hazus
+                    //
+                    // -> Deus mapped to hazus, and we get the hazus schema for our tsunami deus.
+                    val extractedSchemas = ArrayList<String>()
+                    if (exposureConstraint.link != null) {
+                        // Transform the constraint to an complex output.
+                        val deusComplexOutput = datamanagementRepo.complexOutputRepo.findOptionalFirstByLinkMimetypeXmlschemaAndEncoding(exposureConstraint.link, exposureConstraint.mimeType, exposureConstraint.xmlschema, exposureConstraint.encoding)
+                        // If we have one, then we want to check all the outputs of other processes that
+                        // were used to create the deus output.
+                        // If we don't have one, then we stay without extracted schemas - there is no way to
+                        // extract them.
+                        if (deusComplexOutput != null) {
+                            // We then check all the complex outputs of other processes that were used as complex inputs
+                            // to create the deus output.
+                            val deusInputs = datamanagementRepo.complexOutputAsInputRepo.findInputsByJobId(deusComplexOutput.jobId)
+                            for (deusInput in deusInputs) {
+                                // We convert those outputs into a constraint that - maybe - was used to create
+                                // the complex output that was later used to create deus.
+                                val inputConstraint = ComplexInputConstraint(
+                                        deusInput.complexOutput.link,
+                                        null,
+                                        deusInput.complexOutput.mimeType,
+                                        deusInput.complexOutput.xmlschema,
+                                        deusInput.complexOutput.encoding
+                                )
+                                for (
+                                    // And then we search for the modelprop literal inputs.
+                                    literalInput in datamanagementRepo.findLiteralInputsForComplexOutput(
+                                        inputConstraint,
+                                        WPS_PROCESS_IDENTIFIER_MODELPROP,
+                                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA)
+                                ) {
+                                    val value = literalInput.inputValue
+                                    if (WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_EQ_SCHEMA_OPTIONS.contains(value)) {
+                                        extractedSchemas.add(value)
+                                    }
+                                }
 
-                    // For now we do something more simple: We check the schema value that we had for the previous call
-                    // of deus.
-                    // Important to know is that this parameter specifies the input schema, it is not the value
-                    // of the output schema.
-                    // The only trick here is that there is no schema mapping done in this first step.
-                    // The input & output schemas for the earthquake deus call are identical.
-                    val extractedSchemas = datamanagementRepo.findLiteralInputsForComplexOutput(exposureConstraint, WPS_PROCESS_INPUT_IDENTIFIER_DEUS_SCHEMA)
-                            .stream()
-                            .map { x -> x.inputValue }
-                        .collect(Collectors.toList())
+                            }
+                        }
+                    }
 
 
                     for (schemaConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_SCHEMA, extractedSchemas)) {
