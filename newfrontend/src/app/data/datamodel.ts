@@ -117,8 +117,8 @@ export const dataModel: DataModel = {
         taxonomies: ['none']
     },
 
-    'neptunus': {
-        schema: ['SARA_v1.0', 'HAZUS_v1.0', 'SUPPASRI2013_v2.0', 'Mavrouli_et_al_2014', 'Torres_Corredor_et_al_2017', 'Medina_2019'],
+    'ts-deus': {
+        schema: ['SUPPASRI2013_v2.0', 'Medina_2019'],
         // intensity: any
         // exposure: any
         // fragility: any
