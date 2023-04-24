@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, interval } from 'rxjs';
+import { BehaviorSubject, filter, forkJoin, interval, map, mergeMap, share, switchMap } from 'rxjs';
 import { Job, Order, Process, ProductType } from 'src/app/backend_api/models';
 import { AppStateService } from 'src/app/services/appstate/appstate.service';
 import { DbService, ProductInfo } from 'src/app/services/db/db.service';
@@ -29,36 +29,42 @@ export class CurrentStateComponent implements OnInit {
   constructor(private state: AppStateService, private db: DbService) {}
 
   ngOnInit(): void {
-    interval(5000).subscribe( t => {
-      if (this.db.isLoggedIn()) {
-        this.refreshDbData();
-      }
-    })
-  }
+
+    const timer$ = interval(5000).pipe(filter(_ => this.db.isLoggedIn()), share());
+
+    timer$.pipe(
+      switchMap(_ => this.db.getProductTypes()),
+      map(types =>  types.sort((a, b) => a.id > b.id ? -1 : 1))
+    ).subscribe(this.productTypes$);
+
+    timer$.pipe(
+        switchMap(_ => this.db.getProductTypes()),
+        map(types => types.sort((a, b) => a.id > b.id ? -1 : 1))
+    ).subscribe(this.productTypes$);
+
+    timer$.pipe(
+        switchMap(_ => this.db.getProducts()),
+        map(products => products.sort((a, b) => a.complexOutputId > b.complexOutputId ? -1 : 1))
+    ).subscribe(this.products$);
+
+    timer$.pipe(
+        switchMap(_ => this.db.getProcesses()),
+        map(processes => processes.sort((a, b) => a.id > b.id ? -1 : 1))
+    ).subscribe(this.processes$);
+
+    timer$.pipe(
+        switchMap(_ => this.db.getJobs()),
+        map(jobs => jobs.sort((a, b) => a.id > b.id ? -1 : 1))
+    ).subscribe(this.jobs$);
+
+    timer$.pipe(
+        switchMap(_ => this.db.getOrders()),
+        map(orders => orders.sort((a, b) => a.id > b.id ? -1 : 1))
+    ).subscribe(this.orders$);
 
 
-  public refreshDbData() {
-    this.db.getProductTypes().subscribe(types => {
-      const sorted = types.sort((a, b) => a.id > b.id ? -1 : 1);
-      this.productTypes$.next(sorted);
-    });
-    this.db.getProducts().subscribe(products => {
-      const sorted = products.sort((a, b) => a.complexOutputId > b.complexOutputId ? -1 : 1);
-      this.products$.next(sorted);
-    });
-    this.db.getProcesses().subscribe(processes => {
-      const sorted = processes.sort((a, b) => a.id > b.id ? -1 : 1);
-      this.processes$.next(sorted);
-    });
-    this.db.getJobs().subscribe(jobs => {
-      const sorted = jobs.sort((a, b) => a.id > b.id ? -1 : 1);
-      this.jobs$.next(sorted);
-    });
-    this.db.getOrders().subscribe(orders => {
-      const sorted = orders.sort((a, b) => a.id > b.id ? -1 : 1);
-      this.orders$.next(sorted);
-    });
   }
+
 
   public getProcessById(id: number) {
     return this.processes$.value.find(v => v.id === id);
