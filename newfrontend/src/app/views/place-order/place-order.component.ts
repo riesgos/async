@@ -16,8 +16,8 @@ export class PlaceOrderComponent implements OnInit {
   public orders: UserOrder[] = [];
   public orderState$: Observable<AppState['orderState']>;
 
-  constructor(private state: AppStateService) {
-    this.orderState$ = this.state.state.pipe(map(s => {
+  constructor(private stateSvc: AppStateService) {
+    this.orderState$ = this.stateSvc.state.pipe(map(s => {
       return s.orderState
     }));
   }
@@ -28,7 +28,7 @@ export class PlaceOrderComponent implements OnInit {
   }
 
   onSendOrderClicked() {
-    this.state.action({
+    this.stateSvc.action({
       type: 'orderStart',
       payload: this.orders
     });

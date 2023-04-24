@@ -1,4 +1,4 @@
-import { Observable, switchMap } from "rxjs";
+import { Observable, map, switchMap } from "rxjs";
 
 
 export class Consumer {
@@ -32,33 +32,35 @@ export class Consumer {
 
 export class Producer {
 
-    private ws?: WebSocket;
-
     constructor(private url: string) {}
 
-    connect(): Observable<boolean> {
+    connect(): Observable<WebSocket> {
         console.log(`Producer: connecting to ${this.url}...`);
         return new Observable(subscriber => {
-            this.ws = new WebSocket(this.url);
-            this.ws.onopen = function (ev: Event) {
+            const ws = new WebSocket(this.url);
+            ws.onopen = function (ev: Event) {
                 console.log(`... producer: connected successfully to ${this.url}.`);
-                subscriber.next(true);
+                subscriber.next(ws);
                 subscriber.complete();
             };
-            this.ws.onerror = function (ev: Event) {
+            ws.onerror = function (ev: Event) {
                 subscriber.error(ev);
                 subscriber.complete();
             }
         });
     }
 
-    public isConnected(): boolean {
-        return !!(this.ws) && !!(this.ws.OPEN);
-    }
 
     public postMessage(body: string, properties?: { [key: string]: string }, context?: string): Observable<Response> {
+        const ws$ = this.connect();
+        return ws$.pipe(
+            switchMap(ws => this.makePost(ws, body, properties, context))
+        );
+    }
+
+    private makePost(ws: WebSocket, body: string, properties?: { [key: string]: string }, context?: string) {
         const post$ = new Observable<Response>(subscriber => {
-            if (!this.isConnected()) {
+            if (!ws || !ws.OPEN) {
                 subscriber.error(`Not connected`);
                 subscriber.complete();
             }
@@ -71,7 +73,7 @@ export class Producer {
             }
 
             // 3. react to responses
-            this.ws!.onmessage = function (response: MessageEvent<string>) {
+            ws.onmessage = function (response: MessageEvent<string>) {
                 const data: Response = JSON.parse(response.data);
                 console.log("WS got data:", data)
                 if (data.errorCode !== 0) {
@@ -84,19 +86,11 @@ export class Producer {
 
             // 2. send message
             console.log(`Sending message through websocket: `, body, message);
-            this.ws!.send(JSON.stringify(message));
+            ws.send(JSON.stringify(message));
         });
-
-        if (this.isConnected()) {
-            return post$;
-        } else {
-            return this.connect().pipe(switchMap(connected => post$));
-        }
+        return post$;
     }
 
-    public close() {
-        this.ws?.close();
-    }
 }
 
 type Protocol = 'ws' | 'wss';
