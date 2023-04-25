@@ -293,7 +293,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
     fun runOneJob (jobInput: JobConstraints, orderId: Long) {
         LOGGER.info("Lookup the process id")
         val processId = datamanagementRepo().findProcessIdOrInsert(getWpsUrl(), getWpsIdentifier())
-        LOGGER.info("Got the procss id "+ processId.toString())
+        LOGGER.info("Got the process id "+ processId.toString())
         val jobId = datamanagementRepo().createJob(processId, WPS_JOB_STATUS_ACCEPTED)
         LOGGER.info("Created one job")
 
