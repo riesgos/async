@@ -9,11 +9,16 @@ import { PrecalcDataService } from "../precalcData/precalc-data.service";
 
 
 
+export interface AppStateFormDatum {
+    key: string,
+    options: string[],
+    value: string | undefined
+}
 export interface AppState {
     authentication: 'none' | 'ongoing' | 'authenticated' | 'error',
     authenticationData: null | UserSelfInformation | CredentialsError,
     orderState: 'none' | 'sending' | 'accepted',
-    formData: {[key: string]: string[] | number[] },
+    formData: AppStateFormDatum[],
     localStoreData: { [key: string]: any }
 }
 
@@ -21,7 +26,7 @@ const initialState: AppState = {
     authentication: 'none',
     authenticationData: null,
     orderState: 'none',
-    formData: {},
+    formData: [],
     localStoreData: {}
 };
 
@@ -66,12 +71,12 @@ export interface FormSelectAction {
     type: 'formSelect',
     payload: {
         key: string,
-        value: string | number
+        value: string
     }
 }
 export interface FormSubmitAction {
     type: 'formSubmit',
-    payload: {[key: string]: string | number | undefined}
+    payload: {[key: string]: string | undefined}
 }
 
 export interface OrderAction {
@@ -215,7 +220,7 @@ export class AppStateService {
     private reduceState(action: Action, currentState: AppState): AppState {
 
         if (action.type === 'appStart') {
-            currentState.formData = this.precalc.toFormData();
+            currentState.formData = this.precalc.toFormData(currentState.formData);
         }
 
         else if (action.type === 'getFromLocalStoreResult') {
@@ -236,7 +241,9 @@ export class AppStateService {
 
         else if (action.type === 'formSelect') {
             this.precalc.formSelect(action.payload.key, action.payload.value);
-            currentState.formData = this.precalc.toFormData();
+            currentState.formData = this.precalc.toFormData(currentState.formData);
+            const selectedDatum = currentState.formData.find(d => d.key === action.payload.key);
+            if (selectedDatum) selectedDatum.value = action.payload.value;
         }
         else if (action.type === 'formSubmit') {}
 

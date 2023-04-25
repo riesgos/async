@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { AppStateService } from 'src/app/services/appstate/appstate.service';
+import { AppStateFormDatum, AppStateService } from 'src/app/services/appstate/appstate.service';
 
 @Component({
   selector: 'app-precalc-form-entry',
@@ -10,13 +10,13 @@ import { AppStateService } from 'src/app/services/appstate/appstate.service';
 export class PrecalcFormEntryComponent implements OnInit {
 
   @Input() formGroup!: FormGroup;
-  @Input() entry!: {key: string, values: (string | number)[] }
+  @Input() entry!: AppStateFormDatum;
   public form!: FormControl;
 
   constructor(private state: AppStateService) { }
 
   ngOnInit(): void {
-    this.form = new FormControl();
+    this.form = new FormControl(this.entry.value);
     this.formGroup.addControl(this.entry.key, this.form);
     this.form.valueChanges.subscribe(v => this.state.action({
         type: 'formSelect',

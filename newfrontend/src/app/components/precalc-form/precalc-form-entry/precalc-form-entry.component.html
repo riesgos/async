@@ -1,4 +1,4 @@
 <label>{{ entry.key }}</label>
 <select class="parameterSelect" [formControl]="form" name="entry.key" id="entry.key">
-    <option *ngFor="let value of entry.values" [value]="value" [selected]="false">{{ value }}</option>
+    <option *ngFor="let optionValue of entry.options" [value]="optionValue" [selected]="optionValue === entry.value">{{ optionValue }}</option>
 </select>
