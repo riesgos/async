@@ -36,8 +36,8 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
         val WPS_PROCESS_OUTPUT_IDENTIFIER_DEUS_METASUMMARY = "meta_summary"
 
 
-        val WPS_PROCESS_IDENTIFIER_TSUNAMI_RESAMPLER = "get_tsunamap"
-        val WPS_PROCESS_OUTPUT_IDENTIFIER_TSUNAMI_FILE = "inundation-shakemap"
+        val WPS_PROCESS_IDENTIFIER_TSUNAMI = "get_tsunamap"
+        val WPS_PROCESS_OUTPUT_IDENTIFIER_TSUNAMI_TSNUMAMAP = "tsunamap"
 
         val WPS_PROCESS_IDENTIFIER_DEUS = "org.n52.gfz.riesgos.algorithm.impl.DeusProcess"
         val WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA = "schema"
@@ -88,8 +88,8 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
         // We can only handle those that give us the xml output
         val existingIntensityOutputs = datamanagementRepo.findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(
                 orderId,
-                WPS_PROCESS_IDENTIFIER_TSUNAMI_RESAMPLER,
-                WPS_PROCESS_OUTPUT_IDENTIFIER_TSUNAMI_FILE,
+                WPS_PROCESS_IDENTIFIER_TSUNAMI,
+                WPS_PROCESS_OUTPUT_IDENTIFIER_TSUNAMI_TSNUMAMAP,
                 "text/xml"
         )
         val existingModelpropOutputs = datamanagementRepo.findComplexOutputsByOrderIdProcessWpsIdentifierOutputWpsIdentifierAndMimeType(
