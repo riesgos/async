@@ -3,11 +3,8 @@
     <app-collapsable>
         <form [formGroup]="orderForm">
             <div style="margin-left: 2%">
-                <div *ngFor="let entry of formEntries" class="selectInput">
-                    <label>{{ entry.key }}</label>
-                    <select class="parameterSelect" [formControlName]="entry.key" name="entry.key" id="entry.key">
-                        <option *ngFor="let value of entry.values" [value]="value" [selected]="false">{{ value }}</option>
-                    </select>
+                <div *ngFor="let entry of formEntries | async" class="selectInput">
+                    <app-precalc-form-entry [formGroup]="orderForm" [entry]="entry"></app-precalc-form-entry>
                 </div>
             </div>
             <div class="buttonContainer">

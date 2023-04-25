@@ -11,35 +11,20 @@ import { AppStateService } from 'src/app/services/appstate/appstate.service';
 export class PrecalcFormComponent implements OnInit {
 
   public orderForm: FormGroup = new FormGroup({});
-  public formEntries: { key: string, values: string[] | number[] }[] = [];
-
-  constructor(private state: AppStateService) {}
-
-  ngOnInit(): void {
-    this.state.state.pipe(
-      map(s => s.formData)
-    ).subscribe(formData => {
-
-      for (const [key, values] of Object.entries(formData)) {
-        if (!(key in this.orderForm.controls)) {
-          const newControl = new FormControl();
-          newControl.valueChanges.subscribe(v => this.state.action({
-            type: 'formSelect',
-            payload: {
-              key, value: v
-            }
-          }));
-          this.orderForm.addControl(key, newControl);
-        }
-      }
-
+  public formEntries = this.state.state.pipe(
+    map(s => s.formData),
+    map(formData => {
       const newFormEntries: { key: string, values: string[] | number[] }[] = [];
       for (const [key, values] of Object.entries(formData)) {
         newFormEntries.push({ key, values });
       }
-
+      return newFormEntries;
     })
-  }
+  );
+
+  constructor(private state: AppStateService) {}
+
+  ngOnInit(): void {}
 
   public submit() {
     this.state.action({

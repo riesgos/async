@@ -8,24 +8,3 @@
     display: flex;
     justify-content: space-between;
 }
-
-
-input, label {
-    display:block;
-}
-
-
-.parameterStringInput {
-    /* min-width: min-content; */
-    width: fit-content;
-    font-size: smaller;
-}
-
-.selectInput {
-}
-
-.parameterSelect {
-    font-size: smaller;
-    min-width: fit-content;
-    padding-right: 30px;  /* so that arrow doesn't overlap text. */
-}
