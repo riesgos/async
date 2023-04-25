@@ -215,7 +215,7 @@ export class AppStateService {
     private reduceState(action: Action, currentState: AppState): AppState {
 
         if (action.type === 'appStart') {
-            currentState.formData = this.precalc.getFormData();
+            currentState.formData = this.precalc.toFormData();
         }
 
         else if (action.type === 'getFromLocalStoreResult') {
@@ -236,7 +236,7 @@ export class AppStateService {
 
         else if (action.type === 'formSelect') {
             this.precalc.formSelect(action.payload.key, action.payload.value);
-            currentState.formData = this.precalc.getFormData();
+            currentState.formData = this.precalc.toFormData();
         }
         else if (action.type === 'formSubmit') {}
 
