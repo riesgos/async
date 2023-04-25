@@ -26,7 +26,7 @@ class DatamanagementRepo (
         val orderJobRefRepo: OrderJobRefRepo,
         val complexOutputRepo: ComplexOutputRepo,
         val orderRepo: OrderRepo,
-        val storedLinkRepo: StoredLinkRepo
+        val storedLinkRepo: StoredLinkRepo,
 ) {
     /**
      * Extracts the constraints of the order as json object.
