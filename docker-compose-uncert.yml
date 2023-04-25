@@ -38,6 +38,39 @@ services:
       filestorage.bucketName: riesgosfiles
       filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/
 
+  tsunami_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+      - filestorage
+    environment:
+      appID: 'tsunami-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.TsunamiWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
+      spring.datasource.username: '${DATABASE_USER:?error}'
+      spring.datasource.password: '${DATABASE_PASSWORD:?error}'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: ''
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'tsunami-success'
+      pulsar.failureTopic: 'tsunami-failure'
+      wps.wpsUrl: 'https://riesgos.52north.org/wps'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'get_tsunamap'
+      filestorage.endpoint: http://filestorage:9000
+      filestorage.user: ${FILESTORAGE_USER:?error}
+      filestorage.password: ${FILESTORAGE_PASSWORD:?error}
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/    
+
   deus_ts_wrapper:
     image: spring-boot-image
     build:
@@ -58,7 +91,6 @@ services:
       spring.datasource.username: '${DATABASE_USER:?error}'
       spring.datasource.password: '${DATABASE_PASSWORD:?error}'
       pulsar.pulsarURL: 'pulsar://queue:6650'
-      # TODO Fix tsunami topic name
       pulsar.inputTopics: 'tsunami-success,deus-eq-success,modelprop-ts-success'
       pulsar.orderTopic: 'new-order'
       pulsar.outputTopic: 'deus-ts-success'
