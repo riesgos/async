@@ -2,12 +2,151 @@ import { Injectable } from '@angular/core';
 import { UserOrder } from '../backend/backend.service';
 
 
-
+/**
+ * @todo
+ *  - defaultOrder from config
+ *  - dataPoint from config
+ *  - allData from config
+ *  - dataPoint2Order configurable
+ */
 
 const  dataPointKeys = ['id', 'eventId', 'longitude', 'latitude', 'depth', 'magnitude', 'rakeAngle', 'dipAngle', 'strikeAngle', 'seed', 'exposureModel', 'vulnerabilityEq', 'vulnerabilityTs'];
 type DataPoint = {
   [key in typeof dataPointKeys[number]]: string | number
 }
+const defaultOrder: UserOrder = {
+  "order_constraints": {
+      "assetmaster": {
+          "literal_inputs": {
+              "assettype": [
+                  "res"
+              ],
+              "latmax": [
+                  "-33.0"
+              ],
+              "latmin": [
+                  "-33.2"
+              ],
+              "lonmax": [
+                  "-71.4"
+              ],
+              "lonmin": [
+                  "-71.8"
+              ],
+              "model": [
+                  "ValpCVTBayesian"
+              ],
+              "querymode": [
+                  "intersects"
+              ],
+              "schema": [
+                  "SARA_v1.0"
+              ]
+          },
+          "bbox_inputs": {},
+          "complex_inputs": {}
+      },
+      "eq-deus": {
+          "literal_inputs": {
+              "schema": [
+                  "SARA_v1.0"
+              ]
+          },
+          "bbox_inputs": {},
+          "complex_inputs": {}
+      },
+      "eq-modelprop": {
+          "literal_inputs": {
+              "assetcategory": [
+                  "buildings"
+              ],
+              "losscategory": [
+                  "structural"
+              ],
+              "schema": [
+                  "SARA_v1.0"
+              ],
+              "taxonomies": [
+                  "none"
+              ]
+          },
+          "bbox_inputs": {},
+          "complex_inputs": {}
+      },
+      "shakemapresampler": {
+          "literal_inputs": {
+              "random_seed": [
+                  "1234"
+              ]
+          },
+          "bbox_inputs": {},
+          "complex_inputs": {}
+      },
+      "shakyground": {
+          "literal_inputs": {
+              "gmpe": [
+                  "MontalvaEtAl2016SInter"
+              ],
+              "vsgrid": [
+                  "USGSSlopeBasedTopographyProxy"
+              ]
+          },
+          "bbox_inputs": {},
+          "complex_inputs": {
+              "quakeMLFile": [
+                  {
+                      "encoding": "UTF-8",
+                      "input_value": "{\"type\":\"FeatureCollection\",\"features\":[{\"geometry\":{\"coordinates\":[-72.3538,-31.9306],\"type\":\"Point\"},\"id\":\"quakeml:quakeledger/80674883\",\"properties\":{\"description.text\":\"expert\",\"focalMechanism.nodalPlanes.nodalPlane1.dip.value\":\"20.0\",\"focalMechanism.nodalPlanes.nodalPlane1.rake.value\":\"90.0\",\"focalMechanism.nodalPlanes.nodalPlane1.strike.value\":\"9.0\",\"focalMechanism.nodalPlanes.preferredPlane\":\"nodalPlane1\",\"focalMechanism.publicID\":\"quakeml:quakeledger/80674883\",\"magnitude.creationInfo.value\":\"GFZ\",\"magnitude.mag.value\":\"8.0\",\"magnitude.publicID\":\"quakeml:quakeledger/80674883\",\"magnitude.type\":\"MW\",\"origin.creationInfo.value\":\"GFZ\",\"origin.depth.value\":\"12.7\",\"origin.publicID\":\"quakeml:quakeledger/80674883\",\"origin.time.value\":\"2019-01-01T00:00:00.000000Z\",\"preferredMagnitudeID\":\"quakeml:quakeledger/80674883\",\"preferredOriginID\":\"quakeml:quakeledger/80674883\",\"publicID\":\"quakeml:quakeledger/80674883\",\"type\":\"earthquake\"},\"type\":\"Feature\"}]}",
+                      "mime_type": "application/vnd.geo+json",
+                      "xmlschema": ""
+                  }
+              ]
+          }
+      },
+      "ts-deus": {
+          "literal_inputs": {
+              "schema": [
+                  "SUPPASRI2013_v2.0"
+              ]
+          },
+          "bbox_inputs": {},
+          "complex_inputs": {}
+      },
+      "ts-modelprop": {
+          "literal_inputs": {
+              "assetcategory": [
+                  "buildings"
+              ],
+              "losscategory": [
+                  "structural"
+              ],
+              "schema": [
+                  "SARA_v1.0"
+              ],
+              "taxonomies": [
+                  "none"
+              ]
+          },
+          "bbox_inputs": {},
+          "complex_inputs": {}
+      },
+      "tsunami": {
+          "literal_inputs": {
+              "lat": [
+                  "-33.1"
+              ],
+              "lon": [
+                  "-71.6"
+              ],
+              "mag": [
+                  "8.0"
+              ]
+          },
+          "bbox_inputs": {},
+          "complex_inputs": {}
+      }
+  }
+};
 
 
 @Injectable({
@@ -38,8 +177,8 @@ export class PrecalcDataService {
   /**
    * available data to form-template
    */
-  toFormData(): { [key: string]: (string | number)[]; } {
-      const formData: { [key: string]: (string | number)[]; } = {};
+  toFormData(): { [key: string]: string[] | number[]; } {
+      const formData: { [key: string]: string[] | number[]; } = {};
       for (const key of dataPointKeys) {
         const allowedValues = unique(this.allowedData.map(dp => dp[key]));
         formData[key] = allowedValues;
@@ -49,10 +188,23 @@ export class PrecalcDataService {
 
 
   toOrders(): UserOrder[] {
-    throw new Error("Method not implemented.");
+    const orders: UserOrder[] = [];
+    for (const dp of this.allowedData) {
+      orders.push(this.toOrder(dp));
+    }
+    return orders;
+  }
+
+  private toOrder(dp: DataPoint): UserOrder {
+    const order: UserOrder = structuredClone(defaultOrder);
+    for (const [key, val] of Object.entries(dp)) {
+      // @TODO: mutate order
+    }
+    return order;
   }
 
 }
+
 
 
 function unique(data: any[]): any[] {

@@ -13,7 +13,7 @@ export interface AppState {
     authentication: 'none' | 'ongoing' | 'authenticated' | 'error',
     authenticationData: null | UserSelfInformation | CredentialsError,
     orderState: 'none' | 'sending' | 'accepted',
-    formData: {[key: string]: (string|number)[] },
+    formData: {[key: string]: string[] | number[] },
     localStoreData: { [key: string]: any }
 }
 

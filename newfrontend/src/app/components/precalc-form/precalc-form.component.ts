@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { map } from 'rxjs';
+import { AppStateService } from 'src/app/services/appstate/appstate.service';
 
 @Component({
   selector: 'app-precalc-form',
@@ -7,9 +10,46 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PrecalcFormComponent implements OnInit {
 
-  constructor() { }
+  public orderForm: FormGroup = new FormGroup({});
+  public formEntries: { key: string, values: string[] | number[] }[] = [];
+
+  constructor(private state: AppStateService) {}
 
   ngOnInit(): void {
+    this.state.state.pipe(
+      map(s => s.formData)
+    ).subscribe(formData => {
+
+      for (const [key, values] of Object.entries(formData)) {
+        if (!(key in this.orderForm.controls)) {
+          const newControl = new FormControl();
+          newControl.valueChanges.subscribe(v => this.state.action({
+            type: 'formSelect',
+            payload: {
+              key, value: v
+            }
+          }));
+          this.orderForm.addControl(key, newControl);
+        }
+      }
+
+      const newFormEntries: { key: string, values: string[] | number[] }[] = [];
+      for (const [key, values] of Object.entries(formData)) {
+        newFormEntries.push({ key, values });
+      }
+
+    })
+  }
+
+  public submit() {
+    this.state.action({
+      type: 'formSubmit',
+      payload: {} // could create payload here ... but it's not used in reducer, anyway.
+    })
+  }
+
+  public download() {
+
   }
 
 }

@@ -1,1 +1,18 @@
-<p>precalc-form works!</p>
+<div class="box orderFormContainer">
+    <h4>Order-form (pre-calculated)</h4>
+    <app-collapsable>
+        <form [formGroup]="orderForm">
+            <div style="margin-left: 2%">
+                <div *ngFor="let entry of formEntries" class="selectInput">
+                    <label>{{ entry.key }}</label>
+                    <select class="parameterSelect" [formControlName]="entry.key" name="entry.key" id="entry.key">
+                        <option *ngFor="let value of entry.values" [value]="value" [selected]="false">{{ value }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="buttonContainer">
+                <button (click)="submit()">Submit as order</button> <button (click)="download()">Download as json</button>
+            </div>
+        </form>
+    </app-collapsable>
+</div>
