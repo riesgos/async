@@ -5,7 +5,7 @@ version: "3.3"
 # ./asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar
 # If it is not, please run `mvn package` before.
 services:
-  deus_wrapper:
+  deus_eq_wrapper:
     image: spring-boot-image
     build:
       context: asyncwrapper/dockerfile-spring-boot-baseimage
@@ -20,16 +20,51 @@ services:
       - filestorage
       - wps
     environment:
-      appID: 'deus-asyncwrapper'
-      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusWrapper'
+      appID: 'deus-eq-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusEqWrapper'
       spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
       spring.datasource.username: 'postgres'
       spring.datasource.password: 'postgres'
       pulsar.pulsarURL: 'pulsar://queue:6650'
       pulsar.inputTopics: 'shakemap-resampler-success,assetmaster-success,modelprop-eq-success'
       pulsar.orderTopic: 'new-order'
-      pulsar.outputTopic: 'deus-success'
-      pulsar.failureTopic: 'deus-failure'
+      pulsar.outputTopic: 'deus-eq-success'
+      pulsar.failureTopic: 'deus-eq-failure'
+      wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
+      filestorage.endpoint: http://filestorage:9000
+      filestorage.user: admin
+      filestorage.password: secretpassword
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: http://filestorage:9000/riesgosfiles/
+
+  deus_ts_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+      - filestorage
+      - wps
+    environment:
+      appID: 'deus-ts-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusTsWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/postgres'
+      spring.datasource.username: 'postgres'
+      spring.datasource.password: 'postgres'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      # TODO Fix tsunami topic name
+      pulsar.inputTopics: 'tsunami-success,deus-eq-success,modelprop-ts-success'
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'deus-ts-success'
+      pulsar.failureTopic: 'deus-ts-failure'
       wps.wpsUrl: 'http://riesgos-wps:8080/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'

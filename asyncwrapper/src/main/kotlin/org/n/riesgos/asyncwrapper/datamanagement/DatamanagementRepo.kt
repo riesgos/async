@@ -423,16 +423,19 @@ class DatamanagementRepo (
         complexOutputRepo.persist(ComplexOutput(null, jobId, wpsIdentifier, link, mimeType, xmlschema, encoding))
     }
 
-    fun findLiteralInputsForComplexOutput (complexInputConstraint: ComplexInputConstraint, wpsInputIdentifier: String): List<LiteralInput> {
+    fun findLiteralInputsForComplexOutput (complexInputConstraint: ComplexInputConstraint, wpsProcessIdentifier: String, wpsInputIdentifier: String): List<LiteralInput> {
         val sqlLiteralInputs = """
             select literal_inputs.*
             from literal_inputs
-            join complex_outputs complex_outputs on complex_outputs.job_id = literal_inputs.job_id
+            join jobs on jobs.id = literal_inputs.job_id
+            join processes on processes.id = libs.process_id
+            join complex_outputs on complex_outputs.job_id = jobs.id
             where complex_outputs.link = ?
             and complex_outputs.mime_type = ?
             and complex_outputs.xmlschema = ?
             and complex_outputs.encoding = ?
             and literal_inputs.wps_identifier = ?
+            and processes.wps_identifier = ?
        """.trimIndent()
         return jdbcTemplate.query(
                 sqlLiteralInputs,
@@ -441,7 +444,8 @@ class DatamanagementRepo (
                 complexInputConstraint.mimeType,
                 complexInputConstraint.xmlschema,
                 complexInputConstraint.encoding,
-                wpsInputIdentifier
+                wpsInputIdentifier,
+                wpsProcessIdentifier
         )
     }
 }
