@@ -104,7 +104,7 @@ export const dataModel: DataModel = {
         'random_seed': '1234'
     },
 
-    'ts-sim': {
+    'tsunami': {
         lat: '-33.1',
         lon: '-71.6',
         mag: '8.0'
