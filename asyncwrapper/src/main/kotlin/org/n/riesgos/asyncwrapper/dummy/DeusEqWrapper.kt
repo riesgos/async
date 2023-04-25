@@ -159,7 +159,8 @@ class DeusEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
                     val extractedSchemas = datamanagementRepo.findLiteralInputsForComplexOutput(exposureConstraint, WPS_PROCESS_IDENTIFIER_ASSETMASTER, WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA)
                             .stream()
                             .map { x -> x.inputValue }
-                        .collect(Collectors.toList())
+                            .distinct()
+                            .collect(Collectors.toList())
 
 
                     for (schemaConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_SCHEMA, extractedSchemas)) {
