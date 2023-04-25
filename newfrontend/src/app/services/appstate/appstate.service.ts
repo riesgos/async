@@ -11,7 +11,7 @@ import { PrecalcDataService } from "../precalcData/precalc-data.service";
 
 export interface AppStateFormDatum {
     key: string,
-    options: string[],
+    options: (string | undefined)[],
     value: string | undefined
 }
 export interface AppState {
@@ -244,7 +244,7 @@ export class AppStateService {
         }
 
         else if (action.type === 'formSelect') {
-            this.precalc.formSelect(action.payload.key, action.payload.value);
+            this.precalc.filter(action.payload.key, action.payload.value);
             currentState.formData = this.precalc.toFormData(currentState.formData);
             const selectedDatum = currentState.formData.find(d => d.key === action.payload.key);
             if (selectedDatum) selectedDatum.value = action.payload.value;
