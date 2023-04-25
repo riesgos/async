@@ -8,8 +8,6 @@ import org.n.riesgos.asyncwrapper.datamanagement.models.BBoxInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.ComplexInputConstraint
 import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
-import org.n52.geoprocessing.wps.client.model.Format
-import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
 
 class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPSConfiguration,
@@ -27,7 +25,7 @@ class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
 
         val WPS_PROCESS_OUTPUT_IDENTIFIER_MODELPROP_SELECTEDROWS = "selectedRows"
 
-        val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS = Arrays.asList("SARA_v1.0" ) //, "HAZUS_v1.0")
+        val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_EQ_SCHEMA_OPTIONS = Arrays.asList("SARA_v1.0" ) //, "HAZUS_v1.0")
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_ASSETCATEGORY_OPTIONS = Arrays.asList("buildings")
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_LOSSCATEGORY_OPTIONS = Arrays.asList("structural")
         val WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TAXONOMIES_OPTIONS = Arrays.asList("none")
@@ -62,7 +60,7 @@ class ModelpropEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig 
 
     override fun getDefaultLiteralConstraints (): Map<String, List<String>> {
         val defaultConstraints = HashMap<String, List<String>>()
-        defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA_OPTIONS)
+        defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_EQ_SCHEMA_OPTIONS)
         defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_ASSETCATEGORY, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_ASSETCATEGORY_OPTIONS)
         defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_LOSSCATEGORY, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_LOSSCATEGORY_OPTIONS)
         defaultConstraints.put(WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TAXONOMIES, WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TAXONOMIES_OPTIONS)

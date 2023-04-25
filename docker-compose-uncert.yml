@@ -5,7 +5,7 @@ version: "3.3"
 # ./asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar
 # If it is not, please run `mvn package` before.
 services:
-  deus_wrapper:
+  deus_eq_wrapper:
     image: spring-boot-image
     build:
       context: asyncwrapper/dockerfile-spring-boot-baseimage
@@ -19,16 +19,50 @@ services:
       - queue
       - filestorage
     environment:
-      appID: 'deus-asyncwrapper'
-      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusWrapper'
+      appID: 'deus-eq-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusEqWrapper'
       spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
       spring.datasource.username: '${DATABASE_USER:?error}'
       spring.datasource.password: '${DATABASE_PASSWORD:?error}'
       pulsar.pulsarURL: 'pulsar://queue:6650'
-      pulsar.inputTopics: 'shakemap-resampler-success,assetmaster-success,modelprop-success'
+      pulsar.inputTopics: 'shakemap-resampler-success,assetmaster-success,modelprop-eq-success'
       pulsar.orderTopic: 'new-order'
-      pulsar.outputTopic: 'deus-success'
-      pulsar.failureTopic: 'deus-failure'
+      pulsar.outputTopic: 'deus-eq-success'
+      pulsar.failureTopic: 'deus-eq-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
+      filestorage.endpoint: http://filestorage:9000
+      filestorage.user: ${FILESTORAGE_USER:?error}
+      filestorage.password: ${FILESTORAGE_PASSWORD:?error}
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/
+
+  deus_ts_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+      - filestorage
+    environment:
+      appID: 'deus-ts-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusTsWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
+      spring.datasource.username: '${DATABASE_USER:?error}'
+      spring.datasource.password: '${DATABASE_PASSWORD:?error}'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      # TODO Fix tsunami topic name
+      pulsar.inputTopics: 'tsunami-success,deus-eq-success,modelprop-ts-success'
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'deus-ts-success'
+      pulsar.failureTopic: 'deus-ts-failure'
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.DeusProcess'
@@ -71,7 +105,7 @@ services:
       filestorage.bucketName: riesgosfiles
       filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/
 
-  modelprop_wrapper:
+  modelprop_eq_wrapper:
     image: spring-boot-image
     build:
       context: asyncwrapper/dockerfile-spring-boot-baseimage
@@ -85,7 +119,7 @@ services:
       - queue
       - filestorage
     environment:
-      appID: 'modelprop-asyncwrapper'
+      appID: 'modelprop-eq-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper'
       spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
       spring.datasource.username: '${DATABASE_USER:?error}'
@@ -93,8 +127,41 @@ services:
       pulsar.pulsarURL: 'pulsar://queue:6650'
       pulsar.inputTopics: ''
       pulsar.orderTopic: 'new-order'
-      pulsar.outputTopic: 'modelprop-success'
-      pulsar.failureTopic: 'modelprop-failure'
+      pulsar.outputTopic: 'modelprop-eq-success'
+      pulsar.failureTopic: 'modelprop-eq-failure'
+      wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
+      wps.wpsVersion: '2.0.0'
+      wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'
+      filestorage.endpoint: http://filestorage:9000
+      filestorage.user: ${FILESTORAGE_USER:?error}
+      filestorage.password: ${FILESTORAGE_PASSWORD:?error}
+      filestorage.bucketName: riesgosfiles
+      filestorage.access: ${FILESTORAGE_SERVER:?error}/riesgosfiles/
+
+  modelprop_ts_wrapper:
+    image: spring-boot-image
+    build:
+      context: asyncwrapper/dockerfile-spring-boot-baseimage
+    volumes:
+      - './asyncwrapper/target/asyncwrapper-0.0.1-SNAPSHOT.jar:/app.jar'
+    depends_on:
+      - db
+      - queue
+    networks:
+      - db
+      - queue
+      - filestorage
+    environment:
+      appID: 'modelprop-ts-asyncwrapper'
+      wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ModelpropTsWrapper'
+      spring.datasource.url: 'jdbc:postgresql://db:5432/${DATABASE_USER:?error}'
+      spring.datasource.username: '${DATABASE_USER:?error}'
+      spring.datasource.password: '${DATABASE_PASSWORD:?error}'
+      pulsar.pulsarURL: 'pulsar://queue:6650'
+      pulsar.inputTopics: ''
+      pulsar.orderTopic: 'new-order'
+      pulsar.outputTopic: 'modelprop-ts-success'
+      pulsar.failureTopic: 'modelprop-ts-failure'
       wps.wpsUrl: 'https://rz-vm140.gfz-potsdam.de/wps/WebProcessingService'
       wps.wpsVersion: '2.0.0'
       wps.process: 'org.n52.gfz.riesgos.algorithm.impl.ModelpropProcess'

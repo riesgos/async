@@ -1,5 +1,11 @@
 #! /bin/bash
  
+set -x           # for debugging only: print out current line before executing it
+set -o errexit   # abort on nonzero exitstatus
+set -o nounset   # abort on unbound variable
+set -o pipefail  # don't hide errors within pipes
+
+
 
 COMPOSE_FILE=docker-compose-uncert.yml
 
@@ -8,7 +14,7 @@ read -p "Pull latest state? [y|n] " -n 1 -r
 echo    # move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    VOLUME_FLAGS="-v"
+    git pull
 fi
 
 VOLUME_FLAGS=""
@@ -36,14 +42,16 @@ then
 fi
 
 # stop all
-kill -9 $(pidof multilog)
+if [[ ! -z "$(pidof multilog)" ]];  then
+    kill -9 $(pidof multilog)
+fi
 docker compose -f $COMPOSE_FILE down $VOLUME_FLAGS
-rm logs/logs/*
+rm -rf logs/logs/*
 
 # recompile
 if [ "$RECOMPILE_WRAPPER" = true ]; then
     cd asyncwrapper
-    docker compose run mvn mvn package -DskipTests=true
+    docker compose run mvn mvn clean package -DskipTests=true
     cd ..
 fi
 

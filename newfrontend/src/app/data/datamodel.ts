@@ -102,5 +102,25 @@ export const dataModel: DataModel = {
 
     shakemapresampler: {
         'random_seed': '1234'
+    },
+
+    'ts-sim': {
+        lat: '-33.1',
+        lon: '-71.6',
+        mag: '8.0'
+    },
+
+    'ts-modelprop': {
+        schema: ['SARA_v1.0', 'HAZUS_v1.0', 'SUPPASRI2013_v2.0', 'Mavrouli_et_al_2014', 'Torres_Corredor_et_al_2017', 'Medina_2019'],
+        assetcategory: ['buildings'],
+        losscategory: ['structural'],
+        taxonomies: ['none']
+    },
+
+    'ts-deus': {
+        schema: ['SUPPASRI2013_v2.0', 'Medina_2019'],
+        // intensity: any
+        // exposure: any
+        // fragility: any
     }
 };

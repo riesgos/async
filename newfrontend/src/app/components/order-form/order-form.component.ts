@@ -13,6 +13,7 @@ import { UserOrder, ParameterConstraints, LiteralParameterConstraints, BboxParam
    *    - array: options; first one = default
    *    - null: optional
    *    - object: subform
+   * 
    * Used as basis for form-control and form-html.
    * Form-submission then converted to actual order.
    */

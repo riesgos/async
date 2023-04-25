@@ -15,7 +15,7 @@ export class BackendService {
 
   private queueIp = environment.queueUrl.replace('http://', '').replace('https://', '').replace(/\/$/, '');
   private queueAddress = `ws://${this.queueIp}/ws/v2/producer/persistent/public/default/new-order`;
-  private orders = new Producer(this.queueAddress);
+  private orderQueue = new Producer(this.queueAddress);
   constructor(private db: DbService, private logs: LogsService) {}
   
   public connect(email: string, password: string): Observable<UserSelfInformation | CredentialsError> {
@@ -26,7 +26,7 @@ export class BackendService {
         let logConnection$ = of(false);
         if (isSuccessfulAuthentication(results)) {
           console.log(`Attempting to connect to queue at ${this.queueAddress}`);
-          queueConnection$ = this.orders.connect();
+          queueConnection$ = this.orderQueue.connect().pipe(map(ws => !!ws));
           logConnection$ = this.logs.connect(email, password);
         }
 
@@ -51,7 +51,7 @@ export class BackendService {
           orderId: completeOrder.id
         });
         console.log("... completed sending order to db. Sending order to queue ...", orderString);
-        return this.orders.postMessage(orderString);
+        return this.orderQueue.postMessage(orderString);
       }),
 
       // Step 3: after confirmation from pulsar, return true
@@ -59,9 +59,7 @@ export class BackendService {
     );
   }
 
-  ngOnDestroy() {
-    this.orders?.close();
-  }
+  ngOnDestroy() {}
 }
 
 export type UserOrder = {
