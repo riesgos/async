@@ -5,6 +5,7 @@ import { BackendService, UserOrder } from "../backend/backend.service";
 import { UserSelfInformation } from "src/app/backend_api/models";
 import { allTrue } from "../../utils/utils";
 import { LocalstoreService } from "../localstore/localstore";
+import { PrecalcDataService } from "../precalcData/precalc-data.service";
 
 
 
@@ -12,6 +13,7 @@ export interface AppState {
     authentication: 'none' | 'ongoing' | 'authenticated' | 'error',
     authenticationData: null | UserSelfInformation | CredentialsError,
     orderState: 'none' | 'sending' | 'accepted',
+    formData: {[key: string]: (string|number)[] },
     localStoreData: { [key: string]: any }
 }
 
@@ -19,6 +21,7 @@ const initialState: AppState = {
     authentication: 'none',
     authenticationData: null,
     orderState: 'none',
+    formData: {},
     localStoreData: {}
 };
 
@@ -34,17 +37,14 @@ export interface LoginAction {
         password: string
     }
 }
-
 export interface LoginSuccessAction {
     type: 'loginSuccess',
     payload: UserSelfInformation
 }
-
 export interface LoginFailureAction {
     type: 'loginFailure',
     payload: CredentialsError
 }
-
 export interface RegisterAction {
     type: 'registerStart',
     payload: {
@@ -52,26 +52,35 @@ export interface RegisterAction {
         password: string
     }
 }
-
 export interface RegisterSuccessAction {
     type: 'registerSuccess',
     payload: UserSelfInformation
 }
-
 export interface RegisterFailureAction {
     type: 'registerFailure',
     payload: CredentialsError
+}
+
+
+export interface FormSelectAction {
+    type: 'formSelect',
+    payload: {
+        key: string,
+        value: string | number
+    }
+}
+export interface FormSubmitAction {
+    type: 'formSubmit',
+    payload: {[key: string]: string | number | undefined}
 }
 
 export interface OrderAction {
     type: 'orderStart',
     payload: UserOrder[]
 }
-
 export interface OrderSuccessAction {
     type: 'orderSuccess'
 }
-
 export interface OrderFailureAction {
     type: 'orderFailure'
 }
@@ -93,6 +102,7 @@ export interface GetFromLocalStoreResultAction {
 
 export type Action = AppStart |
                      LoginAction | LoginSuccessAction | LoginFailureAction |
+                     FormSelectAction | FormSubmitAction |
                      RegisterAction | RegisterSuccessAction | RegisterFailureAction |
                      OrderAction | OrderSuccessAction | OrderFailureAction |
                      SaveToLocalStoreAction | GetFromLocalStoreAction | GetFromLocalStoreResultAction;
@@ -106,7 +116,7 @@ export class AppStateService {
 
     public state = new BehaviorSubject<AppState>(initialState);
 
-    constructor(private backend: BackendService, private local: LocalstoreService) {}
+    constructor(private backend: BackendService, private local: LocalstoreService, private precalc: PrecalcDataService) {}
 
     public action(action: Action) {
         this.fireOffSideEffects(action);
@@ -129,7 +139,7 @@ export class AppStateService {
         }
 
 
-        if (action.type === 'saveToLocalStore') {
+        else if (action.type === 'saveToLocalStore') {
             const data = action.payload;
             this.local.saveAll(data);
             this.action({
@@ -137,7 +147,7 @@ export class AppStateService {
                 payload: [...Object.keys(data)]
             });
         }
-        if (action.type === 'getFromLocalStore') {
+        else if (action.type === 'getFromLocalStore') {
             const data = action.payload;
             const results = this.local.getAll(data);
             this.action({
@@ -147,7 +157,7 @@ export class AppStateService {
         }
 
 
-        if (action.type === 'loginStart') {
+        else if (action.type === 'loginStart') {
             const creds = action.payload;
             this.backend.connect(creds.email, creds.password).subscribe(results => {
                 if (isSuccessfulAuthentication(results)) {
@@ -173,7 +183,15 @@ export class AppStateService {
             });
         }
 
-        if (action.type === 'orderStart') {
+        else if (action.type === 'formSubmit') {
+            const orders = this.precalc.toOrders();
+            this.action({
+                type: 'orderStart',
+                payload: orders
+            })
+        }
+
+        else if (action.type === 'orderStart') {
             const orders = action.payload;
             const processes$ = orders.map(o => this.backend.postOrder(o));
             forkJoin(processes$).subscribe(successes => {
@@ -196,29 +214,39 @@ export class AppStateService {
 
     private reduceState(action: Action, currentState: AppState): AppState {
 
-        if (action.type === 'getFromLocalStoreResult') {
+        if (action.type === 'appStart') {
+            currentState.formData = this.precalc.getFormData();
+        }
+
+        else if (action.type === 'getFromLocalStoreResult') {
             currentState.localStoreData = action.payload;
         }
 
-        if (action.type === 'loginStart' || action.type === 'registerStart') {
+        else if (action.type === 'loginStart' || action.type === 'registerStart') {
             currentState.authentication = 'ongoing';
         }
-        if (action.type === 'loginSuccess' || action.type === 'registerSuccess') {
+        else if (action.type === 'loginSuccess' || action.type === 'registerSuccess') {
             currentState.authentication = 'authenticated';
             currentState.authenticationData = action.payload;
         }
-        if (action.type === 'loginFailure' || action.type === 'registerFailure') {
+        else if (action.type === 'loginFailure' || action.type === 'registerFailure') {
             currentState.authentication = 'error';
             currentState.authenticationData = action.payload;
         }
 
-        if (action.type === 'orderStart') {
+        else if (action.type === 'formSelect') {
+            this.precalc.formSelect(action.payload.key, action.payload.value);
+            currentState.formData = this.precalc.getFormData();
+        }
+        else if (action.type === 'formSubmit') {}
+
+        else if (action.type === 'orderStart') {
             currentState.orderState = 'sending';
         }
-        if (action.type === 'orderSuccess') {
+        else if (action.type === 'orderSuccess') {
             currentState.orderState = 'accepted';
         }
-        if (action.type === 'orderFailure') {
+        else if (action.type === 'orderFailure') {
             currentState.orderState = 'none';
         }
 

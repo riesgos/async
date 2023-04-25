@@ -3,7 +3,8 @@
     <div>Order-state: {{ orderState }}</div>
 
     <ng-container *ngIf="orderState === 'none' || orderState === 'accepted'">
-        <app-order-form></app-order-form>
+        <!-- <app-order-form></app-order-form> -->
+        <app-precalc-form></app-precalc-form>
     
         <div class="box placeOrder">
             <app-dropfield (fileDropped)="handleNewData($event)"></app-dropfield>

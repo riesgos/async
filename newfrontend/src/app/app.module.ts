@@ -21,6 +21,7 @@ import { environment } from 'src/environments/environment';
 import { TabsComponent } from './components/tabs/tabs.component';
 import { TabComponent } from './components/tabs/tab.component';
 import { LogsComponent } from './views/logs/logs.component';
+import { PrecalcFormComponent } from './components/precalc-form/precalc-form.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { LogsComponent } from './views/logs/logs.component';
     LoginComponent,
     TabsComponent,
     TabComponent,
-    LogsComponent
+    LogsComponent,
+    PrecalcFormComponent
   ],
   imports: [
     BrowserModule,
