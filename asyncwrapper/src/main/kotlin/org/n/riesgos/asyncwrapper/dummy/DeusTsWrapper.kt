@@ -199,44 +199,12 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
                     //    Modelprop for eq used hazus
                     //    Deus for eq got sara & returned hazus
                     //
-                    // -> Deus mapped to hazus, and we get the hazus schema for our tsunami deus.
-                    val extractedSchemas = ArrayList<String>()
+                    // -> Deus mapped to hazus, and we need the hazus schema for our tsunami deus input.
+                    var extractedSchemas: List<String> = ArrayList<String>()
                     if (exposureConstraint.link != null) {
-                        // Transform the constraint to an complex output.
-                        val deusComplexOutput = datamanagementRepo.complexOutputRepo.findOptionalFirstByLinkMimetypeXmlschemaAndEncoding(exposureConstraint.link, exposureConstraint.mimeType, exposureConstraint.xmlschema, exposureConstraint.encoding)
-                        // If we have one, then we want to check all the outputs of other processes that
-                        // were used to create the deus output.
-                        // If we don't have one, then we stay without extracted schemas - there is no way to
-                        // extract them.
-                        if (deusComplexOutput != null) {
-                            // We then check all the complex outputs of other processes that were used as complex inputs
-                            // to create the deus output.
-                            val deusInputs = datamanagementRepo.complexOutputAsInputRepo.findInputsByJobId(deusComplexOutput.jobId)
-                            for (deusInput in deusInputs) {
-                                // We convert those outputs into a constraint that - maybe - was used to create
-                                // the complex output that was later used to create deus.
-                                val inputConstraint = ComplexInputConstraint(
-                                        deusInput.complexOutput.link,
-                                        null,
-                                        deusInput.complexOutput.mimeType,
-                                        deusInput.complexOutput.xmlschema,
-                                        deusInput.complexOutput.encoding
-                                )
-                                for (
-                                    // And then we search for the modelprop literal inputs.
-                                    literalInput in datamanagementRepo.findLiteralInputsForComplexOutput(
-                                        inputConstraint,
-                                        WPS_PROCESS_IDENTIFIER_MODELPROP,
-                                        WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA)
-                                ) {
-                                    val value = literalInput.inputValue
-                                    if (WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_EQ_SCHEMA_OPTIONS.contains(value)) {
-                                        extractedSchemas.add(value)
-                                    }
-                                }
-
-                            }
-                        }
+                        // See more details in the findLiteralInputsForParentProcessOfComplexOutput method
+                        val modelpropLiteralInputs = datamanagementRepo.findLiteralInputsForParentProcessOfComplexOutput(WPS_PROCESS_IDENTIFIER_MODELPROP, exposureConstraint.link)
+                        extractedSchemas = modelpropLiteralInputs.filter { it.wpsIdentifier == WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA }.map { it.inputValue }.distinct()
                     }
 
 

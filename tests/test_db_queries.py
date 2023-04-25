@@ -23,8 +23,31 @@ class DatamanagementRepo:
     def __init__(self, db_connection):
         self.db_connection = db_connection
 
-    def find_literal_inputs_of_parent_process(
-        self, complex_output_link, wps_process_identifier
+    def find_literal_inputs_for_complex_output(self, complex_output_link, wps_process_identifier, wps_input_identifier):
+        sql = f"""
+            select literal_inputs.id, literal_inputs.job_id, literal_inputs.wps_identifier, literal_inputs.input_value
+            from literal_inputs
+            join jobs on jobs.id = literal_inputs.job_id
+            join processes on processes.id = jobs.process_id
+            join complex_outputs on complex_outputs.job_id = jobs.id
+            where complex_outputs.link = '{complex_output_link}'
+            and literal_inputs.wps_identifier = '{wps_input_identifier}'
+            and processes.wps_identifier = '{wps_process_identifier}'
+        """
+        result = []
+        for row in self.db_connection.execute(sql):
+            result.append(
+                LiteralInput(
+                    id=row[0],
+                    job_id=row[1],
+                    wps_identifier=row[2],
+                    input_value=row[3],
+                )
+            )
+        return result
+
+    def find_literal_inputs_for_parent_process_of_complex_output(
+        self, wps_process_identifier, complex_output_link,
     ):
         sql = f"""
             select modelprop_inputs.id, modelprop_inputs.job_id, modelprop_inputs.wps_identifier, modelprop_inputs.input_value
@@ -225,9 +248,10 @@ def test_extract_schema_for_ts_output(db_connection):
 
     deus_output_link = "https://rz-vm140.gfz-potsdam.de/wps/results/deus/4"
     modelprop_wps_process_identifier = "org.n52.gfz.riesgos.algorithm.ModelpropProcess"
-    literal_inputs = datamangement_repo.find_literal_inputs_of_parent_process(
-        deus_output_link, modelprop_wps_process_identifier
+    literal_inputs = datamangement_repo.find_literal_inputs_for_parent_process_of_complex_output(
+        wps_process_identifier=modelprop_wps_process_identifier,
+        complex_output_link=deus_output_link,
     )
-    labels = [x.input_value for x in literal_inputs if x.wps_identifier == "schema"]
+    labels = [x.input_value for x in literal_inputs]
     assert len(labels) == 1
     assert labels[0] == "HAZUS"
