@@ -252,9 +252,13 @@ export class AppStateService {
         }
         else if (action.type === 'orderSuccess') {
             currentState.orderState = 'accepted';
+            this.precalc.reset();
+            currentState.formData = this.precalc.toFormData(currentState.formData);
         }
         else if (action.type === 'orderFailure') {
             currentState.orderState = 'none';
+            this.precalc.reset();
+            currentState.formData = this.precalc.toFormData(currentState.formData);
         }
 
         return currentState;

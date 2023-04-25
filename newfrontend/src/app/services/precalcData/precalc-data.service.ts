@@ -165,8 +165,12 @@ export class PrecalcDataService {
   private allowedData: DataPoint[] = [];
 
   constructor() {
-    this.allowedData = this.allData;
+    this.reset();
   }
+
+  reset() {
+    this.allData = this.allData;
+}
 
   /**
    * reduces list of available datapoints
