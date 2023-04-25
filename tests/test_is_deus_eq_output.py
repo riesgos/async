@@ -7,22 +7,37 @@ import pytest
 from datamanagement_repo import DatamanagementRepo
 
 
+def is_deus_eq_output(db_connection, job_id):
+    datamanagement_repo = DatamanagementRepo(db_connection)
+    complex_outputs_of_other_processes_as_inputs_for_deus_output = (
+        datamanagement_repo.complex_output_as_input_repo.find_inputs_by_job_id(job_id)
+    )
+    for input in complex_outputs_of_other_processes_as_inputs_for_deus_output:
+        output = input.complex_output
+        assetmaster_wps_process_identifier = (
+            "org.n52.gfz.riesgos.algorithm.AssetmasterProcess"
+        )
+        assetmaster_wps_input_identifier = "schema"
+        eq_schema_input_values = ["SARA_v1.0"]
+        if all(
+            [
+                (x.input_value in eq_schema_input_values)
+                for x in datamanagement_repo.find_literal_inputs_for_complex_output(
+                    output.link,
+                    assetmaster_wps_process_identifier,
+                    assetmaster_wps_process_identifier,
+                )
+            ]
+        ):
+            return True
+
+    return False
+
+
 def quote(value):
     if isinstance(value, str):
         return f"'{value}'"
     return str(value)
-
-
-class Expectation:
-    def __init__(self, value):
-        self.value = value
-
-    def to_equal(self, expected_value):
-        assert self.value == expected_value
-
-
-def expect(value):
-    return Expectation(value)
 
 
 @pytest.fixture
@@ -44,11 +59,7 @@ def db_connection(connection):
     yield connection
 
 
-def test_has_db_with_structure(db_connection):
-    db_connection.execute("select * from literal_inputs")
-
-
-def test_extract_schema_for_ts_output(db_connection):
+def test_is_deus_eq_output(db_connection):
     # First create some example data
     inserts = [
         dict(
@@ -181,12 +192,48 @@ def test_extract_schema_for_ts_output(db_connection):
             table="complex_outputs",
             values=dict(
                 id=4,
-                wps_identifier="",
+                wps_identifier="merged_output",
                 mime_type="application/json",
                 encoding="UTF-8",
                 xmlschema="",
                 job_id=4,
                 link="https://rz-vm140.gfz-potsdam.de/wps/results/deus/4",
+            ),
+        ),
+        # And tsunami deus
+        dict(table="jobs", values=dict(id=5, process_id=3, status="success")),
+        dict(
+            table="literal_inputs",
+            values=dict(id=8, wps_identifier="schema", input_value="HAZUS", job_id=5),
+        ),
+        dict(
+            table="complex_outputs_as_inputs",
+            values=dict(
+                id=3,
+                job_id=5,
+                wps_identifier="exposure",
+                complex_output_id=4,
+            ),
+        ),
+        dict(
+            table="complex_outputs_as_inputs",
+            values=dict(
+                id=4,
+                job_id=5,
+                wps_identifier="fragility",
+                complex_output_id=2,
+            ),
+        ),
+        dict(
+            table="complex_outputs",
+            values=dict(
+                id=5,
+                wps_identifier="merged_output",
+                mime_type="application/json",
+                encoding="UTF-8",
+                xmlschema="",
+                job_id=5,
+                link="https://rz-vm140.gfz-potsdam.de/wps/results/deus/5",
             ),
         ),
     ]
@@ -195,31 +242,7 @@ def test_extract_schema_for_ts_output(db_connection):
         fields = ",".join(insert["values"].keys())
         values = ",".join(quote(v) for v in insert["values"].values())
         db_connection.execute(f"insert into {table}({fields}) values ({values})")
-    # Ok, now we have the situation that I need to find the schema
-    # with that the first modelprop was called.
-    datamangement_repo = DatamanagementRepo(db_connection)
-
-    deus_output_link = "https://rz-vm140.gfz-potsdam.de/wps/results/deus/4"
-    modelprop_wps_process_identifier = "org.n52.gfz.riesgos.algorithm.ModelpropProcess"
-    literal_inputs = (
-        datamangement_repo.find_literal_inputs_for_parent_process_of_complex_output(
-            wps_process_identifier=modelprop_wps_process_identifier,
-            complex_output_link=deus_output_link,
-        )
-    )
-    labels = [x.input_value for x in literal_inputs if x.wps_identifier == "schema"]
-    assert len(labels) == 1
-    assert labels[0] == "HAZUS"
-
-    # and we can also check for the schema inputs of assetmaster
-    assetmaster_output_link = (
-        "https://rz-vm140.gfz-potsdam.de/wps/results/assetmaster/3"
-    )
-    assetmaster_wps_process_identifier = (
-        "org.n52.gfz.riesgos.algorithm.AssetmasterProcess"
-    )
-    literal_inputs = datamangement_repo.find_literal_inputs_for_complex_output(
-        assetmaster_output_link, assetmaster_wps_process_identifier, "schema"
-    )
-    assert len(literal_inputs) == 1
-    assert literal_inputs[0].input_value == "SARA_v1.0"
+    eq_deus_job_id = 4
+    ts_deus_job_id = 5
+    assert is_deus_eq_output(db_connection, eq_deus_job_id)
+    assert is_deus_eq_output(db_connection, ts_deus_job_id)

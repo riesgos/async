@@ -112,6 +112,7 @@ class ComplexOutputAsInputRepo (val jdbcTemplate: JdbcTemplate) {
                 complex_outputs.xmlschema as output_xmlschema,
                 complex_outputs.encoding as output_encoding
             from complex_outputs_as_inputs
+            join complex_outputs on complex_outputs.id = complex_outputs_as_inputs.complex_output_id
             where complex_outputs_as_inputs.job_id = ?
         """.trimIndent()
         return jdbcTemplate.query(
