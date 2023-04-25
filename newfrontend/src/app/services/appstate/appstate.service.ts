@@ -19,6 +19,7 @@ export interface AppState {
     authenticationData: null | UserSelfInformation | CredentialsError,
     orderState: 'none' | 'sending' | 'accepted',
     formData: AppStateFormDatum[],
+    combinationsAvailable: number,
     localStoreData: { [key: string]: any }
 }
 
@@ -27,6 +28,7 @@ const initialState: AppState = {
     authenticationData: null,
     orderState: 'none',
     formData: [],
+    combinationsAvailable: 0,
     localStoreData: {}
 };
 
@@ -220,7 +222,9 @@ export class AppStateService {
     private reduceState(action: Action, currentState: AppState): AppState {
 
         if (action.type === 'appStart') {
+            this.precalc.reset();
             currentState.formData = this.precalc.toFormData(currentState.formData);
+            currentState.combinationsAvailable = this.precalc.countAvailable();
         }
 
         else if (action.type === 'getFromLocalStoreResult') {
@@ -244,6 +248,7 @@ export class AppStateService {
             currentState.formData = this.precalc.toFormData(currentState.formData);
             const selectedDatum = currentState.formData.find(d => d.key === action.payload.key);
             if (selectedDatum) selectedDatum.value = action.payload.value;
+            currentState.combinationsAvailable = this.precalc.countAvailable();
         }
         else if (action.type === 'formSubmit') {}
 
@@ -254,11 +259,13 @@ export class AppStateService {
             currentState.orderState = 'accepted';
             this.precalc.reset();
             currentState.formData = this.precalc.toFormData(currentState.formData);
+            currentState.combinationsAvailable = this.precalc.countAvailable();
         }
         else if (action.type === 'orderFailure') {
             currentState.orderState = 'none';
             this.precalc.reset();
             currentState.formData = this.precalc.toFormData(currentState.formData);
+            currentState.combinationsAvailable = this.precalc.countAvailable();
         }
 
         return currentState;

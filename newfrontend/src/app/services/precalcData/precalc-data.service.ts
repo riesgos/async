@@ -169,8 +169,12 @@ export class PrecalcDataService {
   }
 
   reset() {
-    this.allData = this.allData;
-}
+    this.allowedData = this.allData;
+  }
+
+  countAvailable(): number {
+    return this.allowedData.length;
+  }
 
   /**
    * reduces list of available datapoints

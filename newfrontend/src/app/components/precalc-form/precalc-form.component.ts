@@ -11,8 +11,11 @@ import { AppStateService } from 'src/app/services/appstate/appstate.service';
 export class PrecalcFormComponent implements OnInit {
 
   public orderForm: FormGroup = new FormGroup({});
-  public formEntries = this.state.state.pipe(
+  public formEntries$ = this.state.state.pipe(
     map(s => s.formData),
+  );
+  public combosAvailable$ = this.state.state.pipe(
+    map(s => s.combinationsAvailable)
   );
 
   constructor(private state: AppStateService) {}
