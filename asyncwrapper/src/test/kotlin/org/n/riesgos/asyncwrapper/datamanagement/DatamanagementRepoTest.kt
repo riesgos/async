@@ -46,14 +46,30 @@ class DatamanagementRepoTest {
         val template = JdbcTemplate(dataSource)
 
 
-        for (file in files) {
-            val bytes = Files.readAllBytes(Paths.get(file.toURI()))
-            // H2 can't handle jsonb columns. But there is a json datatype instead.
-            val text = String(bytes).replace("jsonb", "json")
-            val commands = text.split(";")
-            for (command in commands) {
-                template.execute(command)
+        // This is here is the work around with the problem that we don't
+        // get a clean state for the second run.
+        // So we check if we need to run the migrations.
+        var tablesExists = false
+        try {
+            template.execute("select * from literal_inputs")
+            tablesExists = true
+        } catch (ex: Exception) {
+            tablesExists = false
+        }
+        if (!tablesExists) {
+            for (file in files) {
+                val bytes = Files.readAllBytes(Paths.get(file.toURI()))
+                // H2 can't handle jsonb columns. But there is a json datatype instead.
+                val text = String(bytes).replace("jsonb", "json")
+                val commands = text.split(";")
+                for (command in commands) {
+                    template.execute(command)
+                }
             }
+        } else {
+            // In case the migrations are already done, then we cleanup
+            // the tables that we may filled with the other code so far.
+            template.execute("delete from processes")
         }
 
         this.jdbcTemplate = template
@@ -65,7 +81,7 @@ class DatamanagementRepoTest {
         this.jdbcTemplate?.execute("select * from literal_inputs")
     }
 
-    /*@Test
+    @Test
     fun testFindLiteralInputsForParentProcessOfComplexOutput() {
         assertNotNull(this.jdbcTemplate)
         val template = this.jdbcTemplate!!
@@ -89,10 +105,17 @@ class DatamanagementRepoTest {
         )
 
 
-        template.update("insert into processes(id, wps_url, wps_identifier) values ?, ?, ?", 1, gfzWpsUrl, modelpropProcessIdentifier)
+        template.execute(
+                "insert into processes(id, wps_url, wps_identifier) values (1, '"
+                        + gfzWpsUrl + "', '" + modelpropProcessIdentifier + "')"
+        )
+        /*
         val modelpropProcess = datamanagementRepo.processRepo.persist(Process(null, gfzWpsUrl, modelpropProcessIdentifier))
         val assetmasterProcess = datamanagementRepo.processRepo.persist(Process(null, gfzWpsUrl, assetmasterProcessIdentifier))
         val deusProcess = datamanagementRepo.processRepo.persist(Process(null, gfzWpsUrl, deusProcessIdentifier))
+         */
 
-    }*/
+    }
+
+    
 }
