@@ -221,12 +221,94 @@ export class PrecalcDataService {
     return orders;
   }
 
+  /**
+   * Converts form-data to a user-order.
+   * For this, form key-value-pairs are copied into a default-user-order.
+   * Unforunately, this requires hard-coding where a specific key/val pair should be pasted into that user-order-structure.
+   * I cannot think of a way to generalize this... maybe in a future version.
+   */
   private toOrder(dp: DataPoint): UserOrder {
     const order: UserOrder = structuredClone(defaultOrder);
     for (const [key, val] of Object.entries(dp)) {
-      // @TODO: mutate order
+      switch (key) {
+        // @TODO: shakyground.gmpe and .vsgrid are currently not being configured through the form.
+        // @HugoRosero : should those parameters be configurable?
+        case 'id':
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "id"], val);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "magnitude.publicID"], val);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "origin.publicID"], val);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "preferredMagnitudeID"], val);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "preferredOriginID"], val);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "publicID"], val);
+            break
+        case 'eventId':
+            // @HugoRosero: where should I write this? This is not a wps-input anywhere.
+            break
+        case 'longitude':
+            order.order_constraints['tsunami'].literal_inputs!['lon'] = [val];
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "geometry", "coordinates", 0], val);
+            break
+        case 'latitude':
+            order.order_constraints['tsunami'].literal_inputs!['lat'] = [val];
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "geometry", "coordinates", 0], val);
+            break
+        case 'depth':
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "origin.depth.value"], val);
+            break
+        case 'magnitude':
+            order.order_constraints['tsunami'].literal_inputs!['mag'] = [val];
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "magnitude.mag.value"], val);
+            break
+        case 'rakeAngle':
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "focalMechanism.nodalPlanes.nodalPlane1.rake.value"], val);
+            break
+        case 'dipAngle':
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "focalMechanism.nodalPlanes.nodalPlane1.dip.value"], val);
+            break
+        case 'strikeAngle':
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "focalMechanism.nodalPlanes.nodalPlane1.strike.value"], val);
+            break
+        case 'seed':
+            order.order_constraints['shakemapresampler'].literal_inputs!['random_seed'] = [val];
+            break
+        case 'exposureModel':
+            order.order_constraints['assetmaster'].literal_inputs!['model'] = [val];
+            break
+        case 'vulnerabilityEq':
+            order.order_constraints['assetmaster'].literal_inputs!['schema'] = [val];
+            order.order_constraints['eq-deus'].literal_inputs!['schema'] = [val];  // @nbrinckm: should this line be under `case: 'vulnerabilityTs'` instead?
+            order.order_constraints['eq-modelprop'].literal_inputs!['schema'] = [val];
+            break
+        case 'vulnerabilityTs':
+            order.order_constraints['ts-deus'].literal_inputs!['schema'] = [val];
+            order.order_constraints['ts-modelprop'].literal_inputs!['schema'] = [val];
+            break
+        default:
+            throw Error(`Encountered unknown key '${key}' (value: '${val}') when attempting to create an order from form-entry`);
+      }
     }
     return order;
+  }
+
+  private mutateQuakeMLFileInPlace(order: UserOrder, keyPath: (string | number)[], val: string) {
+    const fcs = order.order_constraints['shakyground'].complex_inputs!['quakeMLFile'][0].input_value;
+    const fcsUpdated = this.injectIntoFeatureCollectionString(fcs, keyPath, val);
+    order.order_constraints['shakyground'].complex_inputs!['quakeMLFile'][0].input_value = fcsUpdated;
+    return order;
+  }
+
+  private injectIntoFeatureCollectionString(featureCollectionString: string, keyPath: (string | number)[], newValue: string): string {
+    const fc = JSON.parse(featureCollectionString);
+
+    let head = fc;
+    const lastPathEl = keyPath.pop()!;
+    for (const key of keyPath) {
+        head = head[key];
+    }
+    head[lastPathEl] = newValue;
+
+    const fcs = JSON.stringify(fc);
+    return fcs;
   }
 
 }

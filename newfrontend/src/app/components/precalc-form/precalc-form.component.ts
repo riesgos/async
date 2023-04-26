@@ -30,7 +30,7 @@ export class PrecalcFormComponent implements OnInit {
   }
 
   public download() {
-
+    throw Error(`Method not implemented`);
   }
 
 }
