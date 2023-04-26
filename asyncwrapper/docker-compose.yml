@@ -7,6 +7,7 @@ services:
     # user: 1000:1000
     volumes:
       - './:/usr/src/mymaven'
+      - '../backend/migrations/:/usr/src/backend/migrations'
       - 'maven_deps:/root/.m2'
     working_dir: '/usr/src/mymaven'
     command: 'tail -f /dev/null'
