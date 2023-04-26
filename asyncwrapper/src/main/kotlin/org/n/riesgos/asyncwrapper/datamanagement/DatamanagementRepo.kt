@@ -487,6 +487,7 @@ class DatamanagementRepo (
         return jdbcTemplate.query(
                 sql,
                 LiteralInputRowMapper(),
+                complexOutputLink,
                 wpsProcessIdentifier
         )
     }
