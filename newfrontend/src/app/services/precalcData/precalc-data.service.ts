@@ -235,12 +235,12 @@ export class PrecalcDataService {
         // @TODO: shakyground.gmpe and .vsgrid are currently not being configured through the form.
         // @HugoRosero : should those parameters be configurable?
         case 'id':
-            this.mutateQuakeMLFileInPlace(order, ["features", 0, "id"], val);
-            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "magnitude.publicID"], val);
-            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "origin.publicID"], val);
-            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "preferredMagnitudeID"], val);
-            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "preferredOriginID"], val);
-            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "publicID"], val);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "id"], `quakeml:quakeledger/${val}`);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "magnitude.publicID"], `quakeml:quakeledger/${val}`);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "origin.publicID"], `quakeml:quakeledger/${val}`);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "preferredMagnitudeID"], `quakeml:quakeledger/${val}`);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "preferredOriginID"], `quakeml:quakeledger/${val}`);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "publicID"], `quakeml:quakeledger/${val}`);
             break
         case 'eventId':
             // @HugoRosero: where should I write this? This is not a wps-input anywhere.
