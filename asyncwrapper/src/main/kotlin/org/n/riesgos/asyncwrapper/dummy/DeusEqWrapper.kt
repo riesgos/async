@@ -11,6 +11,7 @@ import org.n.riesgos.asyncwrapper.datamanagement.models.JobConstraints
 import org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS
 import org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA
 import org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_EQ_SCHEMA_OPTIONS
+import org.n.riesgos.asyncwrapper.dummy.utils.DeusUtils
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import java.util.*
 import java.util.stream.Collectors
@@ -105,7 +106,7 @@ class DeusEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
                 // We want to run this deus wrapper only for exposure models that
                 // were created for the earthquake setting.
                 .filter { x ->
-                    createdWithLiteralInput(
+                    DeusUtils(datamanagementRepo).createdWithLiteralInput(
                         x,
                         WPS_PROCESS_IDENTIFIER_MODELPROP,
                         WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA,
@@ -121,7 +122,7 @@ class DeusEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
         )
                 .stream()
                 .filter { x ->
-                    createdWithLiteralInput(
+                    DeusUtils(datamanagementRepo).createdWithLiteralInput(
                         x,
                         WPS_PROCESS_IDENTIFIER_ASSETMASTER,
                         WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA,
@@ -142,15 +143,6 @@ class DeusEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
         return HashMap<String, MutableList<BBoxInputConstraint>>()
     }
 
-    fun createdWithLiteralInput (complexOutput: ComplexOutput, wpsProcessIdentifier: String, wpsInputIdentifier: String, options: List<String>) : Boolean {
-        val asInput = ComplexInputConstraint(complexOutput.link, null, complexOutput.mimeType, complexOutput.xmlschema, complexOutput.encoding)
-        val literalInputs = datamanagementRepo.findLiteralInputsForComplexOutput(asInput, wpsProcessIdentifier, wpsInputIdentifier)
-        return literalInputs.stream().allMatch { x ->
-            options.contains(x.inputValue)
-        }
-    }
-
-
     override fun getJobInputs (literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>, bboxInputs: Map<String, List<BBoxInputConstraint>>): List<JobConstraints> {
         val result = ArrayList<JobConstraints>()
         for (intensityConstraint in complexInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_INTENSITY, ArrayList())) {
@@ -159,7 +151,8 @@ class DeusEqWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
                     val extractedSchemas = datamanagementRepo.findLiteralInputsForComplexOutput(exposureConstraint, WPS_PROCESS_IDENTIFIER_ASSETMASTER, WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA)
                             .stream()
                             .map { x -> x.inputValue }
-                        .collect(Collectors.toList())
+                            .distinct()
+                            .collect(Collectors.toList())
 
 
                     for (schemaConstraint in literalInputs.getOrDefault(WPS_PROCESS_INPUT_IDENTIFIER_DEUS_SCHEMA, extractedSchemas)) {

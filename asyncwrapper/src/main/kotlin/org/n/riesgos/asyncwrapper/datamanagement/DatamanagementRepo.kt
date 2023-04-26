@@ -26,7 +26,7 @@ class DatamanagementRepo (
         val orderJobRefRepo: OrderJobRefRepo,
         val complexOutputRepo: ComplexOutputRepo,
         val orderRepo: OrderRepo,
-        val storedLinkRepo: StoredLinkRepo
+        val storedLinkRepo: StoredLinkRepo,
 ) {
     /**
      * Extracts the constraints of the order as json object.
@@ -428,7 +428,7 @@ class DatamanagementRepo (
             select literal_inputs.*
             from literal_inputs
             join jobs on jobs.id = literal_inputs.job_id
-            join processes on processes.id = libs.process_id
+            join processes on processes.id = jobs.process_id
             join complex_outputs on complex_outputs.job_id = jobs.id
             where complex_outputs.link = ?
             and complex_outputs.mime_type = ?
@@ -445,6 +445,49 @@ class DatamanagementRepo (
                 complexInputConstraint.xmlschema,
                 complexInputConstraint.encoding,
                 wpsInputIdentifier,
+                wpsProcessIdentifier
+        )
+    }
+
+    /**
+     * Find literal inputs.
+     *
+     * Honestly it is quite hard to describe.
+     *
+     * It finds the literal inputs of a process, of which the output
+     * was used to create another later complex output.
+     *
+     * We restrict the search with the link of the later output and
+     * the process identifier.
+     *
+     * This way we can get the schema of modelprop for example that
+     * was used to create a deus output at the end.
+     *
+     * (modelprop input -> modelprop output -> deus output)
+     *   ^-we want that                         ^- we have that
+     *
+     */
+    fun findLiteralInputsForParentProcessOfComplexOutput (wpsProcessIdentifier: String, complexOutputLink: String): List<LiteralInput> {
+        // We do that on the example of modelprop (provides fragility functions) and deus (damage computation).
+        // The deus process uses the complex output of modelprop as an input itself.
+        // And so we here want to extract all the literal inputs that were used for the modelprop run
+        // that deus had used.
+        val sql = """
+            select modelprop_inputs.*
+            from literal_inputs modelprop_inputs
+            join jobs modelprop_job on modelprop_job.id = modelprop_inputs.job_id
+            join processes modelprop_process on modelprop_process.id = modelprop_job.process_id
+            join complex_outputs modelprop_outputs on modelprop_outputs.job_id = modelprop_job.id
+            join complex_outputs_as_inputs deus_inputs on deus_inputs.complex_output_id = modelprop_outputs.id
+            join jobs deus_job on deus_job.id = deus_inputs.job_id
+            join complex_outputs deus_outputs on deus_outputs.job_id = deus_job.id
+            where deus_outputs.link = ?
+            and modelprop_process.wps_identifier = ?
+        """.trimIndent()
+        return jdbcTemplate.query(
+                sql,
+                LiteralInputRowMapper(),
+                complexOutputLink,
                 wpsProcessIdentifier
         )
     }
