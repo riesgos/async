@@ -277,11 +277,11 @@ export class PrecalcDataService {
             break
         case 'vulnerabilityEq':
             order.order_constraints['assetmaster'].literal_inputs!['schema'] = [val];
-            order.order_constraints['eq-deus'].literal_inputs!['schema'] = [val];  // @nbrinckm: should this line be under `case: 'vulnerabilityTs'` instead?
             order.order_constraints['eq-modelprop'].literal_inputs!['schema'] = [val];
+            order.order_constraints['eq-deus'].literal_inputs!['schema'] = [val];
+            order.order_constraints['ts-deus'].literal_inputs!['schema'] = [val];
             break
         case 'vulnerabilityTs':
-            order.order_constraints['ts-deus'].literal_inputs!['schema'] = [val];
             order.order_constraints['ts-modelprop'].literal_inputs!['schema'] = [val];
             break
         default:
