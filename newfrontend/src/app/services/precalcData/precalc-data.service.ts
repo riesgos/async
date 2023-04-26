@@ -229,7 +229,8 @@ export class PrecalcDataService {
    */
   private toOrder(dp: DataPoint): UserOrder {
     const order: UserOrder = structuredClone(defaultOrder);
-    for (const [key, val] of Object.entries(dp)) {
+    for (let [key, val] of Object.entries(dp)) {
+      val = `${val}`; // making sure that val is a string
       switch (key) {
         // @TODO: shakyground.gmpe and .vsgrid are currently not being configured through the form.
         // @HugoRosero : should those parameters be configurable?
@@ -246,11 +247,11 @@ export class PrecalcDataService {
             break
         case 'longitude':
             order.order_constraints['tsunami'].literal_inputs!['lon'] = [val];
-            this.mutateQuakeMLFileInPlace(order, ["features", 0, "geometry", "coordinates", 0], val);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "geometry", "coordinates", 0], parseFloat(val));
             break
         case 'latitude':
             order.order_constraints['tsunami'].literal_inputs!['lat'] = [val];
-            this.mutateQuakeMLFileInPlace(order, ["features", 0, "geometry", "coordinates", 0], val);
+            this.mutateQuakeMLFileInPlace(order, ["features", 0, "geometry", "coordinates", 1], parseFloat(val));
             break
         case 'depth':
             this.mutateQuakeMLFileInPlace(order, ["features", 0, "properties", "origin.depth.value"], val);
@@ -290,14 +291,14 @@ export class PrecalcDataService {
     return order;
   }
 
-  private mutateQuakeMLFileInPlace(order: UserOrder, keyPath: (string | number)[], val: string) {
+  private mutateQuakeMLFileInPlace(order: UserOrder, keyPath: (string | number)[], val: string | number) {
     const fcs = order.order_constraints['shakyground'].complex_inputs!['quakeMLFile'][0].input_value;
     const fcsUpdated = this.injectIntoFeatureCollectionString(fcs, keyPath, val);
     order.order_constraints['shakyground'].complex_inputs!['quakeMLFile'][0].input_value = fcsUpdated;
     return order;
   }
 
-  private injectIntoFeatureCollectionString(featureCollectionString: string, keyPath: (string | number)[], newValue: string): string {
+  private injectIntoFeatureCollectionString(featureCollectionString: string, keyPath: (string | number)[], newValue: string | number): string {
     const fc = JSON.parse(featureCollectionString);
 
     let head = fc;
