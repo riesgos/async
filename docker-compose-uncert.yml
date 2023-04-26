@@ -63,7 +63,7 @@ services:
       pulsar.outputTopic: 'tsunami-success'
       pulsar.failureTopic: 'tsunami-failure'
       wps.wpsUrl: 'https://riesgos.52north.org/wps'
-      wps.wpsVersion: '2.0.0'
+      wps.wpsVersion: '1.0.0'
       wps.process: 'get_tsunamap'
       filestorage.endpoint: http://filestorage:9000
       filestorage.user: ${FILESTORAGE_USER:?error}
