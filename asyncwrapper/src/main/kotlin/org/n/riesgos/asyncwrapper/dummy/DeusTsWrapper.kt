@@ -12,6 +12,7 @@ import org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper.Companion.WPS_PROCESS
 import org.n.riesgos.asyncwrapper.dummy.ModelpropTsWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA
 import org.n.riesgos.asyncwrapper.dummy.ModelpropTsWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_TS_SCHEMA_OPTIONS
 import org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper.Companion.WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_EQ_SCHEMA_OPTIONS
+import org.n.riesgos.asyncwrapper.dummy.utils.DeusUtils
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import java.util.*
 import java.util.stream.Collectors
@@ -102,7 +103,7 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
                 // We want to run this deus wrapper only for exposure models that
                 // were created for the earthquake setting.
                 .filter { x ->
-                    createdWithLiteralInput(
+                    DeusUtils(datamanagementRepo).createdWithLiteralInput(
                         x,
                         WPS_PROCESS_IDENTIFIER_MODELPROP,
                         WPS_PROCESS_INPUT_IDENTIFIER_MODELPROP_SCHEMA,
@@ -118,7 +119,7 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
         )
                 .stream()
                 .filter { x ->
-                    isDeusEqOutput(x)
+                    DeusUtils(datamanagementRepo).isDeusEqOutput(x)
 
                 }
             .collect(Collectors.toList())
@@ -131,46 +132,9 @@ class DeusTsWrapper (val datamanagementRepo: DatamanagementRepo, wpsConfig : WPS
         return result
     }
 
-    private fun isDeusEqOutput (deusOutput: ComplexOutput): Boolean {
-        // Ok, we search for the inputs that we used to create the deus output.
-        // We search here for the complex inputs.
-        // And we expect them to be the output of another process.
-        // So we check the complexOutputsAsInputs.
-        val complexOutputsOfOtherProcessesAsInputsForDeusOutput = this.datamanagementRepo.complexOutputAsInputRepo.findInputsByJobId(deusOutput.jobId)
-        for (input in complexOutputsOfOtherProcessesAsInputsForDeusOutput) {
-            // Ok, we have in input for deus that was already a complex output of another process.
-            val output = input.complexOutput
-            // We then want to check if this was created by assetmaster. If so,
-            if (
-                    createdWithLiteralInput(
-                            output,
-                            WPS_PROCESS_IDENTIFIER_ASSETMASTER,
-                            WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA,
-                            WPS_PROCESS_INPUT_IDENTIFIER_ASSETMASTER_SCHEMA_OPTIONS)
-            ) {
-                // Now we are sure that the deus output that we have here used the
-                // assetmaster value directly. It has only one processing of the deus
-                // run. And as it also checked for the schema values for assetmaster
-                // (and those include only the earthquake schemas for the moment),
-                // we can be sure that this is the earthquake deus output that
-                // we want to put into the tsunami damage computation.
-                return true
-            }
-        }
-
-        return false
-    }
 
     override fun getDefaultBBoxConstraints (orderId: Long): Map<String, List<BBoxInputConstraint>> {
         return HashMap<String, MutableList<BBoxInputConstraint>>()
-    }
-
-    fun createdWithLiteralInput (complexOutput: ComplexOutput, wpsProcessIndentifier: String, wpsInputIdentifier: String, options: List<String>) : Boolean {
-        val asInput = ComplexInputConstraint(complexOutput.link, null, complexOutput.mimeType, complexOutput.xmlschema, complexOutput.encoding)
-        val literalInputs = datamanagementRepo.findLiteralInputsForComplexOutput(asInput, wpsProcessIndentifier, wpsInputIdentifier)
-        return literalInputs.stream().allMatch { x ->
-            options.contains(x.inputValue)
-        }
     }
 
     override fun getJobInputs (literalInputs: Map<String, List<String>>, complexInputs: Map<String, List<ComplexInputConstraint>>, bboxInputs: Map<String, List<BBoxInputConstraint>>): List<JobConstraints> {
