@@ -60,6 +60,7 @@ class H2DbFixture {
             template.execute("delete from jobs")
             template.execute("delete from orders")
             template.execute("delete from processes")
+            template.execute("delete from stored_links")
         }
         return template
     }
