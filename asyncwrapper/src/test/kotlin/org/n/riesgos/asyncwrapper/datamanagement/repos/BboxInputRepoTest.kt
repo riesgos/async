@@ -10,7 +10,7 @@ import org.n.riesgos.asyncwrapper.datamanagement.models.BboxInput
 
 class BboxInputRepoTest {
     @Test
-    fun findByProcessWpsIdentifierJobStatusInputWpsIdentifierCornersAndCrs() {
+    fun testFindByProcessWpsIdentifierJobStatusInputWpsIdentifierCornersAndCrs() {
         val template = H2DbFixture().getJdbcTemplate()
 
         val gfzWpsUrl = "https://rz-vm140.gfz-potsdam.de/wps"

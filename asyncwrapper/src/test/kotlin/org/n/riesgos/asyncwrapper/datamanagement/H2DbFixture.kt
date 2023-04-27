@@ -50,6 +50,7 @@ class H2DbFixture {
         } else {
             // In case the migrations are already done, then we cleanup
             // the tables that we may filled with the other code so far.
+            template.execute("delete from complex_inputs_as_values")
             template.execute("delete from bbox_inputs")
             template.execute("delete from complex_outputs_as_inputs")
             template.execute("delete from complex_outputs")
