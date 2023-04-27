@@ -38,5 +38,12 @@ class ComplexInputAsValueRepoTest {
 
         assertEquals(1, result1.size)
         assertEquals("{bla:12}", result1[0].inputValue)
+
+
+        val result0 = complexInputAsValueRepo.findByProcessWpsIdentifierJobStatusInputWpsIdentifierInputValueMimetypeXmlSchemaAndEncoding(
+                assetmasterProcessIdentifier, "success", "exposure2", "{bla:12}", "application/json", "", "UTF-8"
+        )
+
+        assertEquals(0, result0.size)
     }
 }

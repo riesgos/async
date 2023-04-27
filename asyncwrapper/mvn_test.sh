@@ -6,4 +6,4 @@
 #
 # So there are just a couple of tests for the database interaction
 # (but with an embedded H2 for the tests).
-docker-compose run mvn mvn test -Dtest=DeusUtilsTest,DatamanagementRepoTest,BboxInputRepoTest,ComplexInputAsValueRepoTest
+docker-compose run mvn mvn test -Dtest=DeusUtilsTest,DatamanagementRepoTest,BboxInputRepoTest,ComplexInputAsValueRepoTest,ComplexInputRepoTest
