@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.n.riesgos.asyncwrapper.datamanagement.H2DbFixture
+import org.n.riesgos.asyncwrapper.datamanagement.mapper.BboxInputRowMapper
 import org.n.riesgos.asyncwrapper.datamanagement.models.BboxInput
 
 class BboxInputRepoTest {
@@ -95,5 +96,17 @@ class BboxInputRepoTest {
         val bboxInput2 = BboxInput(null, 1, "bbox2", -10.0, -20.0, 30.0, 5.0, "epsg:4326")
         val bboxAfterSave2 = bboxInputRepo.persist(bboxInput2)
         assertEquals(bboxAfterSave.id!! + 1, bboxAfterSave2.id)
+
+        val bbox1Update = BboxInput(bboxAfterSave.id, bboxAfterSave.jobId, "updated value", bboxAfterSave.lowerCornerX, bboxAfterSave.lowerCornerY, bboxAfterSave.upperCornerX, bboxAfterSave.upperCornerY, bboxAfterSave.crs);
+
+        bboxInputRepo.persist(bbox1Update)
+
+        val queryResult = template.query(
+                """select * from bbox_inputs where id = ${bboxAfterSave.id}""", BboxInputRowMapper()
+        )
+        assertEquals(1, queryResult.size)
+        assertEquals(bbox1Update.id, queryResult[0].id)
+        assertEquals(bboxAfterSave!!.id, queryResult[0].id)
+        assertEquals("updated value", bbox1Update.wpsIdentifier)
     }
 }
