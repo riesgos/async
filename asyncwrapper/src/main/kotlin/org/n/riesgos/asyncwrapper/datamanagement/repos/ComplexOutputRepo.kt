@@ -82,7 +82,6 @@ class ComplexOutputRepo (val jdbcTemplate: JdbcTemplate){
         if (complexOutput.id == null) {
             val sqlInsert = """
                 insert into complex_outputs (job_id, wps_identifier, link, mime_type, xmlschema, encoding) values (?, ?, ?, ?, ?, ?)
-                returning id
             """.trimIndent()
 
             val key = GeneratedKeyHolder()
@@ -99,7 +98,7 @@ class ComplexOutputRepo (val jdbcTemplate: JdbcTemplate){
 
             jdbcTemplate.update(preparedStatementCreator, key)
 
-            val newId = key.getKey()!!.toLong()
+            val newId = (key.getKeyList().get(0).get("id") as Integer).toLong()
 
             return ComplexOutput(newId, complexOutput.jobId, complexOutput.wpsIdentifier, complexOutput.link, complexOutput.mimeType, complexOutput.xmlschema, complexOutput.encoding)
 

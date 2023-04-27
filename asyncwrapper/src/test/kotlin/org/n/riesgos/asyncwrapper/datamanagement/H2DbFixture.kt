@@ -56,7 +56,9 @@ class H2DbFixture {
             template.execute("delete from complex_outputs_as_inputs")
             template.execute("delete from complex_outputs")
             template.execute("delete from literal_inputs")
+            template.execute("delete from order_job_refs")
             template.execute("delete from jobs")
+            template.execute("delete from orders")
             template.execute("delete from processes")
         }
         return template
