@@ -8,6 +8,7 @@ import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.*
+import org.n.riesgos.asyncwrapper.dummy.utils.HexUtils
 import org.n.riesgos.asyncwrapper.dummy.utils.OrderConstraintUtils
 import org.n.riesgos.asyncwrapper.filestorage.FileStorage
 import org.n.riesgos.asyncwrapper.process.wps.InputMapper
@@ -343,7 +344,8 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         // that we have the very same content.
         // For creating the checksum, we must fetch the content...
         val content = fetchContent(originalLink)
-        val checksum = computeChecksum(content)
+        // We use uppercase to stay compatible with data that we already have.
+        val checksum = HexUtils().sha1(content, true)
         val possiblyStoredLinks = storedLinkRepo.findByOriginalLinkAndChecksum(originalLink, checksum)
         if (!possiblyStoredLinks.isEmpty()) {
             return possiblyStoredLinks.get(0).storedLink
@@ -388,19 +390,6 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         }
 
         return response.body()
-    }
-
-    /**
-     * Helper function to compute a checksum for the file content.
-     */
-    private fun computeChecksum(content: ByteArray): String {
-        val digest = MessageDigest.getInstance("SHA-1")
-        val hashed = digest.digest(content)
-        val stringBuilder = StringBuilder()
-        for (b in hashed) {
-            stringBuilder.append(String.format("%02X", b))
-        }
-        return stringBuilder.toString()
     }
 
     /**
