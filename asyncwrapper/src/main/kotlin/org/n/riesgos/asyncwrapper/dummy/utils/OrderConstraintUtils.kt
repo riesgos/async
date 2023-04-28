@@ -83,4 +83,21 @@ class OrderConstraintUtils (val datamanagementRepo: DatamanagementRepo) {
 
         return OrderConstraintsResult(literalConstraints, complexConstraints, bboxConstraints)
     }
+
+    /**
+     * Helper method to merge maps of constraints.
+     */
+    fun <T> mergeConstraintsWithDefaults (orderConstraints: Map<String, List<T>>, defaultConstraints: Map<String, List<T>>): Map<String, List<T>> {
+        val filledLiteralConstraints = HashMap<String, List<T>>()
+        for (defaultConstraintKey in defaultConstraints.keys) {
+            filledLiteralConstraints.put(defaultConstraintKey, defaultConstraints.get(defaultConstraintKey)!!)
+        }
+        for (orderConstraintKey in orderConstraints.keys) {
+            val constraints = orderConstraints.get(orderConstraintKey)!!
+            if (constraints != null && !constraints.isEmpty()) {
+                filledLiteralConstraints.put(orderConstraintKey, constraints)
+            }
+        }
+        return filledLiteralConstraints
+    }
 }

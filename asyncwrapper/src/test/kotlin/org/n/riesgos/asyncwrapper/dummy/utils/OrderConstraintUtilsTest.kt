@@ -201,4 +201,140 @@ class OrderConstraintUtilsTest {
                 result)
     }
 
+    @Test
+    fun testMergeConstraintWithDefaultsEmpty() {
+        val template = H2DbFixture().getJdbcTemplate()
+        val repo = DatamanagementRepo(
+                template,
+                LiteralInputRepo(template),
+                ComplexInputRepo(template),
+                ComplexOutputAsInputRepo(template),
+                ComplexInputAsValueRepo(template),
+                BboxInputRepo(template),
+                OrderJobRefRepo(template),
+                ComplexOutputRepo(template),
+                OrderRepo(template),
+                StoredLinkRepo(template)
+        )
+        val orderConstraints =  emptyMap<String,List<String>>()
+        val defaultConstraints = emptyMap<String,List<String>>()
+
+        val merged = OrderConstraintUtils(repo).mergeConstraintsWithDefaults(orderConstraints, defaultConstraints)
+        assertEquals(emptyMap<String,List<String>>(), merged)
+    }
+
+    @Test
+    fun testMergeConstraintWithDefaultsJustOrderConstraints() {
+        val template = H2DbFixture().getJdbcTemplate()
+        val repo = DatamanagementRepo(
+                template,
+                LiteralInputRepo(template),
+                ComplexInputRepo(template),
+                ComplexOutputAsInputRepo(template),
+                ComplexInputAsValueRepo(template),
+                BboxInputRepo(template),
+                OrderJobRefRepo(template),
+                ComplexOutputRepo(template),
+                OrderRepo(template),
+                StoredLinkRepo(template)
+        )
+        val orderConstraints =  mapOf("schema" to listOf("SARA_v1.0", "HAZUS"))
+        val defaultConstraints = emptyMap<String,List<String>>()
+
+        val merged = OrderConstraintUtils(repo).mergeConstraintsWithDefaults(orderConstraints, defaultConstraints)
+        assertEquals(mapOf("schema" to listOf("SARA_v1.0", "HAZUS")), merged)
+    }
+
+    @Test
+    fun testMergeConstraintWithDefaultsJustDefaultConstraints() {
+        val template = H2DbFixture().getJdbcTemplate()
+        val repo = DatamanagementRepo(
+                template,
+                LiteralInputRepo(template),
+                ComplexInputRepo(template),
+                ComplexOutputAsInputRepo(template),
+                ComplexInputAsValueRepo(template),
+                BboxInputRepo(template),
+                OrderJobRefRepo(template),
+                ComplexOutputRepo(template),
+                OrderRepo(template),
+                StoredLinkRepo(template)
+        )
+        val orderConstraints =  emptyMap<String,List<String>>()
+        val defaultConstraints = mapOf("schema" to listOf("SARA_v1.0", "HAZUS"))
+
+        val merged = OrderConstraintUtils(repo).mergeConstraintsWithDefaults(orderConstraints, defaultConstraints)
+        assertEquals(mapOf("schema" to listOf("SARA_v1.0", "HAZUS")), merged)
+    }
+
+    @Test
+    fun testMergeConstraintWithDefaultsBothCombined() {
+        val template = H2DbFixture().getJdbcTemplate()
+        val repo = DatamanagementRepo(
+                template,
+                LiteralInputRepo(template),
+                ComplexInputRepo(template),
+                ComplexOutputAsInputRepo(template),
+                ComplexInputAsValueRepo(template),
+                BboxInputRepo(template),
+                OrderJobRefRepo(template),
+                ComplexOutputRepo(template),
+                OrderRepo(template),
+                StoredLinkRepo(template)
+        )
+        val orderConstraints =  mapOf("querymode" to listOf("intersects"))
+        val defaultConstraints = mapOf("schema" to listOf("SARA_v1.0", "HAZUS"))
+
+        val merged = OrderConstraintUtils(repo).mergeConstraintsWithDefaults(orderConstraints, defaultConstraints)
+        assertEquals(
+                mapOf(
+                        "schema" to listOf("SARA_v1.0", "HAZUS"),
+                        "querymode" to listOf("intersects")
+                ), merged)
+    }
+
+    @Test
+    fun testMergeConstraintWithDefaultsFavorOrderConstraints() {
+        val template = H2DbFixture().getJdbcTemplate()
+        val repo = DatamanagementRepo(
+                template,
+                LiteralInputRepo(template),
+                ComplexInputRepo(template),
+                ComplexOutputAsInputRepo(template),
+                ComplexInputAsValueRepo(template),
+                BboxInputRepo(template),
+                OrderJobRefRepo(template),
+                ComplexOutputRepo(template),
+                OrderRepo(template),
+                StoredLinkRepo(template)
+        )
+        val orderConstraints =  mapOf("schema" to listOf("Mavrouli"))
+        val defaultConstraints = mapOf("schema" to listOf("SARA_v1.0", "HAZUS"))
+
+        val merged = OrderConstraintUtils(repo).mergeConstraintsWithDefaults(orderConstraints, defaultConstraints)
+        assertEquals(mapOf("schema" to listOf("Mavrouli")), merged)
+    }
+
+    @Test
+    fun testMergeConstraintWithDefaultsUseDefaultsIfEmptyOrderConstraintsAreEmpty() {
+        val template = H2DbFixture().getJdbcTemplate()
+        val repo = DatamanagementRepo(
+                template,
+                LiteralInputRepo(template),
+                ComplexInputRepo(template),
+                ComplexOutputAsInputRepo(template),
+                ComplexInputAsValueRepo(template),
+                BboxInputRepo(template),
+                OrderJobRefRepo(template),
+                ComplexOutputRepo(template),
+                OrderRepo(template),
+                StoredLinkRepo(template)
+        )
+        val orderConstraints =  mapOf("schema" to emptyList<String>())
+        val defaultConstraints = mapOf("schema" to listOf("SARA_v1.0", "HAZUS"))
+
+        val merged = OrderConstraintUtils(repo).mergeConstraintsWithDefaults(orderConstraints, defaultConstraints)
+        assertEquals(mapOf("schema" to listOf("SARA_v1.0", "HAZUS")), merged)
+    }
+
 }

@@ -157,11 +157,12 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
      */
     private fun fillConstraintsAndRun(orderConstraints: OrderConstraintsResult, orderId: Long) {
         LOGGER.info("Define the literal constraints for the jobs")
-        val filledLiteralConstraints = mergeConstraintsWithDefaults(orderConstraints.literalConstraints, getDefaultLiteralConstraints())
+        val orderConstraintUtils = OrderConstraintUtils(datamanagementRepo())
+        val filledLiteralConstraints = orderConstraintUtils.mergeConstraintsWithDefaults(orderConstraints.literalConstraints, getDefaultLiteralConstraints())
         LOGGER.info("Define the complex constraints for the jobs")
-        val filledComplexConstraints = mergeConstraintsWithDefaults(orderConstraints.complexConstraints, getDefaultComplexConstraints(orderId))
+        val filledComplexConstraints = orderConstraintUtils.mergeConstraintsWithDefaults(orderConstraints.complexConstraints, getDefaultComplexConstraints(orderId))
         LOGGER.info("Define the bbox constraints for the jobs")
-        val filledBBoxConstraints = mergeConstraintsWithDefaults(orderConstraints.bboxConstraints, getDefaultBBoxConstraints(orderId))
+        val filledBBoxConstraints = orderConstraintUtils.mergeConstraintsWithDefaults(orderConstraints.bboxConstraints, getDefaultBBoxConstraints(orderId))
 
         var jobInputs: List<JobConstraints> = ArrayList<JobConstraints>()
         try {
@@ -314,20 +315,6 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
             // => without the re-raise we would be able to run the loop & don't
             // have to stop when one call has an exception from the WPS itself.
         }
-    }
-
-    /**
-     * Helper method to merge maps of constraints.
-     */
-    private fun <T> mergeConstraintsWithDefaults (orderConstraints: Map<String, List<T>>, defaultConstraints: Map<String, List<T>>): Map<String, List<T>> {
-        val filledLiteralConstraints = HashMap<String, List<T>>()
-        for (defaultConstraintKey in defaultConstraints.keys) {
-            filledLiteralConstraints.put(defaultConstraintKey, defaultConstraints.get(defaultConstraintKey)!!)
-        }
-        for (orderConstraintKey in orderConstraints.keys) {
-            filledLiteralConstraints.put(orderConstraintKey, orderConstraints.get(orderConstraintKey)!!)
-        }
-        return filledLiteralConstraints
     }
 
     /**
