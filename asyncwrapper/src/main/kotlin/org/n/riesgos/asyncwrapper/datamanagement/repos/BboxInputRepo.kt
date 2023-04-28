@@ -14,7 +14,8 @@ import java.sql.Statement
 @Component
 class BboxInputRepo (val jdbcTemplate: JdbcTemplate) {
     fun findByProcessWpsIdentifierJobStatusInputWpsIdentifierCornersAndCrs (
-            wpsProcessIdentifier: String, jobStatus: String,
+            wpsProcessIdentifier: String,
+            jobStatus: String,
             wpsInputIdentifier: String,
             lowerCornerX: Double,
             lowerCornerY: Double,
