@@ -188,20 +188,20 @@ class DatamanagementRepo (
                     processIdentifier,
                     jobStatus,
                     bboxInputKey,
-                    bboxInput!!.lowerCornerY,
+                    bboxInput!!.lowerCornerX,
                     bboxInput.lowerCornerY,
-                    bboxInput.upperCornerY,
+                    bboxInput.upperCornerX,
                     bboxInput.upperCornerY,
                     bboxInput.crs
             )
             if (searchForThisBboxInput.isEmpty()) {
                 return Optional.empty()
             }
-            val literalInputJobIds = searchForThisBboxInput.stream().map { x -> x.jobId }.distinct().collect(Collectors.toSet())
+            val bboxInputJobIds = searchForThisBboxInput.stream().map { x -> x.jobId }.distinct().collect(Collectors.toSet())
             if (jobIdSetNotSetYet) {
-                jobIdSet.addAll(literalInputJobIds)
+                jobIdSet.addAll(bboxInputJobIds)
             } else {
-                jobIdSet.retainAll(literalInputJobIds)
+                jobIdSet.retainAll(bboxInputJobIds)
             }
             if (jobIdSet.isEmpty()) {
                 return Optional.empty()
@@ -212,42 +212,33 @@ class DatamanagementRepo (
         // now it is the task to check if there were additional parameters that we don't checked yet.
         // TODO: This here doesn't consider the count of arguments. However for the moment we don't need that in RIESGOS.
         val sqlJobWpsIdentifier = """
-            with cte_job as (
-                select id
-                from jobs
-                where id = ?
-            ),
-            cte_input_identifier as (
-                select complex_inputs.wps_identifier
+            with cte_input_identifier as (
+                select complex_inputs.job_id, complex_inputs.wps_identifier
                 from complex_inputs
-                join cte_job on cte_job.id = complex_inputs.job_id
                 
                 union all
                 
-                select complex_inputs_as_values.wps_identifier
+                select complex_inputs_as_values.job_id, complex_inputs_as_values.wps_identifier
                 from complex_inputs_as_values
-                join cte_job on cte_job.id = complex_inputs_as_values.job_id
                 
                 union all
                 
-                select literal_inputs.wps_identifier
+                select literal_inputs.job_id, literal_inputs.wps_identifier
                 from literal_inputs
-                join cte_job on cte_job.id = literal_inputs.job_id
                 
                 union all
                 
-                select complex_outputs_as_inputs.wps_identifier
+                select complex_outputs_as_inputs.job_id, complex_outputs_as_inputs.wps_identifier
                 from complex_outputs_as_inputs
-                join cte_job on cte_job.id = complex_outputs_as_inputs.job_id
                 
                 union all
                 
-                select bbox_inputs.wps_identifier
+                select bbox_inputs.job_id, bbox_inputs.wps_identifier
                 from bbox_inputs
-                join cte_job on cte_job.id = bbox_inputs.job_id
             )
             select distinct wps_identifier
             from cte_input_identifier
+            where job_id = ?
         """.trimIndent()
 
         // Ok all the jobIds had all of our parameters as we got them as
@@ -257,7 +248,10 @@ class DatamanagementRepo (
         for (jobId in jobIdSet) {
             // todo check that the job itself was sucessful.
             // now we extract the input identifiers from the query
-            val usedWpsIdentifiersInThatJob = HashSet(jdbcTemplate.query(sqlJobWpsIdentifier, StringRowMapper("wps_identifier"), jobId) as List<String>)
+            val usedWpsIdentifiersInThatJob = HashSet<String>()
+            for (wpsIdentifier in jdbcTemplate.query(sqlJobWpsIdentifier, StringRowMapper("wps_identifier"), jobId)) {
+                usedWpsIdentifiersInThatJob.add(wpsIdentifier)
+            }
             // and remove the input identifiers we got from the method call.
             for (complexInputKey in complexInputs.keys) {
                 usedWpsIdentifiersInThatJob.remove(complexInputKey)
@@ -309,7 +303,6 @@ class DatamanagementRepo (
         // https://www.developinjava.com/spring/retrieve-auto-generated-key/
         val sqlInsert = """
             insert into jobs (process_id, status) values (?, ?)
-            returning id
         """.trimIndent()
 
         val key = GeneratedKeyHolder()
@@ -323,8 +316,8 @@ class DatamanagementRepo (
 
 
         jdbcTemplate.update(preparedStatementCreator, key)
-
-        return key.getKey()!!.toLong()
+        val newId = (key.getKeyList().get(0).get("id") as Integer).toLong()
+        return newId
     }
 
     /**
@@ -357,7 +350,6 @@ class DatamanagementRepo (
     fun insertComplexInputAsValue(jobId: Long, wpsIdentifier: String, complexInputConstraint: ComplexInputConstraint): ComplexInputAsValue {
         val sqlInsert = """
             insert into complex_inputs_as_values (job_id, wps_identifier, input_value, mime_type, xmlschema, encoding) values (?, ?, ?, ?, ?, ?)
-            returning id
         """.trimIndent()
 
         val key = GeneratedKeyHolder()
@@ -375,7 +367,7 @@ class DatamanagementRepo (
 
         jdbcTemplate.update(preparedStatementCreator, key)
 
-        val newId = key.getKey()!!.toLong()
+        val newId = (key.getKeyList().get(0).get("id") as Integer).toLong()
 
         return ComplexInputAsValue(newId, jobId, wpsIdentifier, complexInputConstraint.inputValue!!, complexInputConstraint.mimeType, complexInputConstraint.xmlschema, complexInputConstraint.encoding)
 
@@ -419,8 +411,8 @@ class DatamanagementRepo (
     /**
      * Insert a complex output data in the database.
      */
-    fun insertComplexOutput (jobId: Long, wpsIdentifier: String, link: String, mimeType: String, xmlschema: String, encoding: String) {
-        complexOutputRepo.persist(ComplexOutput(null, jobId, wpsIdentifier, link, mimeType, xmlschema, encoding))
+    fun insertComplexOutput (jobId: Long, wpsIdentifier: String, link: String, mimeType: String, xmlschema: String, encoding: String): ComplexOutput {
+        return complexOutputRepo.persist(ComplexOutput(null, jobId, wpsIdentifier, link, mimeType, xmlschema, encoding))
     }
 
     fun findLiteralInputsForComplexOutput (complexInputConstraint: ComplexInputConstraint, wpsProcessIdentifier: String, wpsInputIdentifier: String): List<LiteralInput> {

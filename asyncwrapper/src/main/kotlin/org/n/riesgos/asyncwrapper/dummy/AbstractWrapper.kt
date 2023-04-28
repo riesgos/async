@@ -1,17 +1,15 @@
 package org.n.riesgos.asyncwrapper.dummy
 
 import io.minio.errors.ErrorResponseException
-import io.minio.errors.InternalException
 import io.minio.errors.InvalidResponseException
-import io.minio.errors.ServerException
 import io.minio.errors.XmlParserException
-import org.json.JSONObject
 import org.n.riesgos.asyncwrapper.config.FilestorageConfig
 import org.n.riesgos.asyncwrapper.config.WPSConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.datamanagement.DatamanagementRepo
 import org.n.riesgos.asyncwrapper.datamanagement.models.*
-import org.n.riesgos.asyncwrapper.datamanagement.utils.getStringOrDefault
+import org.n.riesgos.asyncwrapper.dummy.utils.HexUtils
+import org.n.riesgos.asyncwrapper.dummy.utils.OrderConstraintUtils
 import org.n.riesgos.asyncwrapper.filestorage.FileStorage
 import org.n.riesgos.asyncwrapper.process.wps.InputMapper
 import org.n.riesgos.asyncwrapper.process.wps.OutputMapper
@@ -124,81 +122,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
      * Parse the constraints.
      */
     private fun getOrderConstraints(orderId: Long): ParsedConstraintsResult ? {
-        val jsonObject = datamanagementRepo().orderConstraints(orderId)
-        if (jsonObject == null) {
-            return null
-        }
-        val wrapperName = getWrapperName()
-        if (!jsonObject.has(wrapperName)) {
-            return OrderConstraintsResult(HashMap(), HashMap(), HashMap())
-        }
-        val wrapperRawConstraints = jsonObject.getJSONObject(wrapperName)
-
-        if (wrapperRawConstraints.has("job_id")) {
-            val jobId = wrapperRawConstraints.getLong("job_id")
-            return JobIdConstraintResult(jobId)
-        }
-
-        val literalConstraints = HashMap<String, MutableList<String>>()
-        val complexConstraints = HashMap<String, MutableList<ComplexInputConstraint>>()
-        val bboxConstraints = HashMap<String, MutableList<BBoxInputConstraint>>()
-
-        if (wrapperRawConstraints.has("literal_inputs")) {
-            val literalInputConstraints = wrapperRawConstraints.getJSONObject("literal_inputs")
-            for (key in literalInputConstraints.keySet()) {
-                val constraintArray = literalInputConstraints.getJSONArray(key)
-                for (constraintValue in constraintArray) {
-                    val existingList = literalConstraints.getOrDefault(key, ArrayList())
-                    existingList.add(constraintValue as String)
-                    literalConstraints.put(key, existingList)
-                    LOGGER.info("Added literal input constraint for " + wrapperName + " " + key + ": " + constraintValue.toString())
-                }
-            }
-        }
-        if (wrapperRawConstraints.has("complex_inputs")) {
-            val complexInputConstraints = wrapperRawConstraints.getJSONObject("complex_inputs")
-            for (key in complexInputConstraints.keySet()) {
-                val constraintArray = complexInputConstraints.getJSONArray(key)
-                for (constraintValue in constraintArray) {
-                    val constraintObject = constraintValue as JSONObject
-                    val existingList = complexConstraints.getOrDefault(key, ArrayList())
-                    existingList.add(
-                        ComplexInputConstraint(
-                            constraintObject.getStringOrDefault("link", null),
-                            constraintObject.getStringOrDefault("input_value", null),
-                            constraintObject.getString("mime_type"),
-                            constraintObject.getString("xmlschema"),
-                            constraintObject.getString("encoding")
-                        )
-                    )
-                    complexConstraints.put(key, existingList)
-                    LOGGER.info("Added complex input constraint for " + wrapperName + " " + key)
-                }
-            }
-        }
-        if (wrapperRawConstraints.has("bbox_inputs")) {
-            val bboxInputConstraints = wrapperRawConstraints.getJSONObject("bbox_inputs")
-            for (key in bboxInputConstraints.keySet()) {
-                val constraintArray = bboxInputConstraints.getJSONArray(key)
-                for (constraintValue in constraintArray) {
-                    val constraintObject = constraintValue as JSONObject
-                    val existingList = bboxConstraints.getOrDefault(key, ArrayList())
-                    existingList.add(
-                            BBoxInputConstraint(
-                                    constraintObject.getDouble("lower_corner_x"),
-                                    constraintObject.getDouble("lower_corner_y"),
-                                    constraintObject.getDouble("upper_corner_x"),
-                                    constraintObject.getDouble("upper_corner_y"),
-                                    constraintObject.getString("crs")
-                            )
-                    )
-                    bboxConstraints.put(key, existingList)
-                    LOGGER.info("Added bbox input constraint for " + wrapperName + " " + key)
-                }
-            }
-        }
-
-        return OrderConstraintsResult(literalConstraints, complexConstraints, bboxConstraints)
+        return OrderConstraintUtils(datamanagementRepo()).getOrderConstraints(orderId, getWrapperName(), LOGGER::info)
     }
 
 
@@ -234,11 +158,12 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
      */
     private fun fillConstraintsAndRun(orderConstraints: OrderConstraintsResult, orderId: Long) {
         LOGGER.info("Define the literal constraints for the jobs")
-        val filledLiteralConstraints = mergeConstraintsWithDefaults(orderConstraints.literalConstraints, getDefaultLiteralConstraints())
+        val orderConstraintUtils = OrderConstraintUtils(datamanagementRepo())
+        val filledLiteralConstraints = orderConstraintUtils.mergeConstraintsWithDefaults(orderConstraints.literalConstraints, getDefaultLiteralConstraints())
         LOGGER.info("Define the complex constraints for the jobs")
-        val filledComplexConstraints = mergeConstraintsWithDefaults(orderConstraints.complexConstraints, getDefaultComplexConstraints(orderId))
+        val filledComplexConstraints = orderConstraintUtils.mergeConstraintsWithDefaults(orderConstraints.complexConstraints, getDefaultComplexConstraints(orderId))
         LOGGER.info("Define the bbox constraints for the jobs")
-        val filledBBoxConstraints = mergeConstraintsWithDefaults(orderConstraints.bboxConstraints, getDefaultBBoxConstraints(orderId))
+        val filledBBoxConstraints = orderConstraintUtils.mergeConstraintsWithDefaults(orderConstraints.bboxConstraints, getDefaultBBoxConstraints(orderId))
 
         var jobInputs: List<JobConstraints> = ArrayList<JobConstraints>()
         try {
@@ -394,20 +319,6 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
     }
 
     /**
-     * Helper method to merge maps of constraints.
-     */
-    private fun <T> mergeConstraintsWithDefaults (orderConstraints: Map<String, List<T>>, defaultConstraints: Map<String, List<T>>): Map<String, List<T>> {
-        val filledLiteralConstraints = HashMap<String, List<T>>()
-        for (defaultConstraintKey in defaultConstraints.keys) {
-            filledLiteralConstraints.put(defaultConstraintKey, defaultConstraints.get(defaultConstraintKey)!!)
-        }
-        for (orderConstraintKey in orderConstraints.keys) {
-            filledLiteralConstraints.put(orderConstraintKey, orderConstraints.get(orderConstraintKey)!!)
-        }
-        return filledLiteralConstraints
-    }
-
-    /**
      * Helper method to make sure that we stored the file for a url on the file
      * storage.
      *
@@ -433,7 +344,8 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         // that we have the very same content.
         // For creating the checksum, we must fetch the content...
         val content = fetchContent(originalLink)
-        val checksum = computeChecksum(content)
+        // We use uppercase to stay compatible with data that we already have.
+        val checksum = HexUtils().sha1(content, true)
         val possiblyStoredLinks = storedLinkRepo.findByOriginalLinkAndChecksum(originalLink, checksum)
         if (!possiblyStoredLinks.isEmpty()) {
             return possiblyStoredLinks.get(0).storedLink
@@ -478,19 +390,6 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         }
 
         return response.body()
-    }
-
-    /**
-     * Helper function to compute a checksum for the file content.
-     */
-    private fun computeChecksum(content: ByteArray): String {
-        val digest = MessageDigest.getInstance("SHA-1")
-        val hashed = digest.digest(content)
-        val stringBuilder = StringBuilder()
-        for (b in hashed) {
-            stringBuilder.append(String.format("%02X", b))
-        }
-        return stringBuilder.toString()
     }
 
     /**
