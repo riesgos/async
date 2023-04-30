@@ -1,6 +1,5 @@
 <div class="box orderFormContainer">
     <h4>Order-form (pre-calculated)</h4>
-    <app-collapsable>
         <form [formGroup]="orderForm">
             <div style="margin-left: 2%">
                 <div *ngFor="let entry of formEntries$ | async" class="selectInput">
@@ -14,5 +13,4 @@
                 <button (click)="submit()">Submit as order</button> <button (click)="download()">Download as json</button>
             </div>
         </form>
-    </app-collapsable>
 </div>
