@@ -176,8 +176,10 @@ export class PrecalcDataService {
      * If `value === undefined`, then filter for `key` is removed again.
      */
     filter(key: string, value: string | undefined) {
-        if (value === undefined || value === "undefined") {
+        if (value === undefined || value === "undefined" || value === "") {
             this.filters.delete(key);
+            this.filters.delete(key + '_lower');
+            this.filters.delete(key + '_upper');
         } else {
             this.filters.set(key, value);
         }
@@ -194,7 +196,7 @@ export class PrecalcDataService {
     }
 
     private recalcAllowedIndependentParas() {
-        let newAllowedIndependentParas = this.allIndependentParas;
+        let newAllowedIndependentParas = structuredClone(this.allIndependentParas);
         for (const key of Object.keys(newAllowedIndependentParas)) {
             if (this.filters.has(key)) {
                 const filterValue = this.filters.get(key)!;
@@ -205,6 +207,7 @@ export class PrecalcDataService {
     }
 
     private recalcAllowedDependentParas() {
+
         let newAllowedDependentParaCombos = this.allDependentParaCombinations;
         for (const key of Object.keys(this.allDependentParaCombinations[0])) {
             if (this.filters.has(key)) {
@@ -212,6 +215,17 @@ export class PrecalcDataService {
                 newAllowedDependentParaCombos = newAllowedDependentParaCombos.filter(d => ("" + d[key]) === filterValue);
             }
         }
+
+        for (const [filterKey, filterValue] of this.filters.entries()) {
+            if (filterKey.includes('_lower')) {
+                const trueKey = filterKey.replace('_lower', '');
+                newAllowedDependentParaCombos = newAllowedDependentParaCombos.filter(d => +d[trueKey] >= +filterValue);
+            } else if (filterKey.includes('_upper')) {
+                const trueKey = filterKey.replace('_upper', '');
+                newAllowedDependentParaCombos = newAllowedDependentParaCombos.filter(d => +d[trueKey] <= +filterValue);
+            }
+        }
+
         this.allAllowedDependentParaCombinations = newAllowedDependentParaCombos;
     }
 
@@ -239,10 +253,11 @@ export class PrecalcDataService {
     toFormData(currentFormData: AppStateFormDatum[]): AppStateFormDatum[] {
         const formData: AppStateFormDatum[] = [];
         for (const [key, allowedValues] of Object.entries(this.formAllowedValues)) {
-            const chosenValue = currentFormData.find(d => d.key === key)?.value;
+            let chosenValue = currentFormData.find(d => d.key === key)?.value;
+            if (chosenValue === "" || chosenValue === "undefined") chosenValue = undefined;
             formData.push({
                 key: key,
-                options: allowedValues,
+                options: allowedValues.map(v => ""+v),
                 value: chosenValue
             });
         }

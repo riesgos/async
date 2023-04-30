@@ -3,7 +3,8 @@
         <form [formGroup]="orderForm">
             <div style="margin-left: 2%">
                 <div *ngFor="let entry of formEntries$ | async" class="selectInput">
-                    <app-precalc-form-entry [formGroup]="orderForm" [entry]="entry"></app-precalc-form-entry>
+                    <app-precalc-form-entry *ngIf="entry.value || entry.options.length == 30 || entry.options.length < 30" [formGroup]="orderForm" [entry]="entry"></app-precalc-form-entry>
+                    <app-precalc-form-range *ngIf="entry.options.length > 30" [formGroup]="orderForm" [entry]="entry"></app-precalc-form-range>
                 </div>
             </div>
             <div class="combosAvailable" *ngIf="{value: combosAvailable$ | async} as combosAvailable">

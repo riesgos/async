@@ -23,6 +23,7 @@ import { TabComponent } from './components/tabs/tab.component';
 import { LogsComponent } from './views/logs/logs.component';
 import { PrecalcFormComponent } from './components/precalc-form/precalc-form.component';
 import { PrecalcFormEntryComponent } from './components/precalc-form/precalc-form-entry/precalc-form-entry.component';
+import { PrecalcFormRangeComponent } from './components/precalc-form/precalc-form-range/precalc-form-range.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { PrecalcFormEntryComponent } from './components/precalc-form/precalc-for
     TabComponent,
     LogsComponent,
     PrecalcFormComponent,
-    PrecalcFormEntryComponent
+    PrecalcFormEntryComponent,
+    PrecalcFormRangeComponent
   ],
   imports: [
     BrowserModule,

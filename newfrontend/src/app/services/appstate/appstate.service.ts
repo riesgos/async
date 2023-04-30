@@ -255,7 +255,11 @@ export class AppStateService {
             this.precalc.filter(action.payload.key, action.payload.value);
             currentState.formData = this.precalc.toFormData(currentState.formData);
             const selectedDatum = currentState.formData.find(d => d.key === action.payload.key);
-            if (selectedDatum) selectedDatum.value = action.payload.value;
+            if (selectedDatum) {
+                let newValue: string | undefined = action.payload.value;
+                if (newValue === "" || newValue === "undefined") newValue = undefined;
+                selectedDatum.value = newValue;
+            }
             currentState.combinationsAvailable = this.precalc.countAvailable();
         }
         else if (action.type === 'formSubmit') {}
