@@ -1,0 +1,9 @@
+{
+    "data": {
+        "exposureModel": ["ValpCVTBayesian", "ValpCommuna", "ValpRegularOriginal", "ValpRegularGrid"],
+        "vulnerabilityEq": ["SARA_v1.0"],
+        "vulnerabilityTs": ["Medina_2019", "SUPPASRI2013_v2.0"],
+        "gmpe": ["MontalvaEtAl2016SInter", "GhofraniAtkinson2014", "AbrahamsonEtAl2015SInter", "YoungsEtAl1997SInterNSHMP2008"],
+        "vsgrid": ["USGSSlopeBasedTopographyProxy", "FromSeismogeotechnicsMicrozonation"]
+    }
+}

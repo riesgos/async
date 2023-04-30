@@ -1,0 +1,17 @@
+<div class="box orderFormContainer">
+    <h4>Order-form (pre-calculated)</h4>
+        <form [formGroup]="orderForm">
+            <div style="margin-left: 2%">
+                <div *ngFor="let entry of formEntries$ | async" class="selectInput">
+                    <app-precalc-form-entry *ngIf="entry.value || entry.options.length == 30 || entry.options.length < 30" [formGroup]="orderForm" [entry]="entry"></app-precalc-form-entry>
+                    <app-precalc-form-range *ngIf="entry.options.length > 30" [formGroup]="orderForm" [entry]="entry"></app-precalc-form-range>
+                </div>
+            </div>
+            <div class="combosAvailable" *ngIf="{value: combosAvailable$ | async} as combosAvailable">
+                <p>{{combosAvailable.value}} parameter-sets match your selection.</p>
+            </div>
+            <div class="buttonContainer">
+                <button (click)="submit()">Submit as order</button> <button (click)="download()">Download as json</button>
+            </div>
+        </form>
+</div>

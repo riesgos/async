@@ -4,24 +4,26 @@ import { AppStateService } from 'src/app/services/appstate/appstate.service';
 import { LogsService } from 'src/app/services/logs/logs.service';
 
 interface Log {
-    "db": string[],
-    "backend": string[],
-    "modelprop_wrapper": string[],
-    "assetmaster_wrapper": string[],
-    "shakyground_wrapper": string[],
-    "shakemap_resampler_wrapper": string[],
-    "deus_wrapper": string[],
+  "assetmaster_wrapper": string[],
+  "modelprop_eq_wrapper": string[],
+  "shakyground_wrapper": string[],
+  "shakemap_resampler_wrapper": string[],
+  "deus_eq_wrapper": string[],
+  "tsunami_wrapper": string[],
+  "modelprop_ts_wrapper": string[],
+  "deus_ts_wrapper": string[],
 };
 
 function createEmptyLog(): Log {
   const emptyLog: Log = {
-    "db": [],
-    "backend": [],
-    "modelprop_wrapper": [],
     "assetmaster_wrapper": [],
+    "modelprop_eq_wrapper": [],
     "shakyground_wrapper": [],
     "shakemap_resampler_wrapper": [],
-    "deus_wrapper": [],
+    "deus_eq_wrapper": [],
+    "tsunami_wrapper": [],
+    "modelprop_ts_wrapper": [],
+    "deus_ts_wrapper": [],
   };
   return emptyLog;
 }
@@ -35,7 +37,6 @@ function createEmptyLog(): Log {
 export class LogsComponent implements OnInit {
 
   public logs: Log = createEmptyLog();
-
 
   constructor(private stateSvc: AppStateService, private logsSvc: LogsService) { }
 
