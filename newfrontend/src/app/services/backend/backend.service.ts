@@ -30,7 +30,7 @@ export class BackendService {
           logConnection$ = this.logs.connect(email, password);
         }
 
-        return forkJoin([of(results), queueConnection$]); // , logConnection$]);
+        return forkJoin([of(results), queueConnection$, logConnection$]);
       }),
       
       map(([dbConnection, queueConnection]) => {

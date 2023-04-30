@@ -3,7 +3,7 @@
 <h4>Logs</h4>
 <app-tabs style="margin-bottom: 10rem; min-height: 10rem;">
 
-    <app-tab *ngFor="let logItem of logs | keyvalue" [tabTitle]="logItem.key">
+    <app-tab *ngFor="let logItem of logs | keyvalue; let i = index" [tabTitle]="logItem.key" [active]="i === 0 ? true : false">
         <table class="box">
             <tr *ngFor="let logEntry of logItem.value; let i = index">
                 <td>{{ logItem.value.length - i }}</td>
