@@ -6,6 +6,7 @@ import { UserSelfInformation } from "src/app/backend_api/models";
 import { allTrue } from "../../utils/utils";
 import { LocalstoreService } from "../localstore/localstore";
 import { PrecalcDataService } from "../precalcData/precalc-data.service";
+import { HttpClient } from "@angular/common/http";
 
 
 
@@ -35,6 +36,9 @@ const initialState: AppState = {
 
 export interface AppStart {
     type: 'appStart'
+}
+export interface appStartSuccess {
+    type: 'appStartSuccess'
 }
 
 export interface LoginAction {
@@ -107,7 +111,7 @@ export interface GetFromLocalStoreResultAction {
     payload: { [key: string]: string | null }
 }
 
-export type Action = AppStart |
+export type Action = AppStart | appStartSuccess |
                      LoginAction | LoginSuccessAction | LoginFailureAction |
                      FormSelectAction | FormSubmitAction |
                      RegisterAction | RegisterSuccessAction | RegisterFailureAction |
@@ -143,6 +147,10 @@ export class AppStateService {
                 type: 'getFromLocalStoreResult',
                 payload: localData
             });
+
+            this.precalc.init().subscribe(success => this.action({
+                type: 'appStartSuccess'
+            }));
         }
 
 
@@ -221,7 +229,7 @@ export class AppStateService {
 
     private reduceState(action: Action, currentState: AppState): AppState {
 
-        if (action.type === 'appStart') {
+        if (action.type === 'appStartSuccess') {
             this.precalc.reset();
             currentState.formData = this.precalc.toFormData(currentState.formData);
             currentState.combinationsAvailable = this.precalc.countAvailable();
