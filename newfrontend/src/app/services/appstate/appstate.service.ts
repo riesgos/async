@@ -6,7 +6,7 @@ import { UserSelfInformation } from "src/app/backend_api/models";
 import { allTrue } from "../../utils/utils";
 import { LocalstoreService } from "../localstore/localstore";
 import { PrecalcDataService } from "../precalcData/precalc-data.service";
-import { HttpClient } from "@angular/common/http";
+import { LogsService } from "../logs/logs.service";
 
 
 
@@ -127,7 +127,11 @@ export class AppStateService {
 
     public state = new BehaviorSubject<AppState>(initialState);
 
-    constructor(private backend: BackendService, private local: LocalstoreService, private precalc: PrecalcDataService) {}
+    constructor(
+        private backend: BackendService,
+        private local: LocalstoreService,
+        private precalc: PrecalcDataService
+    ) {}
 
     public action(action: Action) {
         this.fireOffSideEffects(action);
