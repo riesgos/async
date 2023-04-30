@@ -38,7 +38,6 @@ class StoredLinkRepo (val jdbcTemplate: JdbcTemplate) {
             val sqlInsert = """
                 insert into stored_links (original_link, checksum, stored_link)
                 values (?, ?, ?)
-                returning id
             """.trimIndent()
 
             val key = GeneratedKeyHolder()
@@ -54,7 +53,7 @@ class StoredLinkRepo (val jdbcTemplate: JdbcTemplate) {
 
             jdbcTemplate.update(preparedStatementCreator, key)
 
-            val newId = key.getKey()!!.toLong()
+            val newId = (key.getKeyList().get(0).get("id") as Integer).toLong()
 
             return StoredLink(newId, storedLink.originalLink, storedLink.checksum, storedLink.storedLink)
         } else {
