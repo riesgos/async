@@ -146,37 +146,29 @@ type DataPoint = {[key: string]: string};
 })
 export class PrecalcDataService {
 
-    private allData: DataPoint[] = [];
-    private allowedData: DataPoint[] = [];
-    private allowedValues: {[key: string]: string[] } = {};
+    private allIndependentParas: {[key: string]: string[]} = {};
+    private allAllowedIndependentParas: {[key: string]: string[]} = {};
+
+    private allDependentParaCombinations: DataPoint[] = [];
+    private allAllowedDependentParaCombinations: DataPoint[] = [];
+    
     private filters: Map<string, string> = new Map<string, string>();
-    private dataPointKeys: string[] = [];
+
+    private formAllowedValues: {[key: string]: string[] } = {};
 
     constructor(private http: HttpClient) {}
 
     init(): Observable<boolean> {
         const dependentParameters$ = this.http.get<{ data: DataPoint[] }>(`assets/dependent_parameters.json`);
-        const independentParameters$ = this.http.get<{ data: any[] }>(`assets/independent_parameters.json`);
+        const independentParameters$ = this.http.get<{ data: {[key: string]: string[]} }>(`assets/independent_parameters.json`);
         return forkJoin([dependentParameters$, independentParameters$]).pipe(
             tap(([dependentParameters, independentParameters]) => {
-                this.allData = dependentParameters.data;
-                this.dataPointKeys = Object.keys(this.allData[0]);
+                this.allIndependentParas = independentParameters.data;
+                this.allDependentParaCombinations = dependentParameters.data;
                 this.reset();
             }),
             map(_ => true)
         );
-    }
-
-    reset() {
-        this.filters = new Map();
-        this.allowedData = this.allData;
-        for (const key of this.dataPointKeys) {
-            this.allowedValues[key] = unique([undefined, ...this.allowedData.map(dp => dp[key])]);
-        }
-    }
-
-    countAvailable(): number {
-        return this.allowedData.length; // @TODO: times nr of free paras
     }
 
     /**
@@ -189,24 +181,64 @@ export class PrecalcDataService {
         } else {
             this.filters.set(key, value);
         }
-        let newAllowedData = this.allData;
-        for (const [key, value] of this.filters.entries()) {
-            newAllowedData = newAllowedData.filter(d => ("" + d[key]) === value);
+        this.recalcAllowedIndependentParas();
+        this.recalcAllowedDependentParas();
+        this.recalcFormAllowedValues();
+    }
+
+    reset() {
+        this.filters = new Map();
+        this.recalcAllowedIndependentParas();
+        this.recalcAllowedDependentParas();
+        this.recalcFormAllowedValues();
+    }
+
+    private recalcAllowedIndependentParas() {
+        let newAllowedIndependentParas = this.allIndependentParas;
+        for (const key of Object.keys(newAllowedIndependentParas)) {
+            if (this.filters.has(key)) {
+                const filterValue = this.filters.get(key)!;
+                newAllowedIndependentParas[key] = [filterValue];
+            }
         }
-        this.allowedData = newAllowedData;
-        for (const key of this.dataPointKeys) {
-            this.allowedValues[key] = unique([undefined, ...this.allowedData.map(dp => dp[key])]);
+        this.allAllowedIndependentParas = newAllowedIndependentParas;
+    }
+
+    private recalcAllowedDependentParas() {
+        let newAllowedDependentParaCombos = this.allDependentParaCombinations;
+        for (const key of Object.keys(this.allDependentParaCombinations[0])) {
+            if (this.filters.has(key)) {
+                const filterValue = this.filters.get(key);
+                newAllowedDependentParaCombos = newAllowedDependentParaCombos.filter(d => ("" + d[key]) === filterValue);
+            }
+        }
+        this.allAllowedDependentParaCombinations = newAllowedDependentParaCombos;
+    }
+
+    private recalcFormAllowedValues() {
+        for (const [key, options] of Object.entries(this.allAllowedIndependentParas)) {
+            this.formAllowedValues[key] = options;
+        }
+        for (const key of Object.keys(this.allAllowedDependentParaCombinations[0])) {
+            this.formAllowedValues[key] = unique(this.allAllowedDependentParaCombinations.map(dp => dp[key]));
         }
     }
+
+    countAvailable(): number {
+        let combinations = this.allAllowedDependentParaCombinations.length;
+        for (const [key, values] of Object.entries(this.allAllowedIndependentParas)) {
+            combinations *= values.length;
+        }
+        return combinations;
+    }
+
 
     /**
      * available data to form-template
      */
     toFormData(currentFormData: AppStateFormDatum[]): AppStateFormDatum[] {
         const formData: AppStateFormDatum[] = [];
-        console.log(this.allowedValues)
-        for (const key of this.dataPointKeys) {
-            const allowedValues = this.allowedValues[key];
+        for (const [key, allowedValues] of Object.entries(this.formAllowedValues)) {
             const chosenValue = currentFormData.find(d => d.key === key)?.value;
             formData.push({
                 key: key,
@@ -220,7 +252,7 @@ export class PrecalcDataService {
 
     toOrders(): UserOrder[] {
         const orders: UserOrder[] = [];
-        for (const dp of this.allowedData) {
+        for (const dp of this.allAllowedDependentParaCombinations) {
             orders.push(this.toOrder(dp));
         }
         return orders;
@@ -322,12 +354,10 @@ export class PrecalcDataService {
 
 
 function unique(data: any[]): any[] {
-    console.log('unique start ...')
     const u = new Set();
     for (const entry of data) {
         u.add(entry);
     }
     const out = [...u.values()];
-    console.log('... unique end')
     return out;
 }
