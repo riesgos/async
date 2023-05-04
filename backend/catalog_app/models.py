@@ -84,6 +84,7 @@ class Job(Base):
     process = relationship("Process", back_populates="jobs")
     status = Column(String(16))
     created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
+    exception_report = Column(Text, nullable=True)
 
     order_job_refs = relationship("OrderJobRef", back_populates="job")
     complex_outputs = relationship("ComplexOutput", back_populates="job")

@@ -23,6 +23,7 @@ def test_read_job_list_one(session, client):
         "id": job.id,
         "process_id": process.id,
         "status": "pending",
+        "exception_report": None,
     }
 
     assert len(response.json()) == 1
@@ -46,6 +47,7 @@ def test_read_job_list_filter_process_id(session, client):
         "id": job1.id,
         "process_id": process1.id,
         "status": "pending",
+        "exception_report": None,
     }
 
     assert len(response.json()) == 1
@@ -58,7 +60,7 @@ def test_read_job_list_filter_status(session, client):
     process1 = Process(
         wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="shakyground"
     )
-    job1 = Job(process=process1, status="running")
+    job1 = Job(process=process1, status="running", exception_report="Stacktrace...")
     job2 = Job(process=process1, status="pending")
     session.add_all([process1, job1, job2])
     session.commit()
@@ -68,6 +70,7 @@ def test_read_job_list_filter_status(session, client):
         "id": job1.id,
         "process_id": process1.id,
         "status": "running",
+        "exception_report": "Stacktrace...",
     }
 
     assert len(response.json()) == 1
@@ -97,6 +100,7 @@ def test_read_job_list_filter_order_id(session, client):
         "id": job1.id,
         "process_id": process1.id,
         "status": "running",
+        "exception_report": None,
     }
 
     assert len(response.json()) == 1
@@ -140,6 +144,7 @@ def test_read_job_detail_one(session, client):
         "id": job.id,
         "process_id": process.id,
         "status": "pending",
+        "exception_report": None,
     }
     for key, value in expected.items():
         assert response.json()[key] == value

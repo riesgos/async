@@ -90,6 +90,7 @@ class ComplexOutputAsInput(ComplexOutputAsInputBase):
 class JobBase(BaseModel):
     process_id: int
     status: str
+    exception_report: Optional[str]
 
 
 class Job(JobBase):
