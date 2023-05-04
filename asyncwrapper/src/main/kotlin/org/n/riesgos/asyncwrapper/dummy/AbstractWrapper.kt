@@ -20,6 +20,8 @@ import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
 import org.n.riesgos.asyncwrapper.utils.retry
 import org.n52.geoprocessing.wps.client.WPSClientException
 import java.io.IOException
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -312,7 +314,14 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
             LOGGER.info("WPS call failed")
             LOGGER.info("WPS call failed because of: ${e.message}")
             e.printStackTrace()
+
             datamanagementRepo().updateJobStatus(jobId, WPS_JOB_STATUS_FAILED)
+
+            val sw = StringWriter()
+            val pw = PrintWriter(sw)
+            e.printStackTrace(pw)
+            val exceptionReport = sw.toString()
+            datamanagementRepo().setJobExceptionReport(jobId, exceptionReport)
             // => without the re-raise we would be able to run the loop & don't
             // have to stop when one call has an exception from the WPS itself.
         }

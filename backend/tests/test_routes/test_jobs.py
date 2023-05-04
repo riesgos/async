@@ -19,13 +19,17 @@ def test_read_job_list_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/jobs")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": job.id,
-            "process_id": process.id,
-            "status": "pending",
-        }
-    ]
+    expected = {
+        "id": job.id,
+        "process_id": process.id,
+        "status": "pending",
+        "exception_report": None,
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_job_list_filter_process_id(session, client):
@@ -39,32 +43,40 @@ def test_read_job_list_filter_process_id(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/jobs?process_id={process1.id}")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": job1.id,
-            "process_id": process1.id,
-            "status": "pending",
-        }
-    ]
+    expected = {
+        "id": job1.id,
+        "process_id": process1.id,
+        "status": "pending",
+        "exception_report": None,
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_job_list_filter_status(session, client):
     process1 = Process(
         wps_url="https://rz-vm140.gfz-potsdam.de", wps_identifier="shakyground"
     )
-    job1 = Job(process=process1, status="running")
+    job1 = Job(process=process1, status="running", exception_report="Stacktrace...")
     job2 = Job(process=process1, status="pending")
     session.add_all([process1, job1, job2])
     session.commit()
     response = client.get(f"{config.root_path}/jobs?status=running")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": job1.id,
-            "process_id": process1.id,
-            "status": "running",
-        }
-    ]
+    expected = {
+        "id": job1.id,
+        "process_id": process1.id,
+        "status": "running",
+        "exception_report": "Stacktrace...",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_job_list_filter_order_id(session, client):
@@ -84,13 +96,17 @@ def test_read_job_list_filter_order_id(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/jobs?order_id={order1.id}")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": job1.id,
-            "process_id": process1.id,
-            "status": "running",
-        }
-    ]
+    expected = {
+        "id": job1.id,
+        "process_id": process1.id,
+        "status": "running",
+        "exception_report": None,
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_job_list_101(session, client):
@@ -124,11 +140,15 @@ def test_read_job_detail_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/jobs/{job.id}")
     assert response.status_code == 200
-    assert response.json() == {
+    expected = {
         "id": job.id,
         "process_id": process.id,
         "status": "pending",
+        "exception_report": None,
     }
+    for key, value in expected.items():
+        assert response.json()[key] == value
+    assert "created_at" in response.json().keys()
 
 
 def test_read_job_detail_none(client):

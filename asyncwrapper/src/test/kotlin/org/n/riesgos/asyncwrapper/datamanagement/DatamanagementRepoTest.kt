@@ -2,12 +2,10 @@ package org.n.riesgos.asyncwrapper.datamanagement
 
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.n.riesgos.asyncwrapper.datamanagement.mapper.*
 import org.n.riesgos.asyncwrapper.datamanagement.models.*
 import org.n.riesgos.asyncwrapper.datamanagement.repos.*
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.annotation.DirtiesContext
 import java.util.*
 
@@ -1000,6 +998,50 @@ class DatamanagementRepoTest {
 
         val jobStatus = template.queryForObject("select status from jobs where id = 1", String::class.javaObjectType)
         assertEquals("failed", jobStatus)
+    }
+
+    @Test
+    fun testSetJobExceptionReport() {
+        val template = H2DbFixture().getJdbcTemplate()
+        val repo = DatamanagementRepo(
+                template,
+                LiteralInputRepo(template),
+                ComplexInputRepo(template),
+                ComplexOutputAsInputRepo(template),
+                ComplexInputAsValueRepo(template),
+                BboxInputRepo(template),
+                OrderJobRefRepo(template),
+                ComplexOutputRepo(template),
+                OrderRepo(template),
+                StoredLinkRepo(template)
+        )
+
+        val gfzWpsUrl = "https://rz-vm140.gfz-potsdam.de/wps"
+        val assetmasterProcessIdentifier = "org.n52.gfz.riesgos.algorithm.AssetmasterProcess"
+        val deusProcessIdentifier = "org.n52.gfz.riesgos.algorithm.DeusProcess"
+
+        template.execute(
+                """
+                    insert into processes (id, wps_url, wps_identifier)
+                    values (1, '${gfzWpsUrl}', '${assetmasterProcessIdentifier}')
+                """.trimIndent()
+        )
+        template.execute(
+                """
+                    insert into processes (id, wps_url, wps_identifier)
+                    values (2, '${gfzWpsUrl}', '${deusProcessIdentifier}')
+                """.trimIndent()
+        )
+        template.execute(
+                """
+                    insert into jobs (id, process_id, status)
+                    values (1, 1, 'pending')
+                """.trimIndent()
+        )
+        repo.setJobExceptionReport(1L, "Something bad happened")
+
+        val exceptionReport = template.queryForObject("select exception_report from jobs where id = 1", String::class.javaObjectType)
+        assertEquals("Something bad happened", exceptionReport)
     }
 
     @Test

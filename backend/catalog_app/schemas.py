@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -15,6 +16,7 @@ class BboxInputBase(BaseModel):
 
 class BboxInput(BboxInputBase):
     id: int
+    created_at: datetime.datetime
 
     class Config:
         orm_mode = True
@@ -31,6 +33,7 @@ class ComplexInputBase(BaseModel):
 
 class ComplexInput(ComplexInputBase):
     id: int
+    created_at: datetime.datetime
 
     class Config:
         orm_mode = True
@@ -47,6 +50,7 @@ class ComplexInputAsValueBase(BaseModel):
 
 class ComplexInputAsValue(ComplexInputAsValueBase):
     id: int
+    created_at: datetime.datetime
 
     class Config:
         orm_mode = True
@@ -63,6 +67,7 @@ class ComplexOutputBase(BaseModel):
 
 class ComplexOutput(ComplexOutputBase):
     id: int
+    created_at: datetime.datetime
 
     class Config:
         orm_mode = True
@@ -76,6 +81,7 @@ class ComplexOutputAsInputBase(BaseModel):
 
 class ComplexOutputAsInput(ComplexOutputAsInputBase):
     id: int
+    created_at: datetime.datetime
 
     class Config:
         orm_mode = True
@@ -84,10 +90,12 @@ class ComplexOutputAsInput(ComplexOutputAsInputBase):
 class JobBase(BaseModel):
     process_id: int
     status: str
+    exception_report: Optional[str]
 
 
 class Job(JobBase):
     id: int
+    created_at: datetime.datetime
 
     class Config:
         orm_mode = True
@@ -101,6 +109,7 @@ class LiteralInputBase(BaseModel):
 
 class LiteralInput(LiteralInputBase):
     id: int
+    created_at: datetime.datetime
 
     class Config:
         orm_mode = True
@@ -113,6 +122,7 @@ class OrderBase(BaseModel):
 
 class Order(OrderBase):
     id: int
+    created_at: datetime.datetime
 
     class Config:
         orm_mode = True
@@ -129,6 +139,7 @@ class OrderJobRefBase(BaseModel):
 
 class OrderJobRef(OrderJobRefBase):
     id: int
+    created_at: datetime.datetime
 
     class Config:
         orm_mode = True
@@ -141,6 +152,7 @@ class ProcessBase(BaseModel):
 
 class Process(ProcessBase):
     id: int
+    created_at: datetime.datetime
 
     class Config:
         orm_mode = True

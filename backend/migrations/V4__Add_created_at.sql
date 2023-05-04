@@ -1,0 +1,12 @@
+alter table processes add column created_at timestamp with time zone not null default now();
+alter table users add column created_at timestamp with time zone not null default now();
+alter table orders add column created_at timestamp with time zone not null default now();
+alter table jobs add column created_at timestamp with time zone not null default now();
+alter table order_job_refs add column created_at timestamp with time zone not null default now();
+alter table complex_outputs add column created_at timestamp with time zone not null default now();
+alter table complex_outputs_as_inputs add column created_at timestamp with time zone not null default now();
+alter table complex_inputs add column created_at timestamp with time zone not null default now();
+alter table complex_inputs_as_values add column created_at timestamp with time zone not null default now();
+alter table literal_inputs add column created_at timestamp with time zone not null default now();
+alter table bbox_inputs add column created_at timestamp with time zone not null default now();
+alter table stored_links add column created_at timestamp with time zone not null default now();

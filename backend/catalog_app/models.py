@@ -1,11 +1,23 @@
-import binascii
-import os
-import hashlib
 import base64
-from sqlalchemy import JSON, Boolean, Column, Float, ForeignKey, Integer, String, Text
+import binascii
+import hashlib
+import os
+
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+)
 from sqlalchemy.orm import relationship
 
 from .database import Base
+from .utils import utc_now
 
 
 class Process(Base):
@@ -13,6 +25,7 @@ class Process(Base):
     id = Column(Integer, primary_key=True)
     wps_url = Column(String(256))
     wps_identifier = Column(String(256))
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
     jobs = relationship("Job", back_populates="process")
 
 
@@ -23,6 +36,7 @@ class User(Base):
     password_hash = Column(String(256))
     apikey = Column(String(256))
     superuser = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
     orders = relationship("Order", back_populates="user")
 
     @staticmethod
@@ -59,6 +73,7 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="orders")
     order_constraints = Column(JSON)
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
     order_job_refs = relationship("OrderJobRef", back_populates="order")
 
 
@@ -68,6 +83,8 @@ class Job(Base):
     process_id = Column(Integer, ForeignKey("processes.id"))
     process = relationship("Process", back_populates="jobs")
     status = Column(String(16))
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
+    exception_report = Column(Text, nullable=True)
 
     order_job_refs = relationship("OrderJobRef", back_populates="job")
     complex_outputs = relationship("ComplexOutput", back_populates="job")
@@ -87,6 +104,7 @@ class OrderJobRef(Base):
     order = relationship("Order", back_populates="order_job_refs")
     job_id = Column(Integer, ForeignKey("jobs.id"))
     job = relationship("Job", back_populates="order_job_refs")
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
 
 
 class ComplexOutput(Base):
@@ -99,6 +117,7 @@ class ComplexOutput(Base):
     mime_type = Column(String(64))
     xmlschema = Column(String(256))
     encoding = Column(String(16))
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
     inputs = relationship("ComplexOutputAsInput", back_populates="complex_output")
 
 
@@ -110,6 +129,7 @@ class ComplexOutputAsInput(Base):
     wps_identifier = Column(String(256))
     complex_output_id = Column(Integer, ForeignKey("complex_outputs.id"))
     complex_output = relationship("ComplexOutput", back_populates="inputs")
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
 
 
 class ComplexInput(Base):
@@ -122,6 +142,7 @@ class ComplexInput(Base):
     mime_type = Column(String(64))
     xmlschema = Column(String(256))
     encoding = Column(String(16))
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
 
 
 class ComplexInputAsValue(Base):
@@ -134,6 +155,7 @@ class ComplexInputAsValue(Base):
     mime_type = Column(String(64))
     xmlschema = Column(String(256))
     encoding = Column(String(16))
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
 
 
 class LiteralInput(Base):
@@ -143,6 +165,7 @@ class LiteralInput(Base):
     job = relationship("Job", back_populates="literal_inputs")
     wps_identifier = Column(String(256))
     input_value = Column(Text)
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)
 
 
 class BboxInput(Base):
@@ -156,3 +179,4 @@ class BboxInput(Base):
     upper_corner_x = Column(Float)
     upper_corner_y = Column(Float)
     crs = Column(String(32))
+    created_at = Column(DateTime(timezone=True), default=utc_now, nullable=False)

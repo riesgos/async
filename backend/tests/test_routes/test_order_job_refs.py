@@ -22,13 +22,16 @@ def test_read_order_job_ref_list_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/order-job-refs")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": order_job_ref.id,
-            "order_id": order.id,
-            "job_id": job.id,
-        }
-    ]
+    expected = {
+        "id": order_job_ref.id,
+        "order_id": order.id,
+        "job_id": job.id,
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_order_job_ref_list_filter_job_id(session, client):
@@ -45,13 +48,16 @@ def test_read_order_job_ref_list_filter_job_id(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/order-job-refs?job_id={job1.id}")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": order_job_ref1.id,
-            "order_id": order.id,
-            "job_id": job1.id,
-        }
-    ]
+    expected = {
+        "id": order_job_ref1.id,
+        "order_id": order.id,
+        "job_id": job1.id,
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_order_job_ref_list_filter_order_id(session, client):
@@ -70,13 +76,16 @@ def test_read_order_job_ref_list_filter_order_id(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/order-job-refs?order_id={order1.id}")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": order_job_ref1.id,
-            "order_id": order1.id,
-            "job_id": job1.id,
-        }
-    ]
+    expected = {
+        "id": order_job_ref1.id,
+        "order_id": order1.id,
+        "job_id": job1.id,
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_order_job_ref_list_101(session, client):
@@ -113,11 +122,14 @@ def test_read_order_job_ref_detail_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/order-job-refs/{order_job_ref.id}")
     assert response.status_code == 200
-    assert response.json() == {
+    expected = {
         "id": order_job_ref.id,
         "order_id": order.id,
         "job_id": job.id,
     }
+    for key, value in expected.items():
+        assert response.json()[key] == value
+    assert "created_at" in response.json().keys()
 
 
 def test_read_order_job_ref_detail_none(client):

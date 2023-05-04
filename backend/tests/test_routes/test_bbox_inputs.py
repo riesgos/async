@@ -28,18 +28,20 @@ def test_read_bbox_input_list_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/bbox-inputs")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": bbox_input.id,
-            "job_id": job.id,
-            "wps_identifier": "bbox",
-            "lower_corner_x": 1.1,
-            "lower_corner_y": 52,
-            "upper_corner_x": 2.2,
-            "upper_corner_y": 53,
-            "crs": "epsg:4326",
-        }
-    ]
+    expected = {
+        "id": bbox_input.id,
+        "job_id": job.id,
+        "wps_identifier": "bbox",
+        "lower_corner_x": 1.1,
+        "lower_corner_y": 52,
+        "upper_corner_x": 2.2,
+        "upper_corner_y": 53,
+        "crs": "epsg:4326",
+    }
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_bbox_input_list_filter_wps_identifier(session, client):
@@ -69,18 +71,20 @@ def test_read_bbox_input_list_filter_wps_identifier(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/bbox-inputs?wps_identifier=bbox2")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": bbox_input2.id,
-            "job_id": job.id,
-            "wps_identifier": "bbox2",
-            "lower_corner_x": 1.1,
-            "lower_corner_y": 52,
-            "upper_corner_x": 2.2,
-            "upper_corner_y": 53,
-            "crs": "epsg:4326",
-        }
-    ]
+    assert len(response.json()) == 1
+    expected = {
+        "id": bbox_input2.id,
+        "job_id": job.id,
+        "wps_identifier": "bbox2",
+        "lower_corner_x": 1.1,
+        "lower_corner_y": 52,
+        "upper_corner_x": 2.2,
+        "upper_corner_y": 53,
+        "crs": "epsg:4326",
+    }
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_bbox_input_list_filter_process_id(session, client):
@@ -112,18 +116,20 @@ def test_read_bbox_input_list_filter_process_id(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/bbox-inputs?process_id={process2.id}")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": bbox_input2.id,
-            "job_id": job2.id,
-            "wps_identifier": "bbox2",
-            "lower_corner_x": 1.1,
-            "lower_corner_y": 52,
-            "upper_corner_x": 2.2,
-            "upper_corner_y": 53,
-            "crs": "epsg:4326",
-        }
-    ]
+    assert len(response.json()) == 1
+    expected = {
+        "id": bbox_input2.id,
+        "job_id": job2.id,
+        "wps_identifier": "bbox2",
+        "lower_corner_x": 1.1,
+        "lower_corner_y": 52,
+        "upper_corner_x": 2.2,
+        "upper_corner_y": 53,
+        "crs": "epsg:4326",
+    }
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_bbox_input_list_filter_job_id(session, client):
@@ -154,18 +160,20 @@ def test_read_bbox_input_list_filter_job_id(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/bbox-inputs?job_id={job2.id}")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": bbox_input2.id,
-            "job_id": job2.id,
-            "wps_identifier": "bbox2",
-            "lower_corner_x": 1.1,
-            "lower_corner_y": 52,
-            "upper_corner_x": 2.2,
-            "upper_corner_y": 53,
-            "crs": "epsg:4326",
-        }
-    ]
+    assert len(response.json()) == 1
+    expected = {
+        "id": bbox_input2.id,
+        "job_id": job2.id,
+        "wps_identifier": "bbox2",
+        "lower_corner_x": 1.1,
+        "lower_corner_y": 52,
+        "upper_corner_x": 2.2,
+        "upper_corner_y": 53,
+        "crs": "epsg:4326",
+    }
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_bbox_input_list_101(session, client):
@@ -217,7 +225,7 @@ def test_read_bbox_input_detail_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/bbox-inputs/{bbox_input.id}")
     assert response.status_code == 200
-    assert response.json() == {
+    expected = {
         "id": bbox_input.id,
         "job_id": job.id,
         "wps_identifier": "bbox",
@@ -227,6 +235,9 @@ def test_read_bbox_input_detail_one(session, client):
         "upper_corner_y": 53,
         "crs": "epsg:4326",
     }
+    for key, value in expected.items():
+        assert response.json()[key] == value
+    assert "created_at" in response.json().keys()
 
 
 def test_read_bbox_input_detail_none(client):
