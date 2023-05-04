@@ -17,13 +17,16 @@ def test_read_order_list_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/orders")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": order.id,
-            "user_id": user.id,
-            "order_constraints": {},
-        }
-    ]
+    expected = {
+        "id": order.id,
+        "user_id": user.id,
+        "order_constraints": {},
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_order_list_filter_user_id(session, client):
@@ -40,13 +43,16 @@ def test_read_order_list_filter_user_id(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/orders?user_id={user1.id}")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": order1.id,
-            "user_id": user1.id,
-            "order_constraints": {"gmpe": ["Abrahamson"]},
-        }
-    ]
+    expected = {
+        "id": order1.id,
+        "user_id": user1.id,
+        "order_constraints": {"gmpe": ["Abrahamson"]},
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_order_list_101(session, client):
@@ -78,11 +84,14 @@ def test_read_order_detail_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/orders/{order.id}")
     assert response.status_code == 200
-    assert response.json() == {
+    expected = {
         "id": order.id,
         "user_id": user.id,
         "order_constraints": {"gmpe": ["Abrahamson"]},
     }
+    for key, value in expected.items():
+        assert response.json()[key] == value
+    assert "created_at" in response.json().keys()
 
 
 def test_read_order_detail_none(client):

@@ -27,17 +27,19 @@ def test_read_complex_input_list_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/complex-inputs-as-values")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_input.id,
-            "job_id": job.id,
-            "wps_identifier": "shakemap",
-            "input_value": "https://download",
-            "mime_type": "application/xml",
-            "xmlschema": "https://shakemap",
-            "encoding": "UTF-8",
-        }
-    ]
+    assert len(response.json()) == 1
+    expected = {
+        "id": complex_input.id,
+        "job_id": job.id,
+        "wps_identifier": "shakemap",
+        "input_value": "https://download",
+        "mime_type": "application/xml",
+        "xmlschema": "https://shakemap",
+        "encoding": "UTF-8",
+    }
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_input_list_filter_wps_identifier(session, client):
@@ -67,17 +69,19 @@ def test_read_complex_input_list_filter_wps_identifier(session, client):
         f"{config.root_path}/complex-inputs-as-values?wps_identifier=shakemap1"
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_input1.id,
-            "job_id": job.id,
-            "wps_identifier": "shakemap1",
-            "input_value": "https://download",
-            "mime_type": "application/xml",
-            "xmlschema": "https://shakemap",
-            "encoding": "UTF-8",
-        }
-    ]
+    assert len(response.json()) == 1
+    expected = {
+        "id": complex_input1.id,
+        "job_id": job.id,
+        "wps_identifier": "shakemap1",
+        "input_value": "https://download",
+        "mime_type": "application/xml",
+        "xmlschema": "https://shakemap",
+        "encoding": "UTF-8",
+    }
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_input_list_filter_job_id(session, client):
@@ -108,17 +112,19 @@ def test_read_complex_input_list_filter_job_id(session, client):
         f"{config.root_path}/complex-inputs-as-values?job_id={job2.id}"
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_input1.id,
-            "job_id": job2.id,
-            "wps_identifier": "shakemap1",
-            "input_value": "https://download",
-            "mime_type": "application/xml",
-            "xmlschema": "https://shakemap",
-            "encoding": "UTF-8",
-        }
-    ]
+    assert len(response.json()) == 1
+    expected = {
+        "id": complex_input1.id,
+        "job_id": job2.id,
+        "wps_identifier": "shakemap1",
+        "input_value": "https://download",
+        "mime_type": "application/xml",
+        "xmlschema": "https://shakemap",
+        "encoding": "UTF-8",
+    }
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_input_list_filter_process_id(session, client):
@@ -150,17 +156,19 @@ def test_read_complex_input_list_filter_process_id(session, client):
         f"{config.root_path}/complex-inputs-as-values?process_id={process2.id}"
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_input1.id,
-            "job_id": job2.id,
-            "wps_identifier": "shakemap1",
-            "input_value": "https://download",
-            "mime_type": "application/xml",
-            "xmlschema": "https://shakemap",
-            "encoding": "UTF-8",
-        }
-    ]
+    assert len(response.json()) == 1
+    expected = {
+        "id": complex_input1.id,
+        "job_id": job2.id,
+        "wps_identifier": "shakemap1",
+        "input_value": "https://download",
+        "mime_type": "application/xml",
+        "xmlschema": "https://shakemap",
+        "encoding": "UTF-8",
+    }
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_input_list_101(session, client):
@@ -212,7 +220,7 @@ def test_read_complex_input_detail_one(session, client):
         f"{config.root_path}/complex-inputs-as-values/{complex_input.id}"
     )
     assert response.status_code == 200
-    assert response.json() == {
+    expected = {
         "id": complex_input.id,
         "job_id": job.id,
         "wps_identifier": "shakemap",
@@ -221,6 +229,9 @@ def test_read_complex_input_detail_one(session, client):
         "xmlschema": "https://shakemap",
         "encoding": "UTF-8",
     }
+    for key, value in expected.items():
+        assert response.json()[key] == value
+    assert "created_at" in response.json().keys()
 
 
 def test_read_complex_input_detail_none(client):

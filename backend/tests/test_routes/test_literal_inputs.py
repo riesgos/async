@@ -22,14 +22,17 @@ def test_read_literal_input_list_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/literal-inputs")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": literal_input.id,
-            "job_id": job.id,
-            "wps_identifier": "gmpe",
-            "input_value": "Abrahamson",
-        }
-    ]
+    expected = {
+        "id": literal_input.id,
+        "job_id": job.id,
+        "wps_identifier": "gmpe",
+        "input_value": "Abrahamson",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_literal_input_list_filter_wps_identifier(session, client):
@@ -45,14 +48,17 @@ def test_read_literal_input_list_filter_wps_identifier(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/literal-inputs?wps_identifier=gmpe")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": literal_input1.id,
-            "job_id": job.id,
-            "wps_identifier": "gmpe",
-            "input_value": "Abrahamson",
-        }
-    ]
+    expected = {
+        "id": literal_input1.id,
+        "job_id": job.id,
+        "wps_identifier": "gmpe",
+        "input_value": "Abrahamson",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_literal_input_list_filter_job_id(session, client):
@@ -69,14 +75,17 @@ def test_read_literal_input_list_filter_job_id(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/literal-inputs?job_id={job1.id}")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": literal_input1.id,
-            "job_id": job1.id,
-            "wps_identifier": "gmpe",
-            "input_value": "Abrahamson",
-        }
-    ]
+    expected = {
+        "id": literal_input1.id,
+        "job_id": job1.id,
+        "wps_identifier": "gmpe",
+        "input_value": "Abrahamson",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_literal_input_list_filter_process_id(session, client):
@@ -94,14 +103,17 @@ def test_read_literal_input_list_filter_process_id(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/literal-inputs?process_id={process1.id}")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": literal_input1.id,
-            "job_id": job1.id,
-            "wps_identifier": "gmpe",
-            "input_value": "Abrahamson",
-        }
-    ]
+    expected = {
+        "id": literal_input1.id,
+        "job_id": job1.id,
+        "wps_identifier": "gmpe",
+        "input_value": "Abrahamson",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_literal_input_list_101(session, client):
@@ -145,12 +157,15 @@ def test_read_literal_input_detail_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/literal-inputs/{literal_input.id}")
     assert response.status_code == 200
-    assert response.json() == {
+    expected = {
         "id": literal_input.id,
         "job_id": job.id,
         "wps_identifier": "gmpe",
         "input_value": "Abrahamson",
     }
+    for key, value in expected.items():
+        assert response.json()[key] == value
+    assert "created_at" in response.json().keys()
 
 
 def test_read_literal_input_detail_none(client):

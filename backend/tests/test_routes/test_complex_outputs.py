@@ -27,17 +27,20 @@ def test_read_complex_output_list_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/complex-outputs")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_output.id,
-            "job_id": job.id,
-            "wps_identifier": "shakemap",
-            "link": "https://download",
-            "mime_type": "application/xml",
-            "xmlschema": "https://shakemap",
-            "encoding": "UTF-8",
-        }
-    ]
+    expected = {
+        "id": complex_output.id,
+        "job_id": job.id,
+        "wps_identifier": "shakemap",
+        "link": "https://download",
+        "mime_type": "application/xml",
+        "xmlschema": "https://shakemap",
+        "encoding": "UTF-8",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_output_list_filter_wps_identifier(session, client):
@@ -67,17 +70,20 @@ def test_read_complex_output_list_filter_wps_identifier(session, client):
         f"{config.root_path}/complex-outputs?wps_identifier=shakemap1"
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_output1.id,
-            "job_id": job.id,
-            "wps_identifier": "shakemap1",
-            "link": "https://download",
-            "mime_type": "application/xml",
-            "xmlschema": "https://shakemap",
-            "encoding": "UTF-8",
-        }
-    ]
+    expected = {
+        "id": complex_output1.id,
+        "job_id": job.id,
+        "wps_identifier": "shakemap1",
+        "link": "https://download",
+        "mime_type": "application/xml",
+        "xmlschema": "https://shakemap",
+        "encoding": "UTF-8",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_output_list_filter_job_id(session, client):
@@ -106,17 +112,20 @@ def test_read_complex_output_list_filter_job_id(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/complex-outputs?job_id={job1.id}")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_output1.id,
-            "job_id": job1.id,
-            "wps_identifier": "shakemap1",
-            "link": "https://download",
-            "mime_type": "application/xml",
-            "xmlschema": "https://shakemap",
-            "encoding": "UTF-8",
-        }
-    ]
+    expected = {
+        "id": complex_output1.id,
+        "job_id": job1.id,
+        "wps_identifier": "shakemap1",
+        "link": "https://download",
+        "mime_type": "application/xml",
+        "xmlschema": "https://shakemap",
+        "encoding": "UTF-8",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_output_list_filter_process_id(session, client):
@@ -148,17 +157,20 @@ def test_read_complex_output_list_filter_process_id(session, client):
         f"{config.root_path}/complex-outputs?process_id={process1.id}"
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_output1.id,
-            "job_id": job1.id,
-            "wps_identifier": "shakemap1",
-            "link": "https://download",
-            "mime_type": "application/xml",
-            "xmlschema": "https://shakemap",
-            "encoding": "UTF-8",
-        }
-    ]
+    expected = {
+        "id": complex_output1.id,
+        "job_id": job1.id,
+        "wps_identifier": "shakemap1",
+        "link": "https://download",
+        "mime_type": "application/xml",
+        "xmlschema": "https://shakemap",
+        "encoding": "UTF-8",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_output_list_filter_mime_type(session, client):
@@ -188,17 +200,20 @@ def test_read_complex_output_list_filter_mime_type(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/complex-outputs?mime_type=abc")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_output1.id,
-            "job_id": job1.id,
-            "wps_identifier": "shakemap1",
-            "link": "https://download",
-            "mime_type": "abc",
-            "xmlschema": "https://shakemap",
-            "encoding": "UTF-8",
-        }
-    ]
+    expected = {
+        "id": complex_output1.id,
+        "job_id": job1.id,
+        "wps_identifier": "shakemap1",
+        "link": "https://download",
+        "mime_type": "abc",
+        "xmlschema": "https://shakemap",
+        "encoding": "UTF-8",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_output_list_101(session, client):
@@ -248,7 +263,7 @@ def test_read_complex_output_detail_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/complex-outputs/{complex_output.id}")
     assert response.status_code == 200
-    assert response.json() == {
+    expected = {
         "id": complex_output.id,
         "job_id": job.id,
         "wps_identifier": "shakemap",
@@ -257,6 +272,9 @@ def test_read_complex_output_detail_one(session, client):
         "xmlschema": "https://shakemap",
         "encoding": "UTF-8",
     }
+    for key, value in expected.items():
+        assert response.json()[key] == value
+    assert "created_at" in response.json().keys()
 
 
 def test_read_complex_output_detail_none(client):

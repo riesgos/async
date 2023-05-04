@@ -30,14 +30,16 @@ def test_read_complex_output_as_input_list_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/complex-outputs-as-inputs")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_output_as_input.id,
-            "job_id": job.id,
-            "wps_identifier": "intensity",
-            "complex_output_id": complex_output.id,
-        }
-    ]
+    expected = {
+        "id": complex_output_as_input.id,
+        "job_id": job.id,
+        "wps_identifier": "intensity",
+        "complex_output_id": complex_output.id,
+    }
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_output_as_input_list_filter_wps_identifier(session, client):
@@ -73,14 +75,16 @@ def test_read_complex_output_as_input_list_filter_wps_identifier(session, client
         f"{config.root_path}/complex-outputs-as-inputs?wps_identifier=intensity1"
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_output_as_input1.id,
-            "job_id": job.id,
-            "wps_identifier": "intensity1",
-            "complex_output_id": complex_output.id,
-        }
-    ]
+    expected = {
+        "id": complex_output_as_input1.id,
+        "job_id": job.id,
+        "wps_identifier": "intensity1",
+        "complex_output_id": complex_output.id,
+    }
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_output_as_input_list_filter_job_id(session, client):
@@ -118,14 +122,16 @@ def test_read_complex_output_as_input_list_filter_job_id(session, client):
         f"{config.root_path}/complex-outputs-as-inputs?job_id={job1.id}"
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_output_as_input1.id,
-            "job_id": job1.id,
-            "wps_identifier": "intensity1",
-            "complex_output_id": complex_output.id,
-        }
-    ]
+    expected = {
+        "id": complex_output_as_input1.id,
+        "job_id": job1.id,
+        "wps_identifier": "intensity1",
+        "complex_output_id": complex_output.id,
+    }
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_output_as_input_list_filter_process_id(session, client):
@@ -165,14 +171,16 @@ def test_read_complex_output_as_input_list_filter_process_id(session, client):
         f"{config.root_path}/complex-outputs-as-inputs?process_id={process1.id}"
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": complex_output_as_input1.id,
-            "job_id": job1.id,
-            "wps_identifier": "intensity1",
-            "complex_output_id": complex_output.id,
-        }
-    ]
+    expected = {
+        "id": complex_output_as_input1.id,
+        "job_id": job1.id,
+        "wps_identifier": "intensity1",
+        "complex_output_id": complex_output.id,
+    }
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_complex_output_as_input_list_101(session, client):
@@ -230,12 +238,16 @@ def test_read_complex_output_as_input_detail_one(session, client):
         f"{config.root_path}/complex-outputs-as-inputs/{complex_output_as_input.id}"
     )
     assert response.status_code == 200
-    assert response.json() == {
+    expected = {
         "id": complex_output_as_input.id,
         "job_id": job.id,
         "wps_identifier": "intensity",
         "complex_output_id": complex_output.id,
     }
+
+    for key, value in expected.items():
+        assert response.json()[key] == value
+    assert "created_at" in response.json().keys()
 
 
 def test_read_complex_output_as_input_detail_none(client):

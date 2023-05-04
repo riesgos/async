@@ -18,13 +18,16 @@ def test_read_process_list_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/processes")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": process.id,
-            "wps_url": "https://rz-vm140.gfz-potsdam.de",
-            "wps_identifier": "shakyground",
-        }
-    ]
+    expected = {
+        "id": process.id,
+        "wps_url": "https://rz-vm140.gfz-potsdam.de",
+        "wps_identifier": "shakyground",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_process_list_filter_wps_identifier(session, client):
@@ -36,13 +39,16 @@ def test_read_process_list_filter_wps_identifier(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/processes?wps_identifier=shakyground")
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": process1.id,
-            "wps_url": "https://rz-vm140.gfz-potsdam.de",
-            "wps_identifier": "shakyground",
-        }
-    ]
+    expected = {
+        "id": process1.id,
+        "wps_url": "https://rz-vm140.gfz-potsdam.de",
+        "wps_identifier": "shakyground",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_process_list_filter_wps_url(session, client):
@@ -59,13 +65,16 @@ def test_read_process_list_filter_wps_url(session, client):
         },
     )
     assert response.status_code == 200
-    assert response.json() == [
-        {
-            "id": process1.id,
-            "wps_url": "https://rz-vm140.gfz-potsdam.de",
-            "wps_identifier": "shakyground",
-        }
-    ]
+    expected = {
+        "id": process1.id,
+        "wps_url": "https://rz-vm140.gfz-potsdam.de",
+        "wps_identifier": "shakyground",
+    }
+
+    assert len(response.json()) == 1
+    for key, value in expected.items():
+        assert response.json()[0][key] == value
+    assert "created_at" in response.json()[0].keys()
 
 
 def test_read_process_list_101(session, client):
@@ -93,11 +102,14 @@ def test_read_process_detail_one(session, client):
     session.commit()
     response = client.get(f"{config.root_path}/processes/{process.id}")
     assert response.status_code == 200
-    assert response.json() == {
+    expected = {
         "id": process.id,
         "wps_url": "https://rz-vm140.gfz-potsdam.de",
         "wps_identifier": "shakyground",
     }
+    for key, value in expected.items():
+        assert response.json()[key] == value
+    assert "created_at" in response.json().keys()
 
 
 def test_read_process_detail_none(client):
