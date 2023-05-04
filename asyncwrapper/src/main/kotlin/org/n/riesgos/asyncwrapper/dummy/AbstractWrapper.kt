@@ -19,6 +19,7 @@ import org.n.riesgos.asyncwrapper.process.wps.WPSClientService
 import org.n.riesgos.asyncwrapper.process.wps.WPSProcess
 import org.n.riesgos.asyncwrapper.pulsar.MessageParser
 import org.n.riesgos.asyncwrapper.pulsar.PulsarPublisher
+import org.n.riesgos.asyncwrapper.utils.Version
 import org.n.riesgos.asyncwrapper.utils.retry
 import org.n52.geoprocessing.wps.client.WPSClientException
 import java.io.IOException
@@ -346,7 +347,7 @@ abstract class AbstractWrapper(val publisher : PulsarPublisher, val wpsConfigura
         val wpsProcess = retry<WPSProcess>(wpsConfiguration.retryConfiguration.maxRetries, wpsConfiguration.retryConfiguration.backoffMillis, { ex -> ex is WPSClientException }) {
             LOGGER.info("retrieve getCapabilities document from  ${wpsConfiguration.wpsURL} (retries: $it)")
             val wpsClientService = WPSClientService(wpsConfiguration)
-            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), wpsConfiguration.wpsVersion, getWpsDialect(), getRequestedOutputs(),wpsConfiguration.retryConfiguration)
+            val wpsProcess = WPSProcess(wpsClientService.establishWPSConnection(), getWpsUrl(), getWpsIdentifier(), Version(wpsConfiguration.wpsVersion), getWpsDialect(), getRequestedOutputs(),wpsConfiguration.retryConfiguration)
             LOGGER.info("retrieved getCapabilities document from ${wpsConfiguration.wpsURL} (retries: $it)")
             return@retry wpsProcess
         }
