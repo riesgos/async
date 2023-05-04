@@ -409,6 +409,19 @@ class DatamanagementRepo (
     }
 
     /**
+     * Set the exception report field for the job.
+     */
+    fun setJobExceptionReport (jobId: Long, exceptionReport: String) {
+        val sql = """
+            update jobs
+            set exception_report = ?
+            where id = ?
+        """.trimIndent()
+
+        jdbcTemplate.update(sql, exceptionReport, jobId)
+    }
+
+    /**
      * Insert a complex output data in the database.
      */
     fun insertComplexOutput (jobId: Long, wpsIdentifier: String, link: String, mimeType: String, xmlschema: String, encoding: String): ComplexOutput {
