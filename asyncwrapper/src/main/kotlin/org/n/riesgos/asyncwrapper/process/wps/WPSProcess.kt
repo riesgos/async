@@ -4,19 +4,22 @@ import org.n.riesgos.asyncwrapper.config.RetryConfiguration
 import org.n.riesgos.asyncwrapper.config.WPSOutputDefinition
 import org.n.riesgos.asyncwrapper.process.*
 import org.n.riesgos.asyncwrapper.process.Process
+import org.n.riesgos.asyncwrapper.utils.Version
 import org.n.riesgos.asyncwrapper.utils.retry
 import org.n52.geoprocessing.wps.client.ExecuteRequestBuilder
 import org.n52.geoprocessing.wps.client.WPSClientException
 import org.n52.geoprocessing.wps.client.WPSClientSession
+import org.n52.geoprocessing.wps.client.encoder.WPS100ExecuteEncoder
 import org.n52.geoprocessing.wps.client.encoder.WPS20ExecuteEncoder
 import org.n52.geoprocessing.wps.client.model.*
 import org.n52.geoprocessing.wps.client.model.execution.Data
 import java.util.*
+import java.util.logging.Level
 import java.util.logging.Logger
 
 
 
-class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: String, private val dialect: String, private val expectedOutputs : List<WPSOutputDefinition>, private val retryConfig : RetryConfiguration) : Process {
+class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: Version, private val dialect: String, private val expectedOutputs : List<WPSOutputDefinition>, private val retryConfig : RetryConfiguration) : Process {
     companion object {
         val LOGGER = Logger.getLogger("WPSProcess")
     }
@@ -73,7 +76,7 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
 
             // So we must do that ourselves. (But we are able to check the source code so we
             // are lucky.
-            for (output in executeBuilder.execute.getOutputs()) {
+            for (output in executeBuilder.execute.outputs) {
                 if (output.id == parameterOut.wpsIdentifier) {
                     output.transmissionMode = TransmissionMode.REFERENCE
                 }
@@ -88,13 +91,17 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
         try {
             val executeRequest = executeBuilder.execute
             // Print the text out
-            val requestText = WPS20ExecuteEncoder.encode(executeRequest)
+            val requestText = if(wpsVersion >= Version("2.0.0")) {
+                WPS20ExecuteEncoder.encode(executeRequest)
+            }else{
+                WPS100ExecuteEncoder.encode(executeRequest)
+            }
             LOGGER.info(requestText)
 
            //execute wps process, retry if (network) error
            val processOutput = retry<ProcessOutput>(retryConfig.maxRetries, retryConfig.backoffMillis, this::isWPSClientException) {
                LOGGER.info("execute WPS process ${this.processID} (retries: $it)")
-               val wpsOutput = wpsClient.execute(url, executeRequest, wpsVersion)
+               val wpsOutput = wpsClient.execute(url, executeRequest, this.wpsVersion.versionStr)
                val processOutput = parseProcessOutput(wpsOutput) //attempt successful
                LOGGER.info("executed WPS process ${this.processID} (needed $it retries")
                return@retry processOutput
@@ -173,7 +180,7 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
      * check if wpsClient retrieved complete process description from server
      */
     private fun getCompleteProcessDescription() : org.n52.geoprocessing.wps.client.model.Process{
-        val processDescription = wpsClient.getProcessDescription(url, processID, wpsVersion)
+        val processDescription = wpsClient.getProcessDescription(url, processID, wpsVersion.versionStr)
         //description not complete if network error
         if(processDescription.inputs == null || processDescription.outputs == null){
             throw WPSClientException("could not retrieve complete process description for process $processID")
@@ -183,6 +190,8 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
     }
 
     private fun isWPSClientException(ex: Exception) : Boolean{
-        return ex is WPSClientException
+        val retryable = ex is WPSClientException
+        LOGGER.log(Level.WARNING, "wps process returned an exception, retryable: $retryable", ex)
+        return retryable
     }
 }
