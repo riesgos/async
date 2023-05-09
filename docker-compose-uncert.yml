@@ -384,7 +384,10 @@ services:
       - ./reverse_proxy_lrz/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./reverse_proxy_lrz/nginx.conf:/etc/nginx/nginx.conf:ro
 
-
+  riesgos_wps:
+    image: gfzriesgos/riesgos-wps
+    ports:
+      - 8000:8000
 
 volumes:
   postgresdata:
