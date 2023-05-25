@@ -18,7 +18,6 @@ import java.util.logging.Level
 import java.util.logging.Logger
 
 
-
 class WPSProcess(private val wpsClient : WPSClientSession, private val url: String, private val processID: String, private val wpsVersion: Version, private val dialect: String, private val expectedOutputs : List<WPSOutputDefinition>, private val retryConfig : RetryConfiguration) : Process {
     companion object {
         val LOGGER = Logger.getLogger("WPSProcess")
@@ -128,10 +127,21 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
     }
 
     private fun parseProcessOutput(wpsOutput: Any): ProcessOutput {
+        //first check if wps returned exception report
+        if(wpsOutput is ExceptionReport){
+            LOGGER.warning("wps output contains errors, raise exception")
+            val exceptions = wpsOutput.exceptions
+            throw WPSClientException(
+                "executing process " + this.processID + " raised exceptions:" + System.lineSeparator() + buildExceptionText(
+                    exceptions
+                )
+            )
+        }
+
         var result: org.n52.geoprocessing.wps.client.model.Result =
             if (wpsOutput is org.n52.geoprocessing.wps.client.model.Result) {
                 wpsOutput
-            } else {
+            } else  {
                 (wpsOutput as StatusInfo).result
             }
 
@@ -193,5 +203,25 @@ class WPSProcess(private val wpsClient : WPSClientSession, private val url: Stri
         val retryable = ex is WPSClientException
         LOGGER.log(Level.WARNING, "wps process returned an exception, retryable: $retryable", ex)
         return retryable
+    }
+
+    /**
+     * append exception messages
+     *
+     * @param exceptions
+     * @return
+     */
+    private fun buildExceptionText(exceptions: List<OWSExceptionElement>): String? {
+        val exceptionTextBuilder = StringBuilder()
+        for (i in exceptions.indices) {
+            exceptionTextBuilder.append("Exception ").append(i + 1).append(":").append(System.lineSeparator())
+                .append("code: ").append(
+                    exceptions[i].exceptionCode
+                ).append(System.lineSeparator()).append(exceptions[i].exceptionText)
+            if (i != exceptions.size - 1) { //no linebreak after last exception
+                exceptionTextBuilder.append(System.lineSeparator())
+            }
+        }
+        return exceptionTextBuilder.toString()
     }
 }
