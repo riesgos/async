@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { map } from 'rxjs';
 import { AppStateService } from 'src/app/services/appstate/appstate.service';
+import { FormmodelService } from 'src/app/services/formmodel/formmodel.service';
+import { downloadJson } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-precalc-form',
@@ -18,7 +20,7 @@ export class PrecalcFormComponent implements OnInit {
     map(s => s.combinationsAvailable)
   );
 
-  constructor(private state: AppStateService) {}
+  constructor(private state: AppStateService, private formmodel: FormmodelService) {}
 
   ngOnInit(): void {}
 
@@ -30,7 +32,8 @@ export class PrecalcFormComponent implements OnInit {
   }
 
   public download() {
-    throw Error(`Method not implemented`);
+    const order = this.formmodel.dataModelToUserOrder(this.orderForm.value);
+    downloadJson('order', order);
   }
 
 }
