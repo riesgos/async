@@ -12,7 +12,6 @@ import { downloadJson } from 'src/app/utils/utils';
 })
 export class PrecalcFormComponent implements OnInit {
 
-  public orderForm: FormGroup = new FormGroup({});
   public formEntries$ = this.state.state.pipe(
     map(s => s.formData),
   );
@@ -32,8 +31,8 @@ export class PrecalcFormComponent implements OnInit {
   }
 
   public download() {
-    const order = this.formmodel.dataModelToUserOrder(this.orderForm.value);
-    downloadJson('order', order);
+    // const order = entriesToOrder(this.formEntries$)
+    // downloadJson('order', order);
   }
 
 }

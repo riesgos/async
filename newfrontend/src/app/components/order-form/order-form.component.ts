@@ -45,7 +45,6 @@ export class OrderFormComponent implements OnInit {
   constructor(private state: AppStateService, private formmodel: FormmodelService) { }
 
   ngOnInit(): void {
-    // this.formGroup.valueChanges.subscribe(v => console.log('new value', v));
   }
 
   download() {

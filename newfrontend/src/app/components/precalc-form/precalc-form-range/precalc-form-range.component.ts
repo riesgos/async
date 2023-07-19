@@ -10,7 +10,6 @@ import { AppStateFormDatum, AppStateService } from 'src/app/services/appstate/ap
 })
 export class PrecalcFormRangeComponent implements OnInit {
 
-  @Input() formGroup!: FormGroup;
   @Input() entry!: AppStateFormDatum;
   public lowerForm!: FormControl;
   public upperForm!: FormControl;
@@ -21,8 +20,6 @@ export class PrecalcFormRangeComponent implements OnInit {
     const options = this.entry.options.filter(o => o !== undefined).map(o => +o!).sort((a, b) => a < b ? -1 : 1);
     this.lowerForm = new FormControl(options[0]);
     this.upperForm = new FormControl(options[options.length - 1]);
-    this.formGroup.addControl(this.entry.key + '_lower', this.lowerForm);
-    this.formGroup.addControl(this.entry.key + '_upper', this.upperForm);
 
     this.lowerForm.valueChanges.pipe(
       debounceTime(1000)
