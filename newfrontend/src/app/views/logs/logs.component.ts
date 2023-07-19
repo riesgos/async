@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, interval } from 'rxjs';
 import { AppStateService } from 'src/app/services/appstate/appstate.service';
-import { LogsService } from 'src/app/services/logs/logs.service';
+import { LogsService } from 'src/app/services/backend/logs/logs.service';
 
 interface Log {
   "assetmaster_wrapper": string[],

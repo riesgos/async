@@ -5,8 +5,8 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ApiModule } from './backend_api/api.module';
-import { ApiService } from './backend_api/services';
+import { ApiModule } from './services/backend/backend_api/api.module';
+import { ApiService } from './services/backend/backend_api/services';
 import { CurrentStateComponent } from './views/current-state/current-state.component';
 import { PlaceOrderComponent } from './views/place-order/place-order.component';
 import { DropfieldComponent } from './components/dropfield/dropfield.component';

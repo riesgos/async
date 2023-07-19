@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, switchMap } from 'rxjs/operators';
-import { UserSelfInformation } from 'src/app/backend_api/models';
+import { UserSelfInformation } from 'src/app/services/backend/backend_api/models';
 import { environment } from 'src/environments/environment';
-import { CredentialsError, DbService, isAuthenticationError, isSuccessfulAuthentication } from '../db/db.service';
-import { LogsService } from '../logs/logs.service';
-import { Consumer, Producer } from '../pulsar/pulsar';
+import { CredentialsError, DbService, isAuthenticationError, isSuccessfulAuthentication } from './db/db.service';
+import { LogsService } from './logs/logs.service';
+import { Consumer, Producer } from './pulsar/pulsar';
 
 
 @Injectable({

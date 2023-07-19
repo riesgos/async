@@ -1,5 +1,6 @@
 # README
 
 ## TODOs
-- Order-Form:
-    - Remove FormGroup - updates to state come directly from forms ... or should they?
+- Login: remember credentials
+- Pre-selected form: fix download
+- cannot post to db: Connection not yet established

@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, forkJoin } from "rxjs";
-import { CredentialsError, isAuthenticationError, isSuccessfulAuthentication } from "../db/db.service";
+import { CredentialsError, isAuthenticationError, isSuccessfulAuthentication } from "../backend/db/db.service";
 import { BackendService, UserOrder } from "../backend/backend.service";
-import { UserSelfInformation } from "src/app/backend_api/models";
+import { UserSelfInformation } from "src/app/services/backend/backend_api/models";
 import { allTrue } from "../../utils/utils";
 import { LocalstoreService } from "../localstore/localstore";
 import { PrecalcDataService } from "../precalcData/precalc-data.service";
-import { LogsService } from "../logs/logs.service";
+import { LogsService } from "../backend/logs/logs.service";
 
 
 

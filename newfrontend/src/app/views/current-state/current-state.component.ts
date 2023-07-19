@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, filter, interval, map, share, switchMap } from 'rxjs';
-import { Job, Order, Process, ProductType } from 'src/app/backend_api/models';
+import { Job, Order, Process, ProductType } from 'src/app/services/backend/backend_api/models';
 import { AppStateService } from 'src/app/services/appstate/appstate.service';
-import { DbService, ProductInfo } from 'src/app/services/db/db.service';
+import { DbService, ProductInfo } from 'src/app/services/backend/db/db.service';
 
 /**
  * @TODO: 
