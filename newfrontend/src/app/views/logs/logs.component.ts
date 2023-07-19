@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, interval } from 'rxjs';
-import { AppStateService } from 'src/app/services/appstate/appstate.service';
+import { AppState, AppStateService } from 'src/app/services/appstate/appstate.service';
 import { LogsService } from 'src/app/services/backend/logs/logs.service';
 
 interface Log {
@@ -15,7 +15,7 @@ interface Log {
 };
 
 function createEmptyLog(): Log {
-  const emptyLog: Log = {
+  return {
     "assetmaster_wrapper": [],
     "modelprop_eq_wrapper": [],
     "shakyground_wrapper": [],
@@ -25,7 +25,6 @@ function createEmptyLog(): Log {
     "modelprop_ts_wrapper": [],
     "deus_ts_wrapper": [],
   };
-  return emptyLog;
 }
 
 
@@ -36,11 +35,20 @@ function createEmptyLog(): Log {
 })
 export class LogsComponent implements OnInit {
 
-  public logs: Log = createEmptyLog();
 
-  constructor(private stateSvc: AppStateService, private logsSvc: LogsService) { }
+
+  public logs = createEmptyLog();
+  public focussedLog: AppState["focussedLog"] | undefined = undefined;
+
+  constructor(private stateSvc: AppStateService, private logsSvc: LogsService) {
+    console.log("Log component constructed")
+  }
 
   ngOnInit(): void {
+    this.stateSvc.state.subscribe(s => {
+      this.focussedLog = s.focussedLog;
+    });
+
     interval(5000).subscribe(_ => {
       if (this.logsSvc.isConnected()) {
         this.refreshLogData();
@@ -48,7 +56,16 @@ export class LogsComponent implements OnInit {
     })
   }
 
-  public refreshLogData() {
+  focusOnLog(log: AppState["focussedLog"]) {
+    this.stateSvc.action({type: "focusOnLog", payload: log });
+  }
+
+  getFocussedLogs(): any {
+    if (this.focussedLog === undefined) return [];
+    return this.logs[this.focussedLog].reverse();
+  }
+
+  refreshLogData() {
     this.logsSvc.readLatest().subscribe(data => {
       
       const parsed: Log = createEmptyLog();
@@ -64,7 +81,7 @@ export class LogsComponent implements OnInit {
       }
 
       for (const container in parsed) {
-                    // @ts-ignore
+        // @ts-ignore
         parsed[container] = parsed[container].reverse().slice(0, 50);
       }
       this.logs = parsed;
