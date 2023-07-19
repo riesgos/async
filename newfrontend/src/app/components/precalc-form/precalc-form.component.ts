@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { map } from 'rxjs';
-import { AppStateService } from 'src/app/services/appstate/appstate.service';
-import { FormmodelService } from 'src/app/services/formmodel/formmodel.service';
+import { BehaviorSubject, map } from 'rxjs';
+import { AppStateFormDatum, AppStateService } from 'src/app/services/appstate/appstate.service';
+import { PrecalcDataService } from 'src/app/services/precalcData/precalc-data.service';
 import { downloadJson } from 'src/app/utils/utils';
 
 @Component({
@@ -12,16 +12,21 @@ import { downloadJson } from 'src/app/utils/utils';
 })
 export class PrecalcFormComponent implements OnInit {
 
-  public formEntries$ = this.state.state.pipe(
-    map(s => s.formData),
-  );
+  public formEntries$ = new BehaviorSubject<AppStateFormDatum[]>([]);
   public combosAvailable$ = this.state.state.pipe(
     map(s => s.combinationsAvailable)
   );
 
-  constructor(private state: AppStateService, private formmodel: FormmodelService) {}
+  constructor(
+    private state: AppStateService, 
+    private dataSvc: PrecalcDataService
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.state.state.pipe(
+      map(s => s.formData)
+    ).subscribe(this.formEntries$);
+  }
 
   public submit() {
     this.state.action({
@@ -31,8 +36,10 @@ export class PrecalcFormComponent implements OnInit {
   }
 
   public download() {
-    // const order = entriesToOrder(this.formEntries$)
-    // downloadJson('order', order);
+    // const currentEntries = this.formEntries$.value;
+    const orders = this.dataSvc.toOrders();
+    downloadJson('orders', orders);
   }
 
 }
+

@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { dataModel } from 'src/app/data/datamodel';
 import { AppStateService } from 'src/app/services/appstate/appstate.service';
-import { UserOrder, ParameterConstraints, LiteralParameterConstraints, BboxParameterConstraints, ComplexParameterConstraints } from 'src/app/services/backend/backend.service';
-import { FormmodelService } from 'src/app/services/formmodel/formmodel.service';
 import { downloadJson } from 'src/app/utils/utils';
+import { FormmodelService } from './formmodel/formmodel.service';
 
 
  /**

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DataModel, ServiceDataModel } from 'src/app/components/order-form/order-form.component';
-import { UserOrder, ParameterConstraints, LiteralParameterConstraints, BboxParameterConstraints, ComplexParameterConstraints } from '../backend/backend.service';
+import { UserOrder, ParameterConstraints, LiteralParameterConstraints, BboxParameterConstraints, ComplexParameterConstraints } from 'src/app/services/backend/backend.service';
 
 @Injectable({
   providedIn: 'root'
