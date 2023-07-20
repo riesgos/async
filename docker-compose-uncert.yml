@@ -311,6 +311,7 @@ services:
       - './backend:/usr/src/app'
     depends_on:
       - db
+      - backend_migrations
     networks:
       - db
       - filestorage
@@ -396,6 +397,8 @@ services:
         - QUEUE_URL=${QUEUE_SERVER:?error}/queue/
         - FASTAPI_URL=${BACKEND_SERVER:?error}/backend/
         - LOGS_URL=${LOGS_SERVER:?error}/logs/
+    ports:
+      - 1234:80   # so as not to conflict with reverse proxy on port 80
     networks:
       - web
 
@@ -412,6 +415,7 @@ services:
       - backend
       - filestorage
       - logs
+      - queue
     volumes:
       - ./reverse_proxy_lrz/default.conf:/etc/nginx/conf.d/default.conf:ro
       - ./reverse_proxy_lrz/nginx.conf:/etc/nginx/nginx.conf:ro
