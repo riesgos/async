@@ -25,8 +25,10 @@
         <app-tab [tabTitle]="'Products'">
             <table class="box" *ngIf="products$ | async as products; else loading">
                 <tr>
-                    <th>Base-product Ids</th>
+                    <th>Base-product IDs</th>
                     <th>complexOutputId</th>
+                    <th>Order ID</th>
+                    <th>Job ID</th>
                     <th>ProductName</th>
                     <th>DerivedProducts</th>
                 </tr>
@@ -37,6 +39,8 @@
                         </a>
                     </td>
                     <td>{{ product.complexOutputId }}</td>
+                    <td>{{ product.orderId }}</td>
+                    <td>{{ product.jobId }}</td>
                     <td><a [href]="product.link" target="_blank">{{ product.processId + " " + product.paraId }}</a></td>
                     <td>{{ product.derivedProducts | json }}</td>
                 </tr>

@@ -7,6 +7,7 @@ import { UserOrder } from "../backend.service";
 
 export interface ProductInfo {
     orderId: number,
+    jobId: number,
     processId: string,
     paraId: string,
     link: string,
@@ -127,6 +128,7 @@ export function isAuthenticationError(result: any): result is CredentialsError {
 
                     const productData: ProductInfo = {
                         orderId: orderId,
+                        jobId: job.id,
                         processId: processId,
                         paraId: paraId,
                         link: link,
