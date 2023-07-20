@@ -18,6 +18,7 @@ import { DbService, ProductInfo } from 'src/app/services/backend/db/db.service';
 })
 export class CurrentStateComponent implements OnInit {
 
+
   public productTypes$   = new BehaviorSubject<ProductType[]>([]);
   public products$       = new BehaviorSubject<ProductInfo[]>([]);
   public processes$      = new BehaviorSubject<Process[]>([]);
@@ -43,7 +44,11 @@ export class CurrentStateComponent implements OnInit {
 
     timer$.pipe(
         switchMap(_ => this.db.getProducts()),
-        map(products => products.sort((a, b) => a.complexOutputId > b.complexOutputId ? -1 : 1))
+        map(products => products.sort((a, b) => a.complexOutputId > b.complexOutputId ? -1 : 1)),
+        map(p => {
+          p[0].baseProducts[0]
+          return p;
+        })
     ).subscribe(this.products$);
 
     timer$.pipe(
@@ -64,6 +69,10 @@ export class CurrentStateComponent implements OnInit {
 
   }
 
+  public getLinkForProductId(id: number) {
+    const product = this.products$.value.find(v => v.complexOutputId === id);
+    return product?.link;
+  }
 
   public getProcessById(id: number) {
     return this.processes$.value.find(v => v.id === id);

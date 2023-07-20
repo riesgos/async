@@ -14,10 +14,6 @@ services:
     depends_on:
       - db
       - queue
-    networks:
-      - db
-      - queue
-      - filestorage
     environment:
       appID: 'deus-eq-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusEqWrapper'
@@ -47,10 +43,6 @@ services:
     depends_on:
       - db
       - queue
-    networks:
-      - db
-      - queue
-      - filestorage
     environment:
       appID: 'tsunami-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.TsunamiWrapper'
@@ -80,10 +72,6 @@ services:
     depends_on:
       - db
       - queue
-    networks:
-      - db
-      - queue
-      - filestorage
     environment:
       appID: 'deus-ts-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.DeusTsWrapper'
@@ -113,10 +101,6 @@ services:
     depends_on:
       - db
       - queue
-    networks:
-      - db
-      - queue
-      - filestorage
     environment:
       appID: 'assetmaster-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.AssetmasterWrapper'
@@ -146,10 +130,6 @@ services:
     depends_on:
       - db
       - queue
-    networks:
-      - db
-      - queue
-      - filestorage
     environment:
       appID: 'modelprop-eq-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ModelpropEqWrapper'
@@ -179,10 +159,6 @@ services:
     depends_on:
       - db
       - queue
-    networks:
-      - db
-      - queue
-      - filestorage
     environment:
       appID: 'modelprop-ts-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ModelpropTsWrapper'
@@ -212,10 +188,6 @@ services:
     depends_on:
       - db
       - queue
-    networks:
-      - db
-      - queue
-      - filestorage
     environment:
       appID: 'shakyground-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ShakygroundWrapper'
@@ -245,10 +217,6 @@ services:
     depends_on:
       - db
       - queue
-    networks:
-      - db
-      - queue
-      - filestorage
     environment:
       appID: 'shakemap-resampler-asyncwrapper'
       wrapperClass: 'org.n.riesgos.asyncwrapper.dummy.ShakemapResamplerWrapper'
@@ -279,10 +247,6 @@ services:
     depends_on:
       - db
       - queue
-    networks:
-      - db
-      - queue
-      - filestorage
     environment:
       appID: 'quakeledger-asyncwrapper'
       wrapperclass: 'org.n.riesgos.asyncwrapper.dummy.QuakeledgerWrapper'
@@ -312,10 +276,6 @@ services:
     depends_on:
       - db
       - backend_migrations
-    networks:
-      - db
-      - filestorage
-      - web
     environment:
       ROOT_PATH: '/backend/api/v1'
       SQLALCHEMY_DATABASE_URL: 'postgresql://${DATABASE_USER:?error}:${DATABASE_PASSWORD:?error}@db:5432/${DATABASE_USER:?error}'
@@ -326,16 +286,12 @@ services:
     image: flyway/flyway
     volumes:
       - ./backend/migrations:/flyway/sql
-    networks:
-      - db
     depends_on:
       - db
     command: -url=jdbc:postgresql://db:5432/${DATABASE_USER:?error} -schemas=public -user=${DATABASE_USER:?error} -password=${DATABASE_PASSWORD:?error} -connectRetries=60 migrate
 
   queue:
     image: apachepulsar/pulsar-standalone
-    networks:
-      - queue
     volumes:
       - pulsardata:/pulsar/data
       - pulsarconf:/pulsar/conf
@@ -347,8 +303,6 @@ services:
     environment:
       - POSTGRES_USER=${DATABASE_USER:?error}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD:?error}
-    networks:
-      - db
     volumes:
       - postgresdata:/var/lib/postgresql/data
 
@@ -356,8 +310,6 @@ services:
     image: minio/minio:RELEASE.2022-10-20T00-55-09Z
     volumes:
       - filestoragedata:/data
-    networks:
-      - filestorage
     environment:
       MINIO_ROOT_USER: ${FILESTORAGE_USER:?error}
       MINIO_ROOT_PASSWORD: ${FILESTORAGE_PASSWORD:?error}
@@ -367,8 +319,6 @@ services:
     build:
       context: 'filestorage/bucketcreation'
     depends_on:
-      - filestorage
-    networks:
       - filestorage
     environment:
       MINIO_ROOT_USER: ${FILESTORAGE_USER:?error}
@@ -383,8 +333,6 @@ services:
       args:
         - USERNAME=${LOGS_USER_EMAIL:?error}
         - PASSWORD=${LOGS_USER_PASSWORD:?error}
-    networks:
-      - web
     volumes:
       - ./logs/logs:/www/logs
 
@@ -399,18 +347,12 @@ services:
         - LOGS_URL=${LOGS_SERVER:?error}/logs/
     ports:
       - 1234:80   # so as not to conflict with reverse proxy on port 80
-    networks:
-      - web
+
 
   reverse_proxy:
     image: nginx:1.23.2-alpine
     ports:
       - 80:80
-    networks:
-      - filestorage
-      - web
-      - db
-      - queue
     depends_on:
       - backend
       - filestorage
@@ -433,8 +375,3 @@ volumes:
   modelprop-metadata:
   deus-metadata:
 
-networks:
-  db:
-  queue:
-  filestorage:
-  web:

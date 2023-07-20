@@ -25,13 +25,17 @@
         <app-tab [tabTitle]="'Products'">
             <table class="box" *ngIf="products$ | async as products; else loading">
                 <tr>
-                    <th>BaseProducts</th>
+                    <th>Base-product Ids</th>
                     <th>complexOutputId</th>
                     <th>ProductName</th>
                     <th>DerivedProducts</th>
                 </tr>
                 <tr *ngFor="let product of products">
-                    <td>{{ product.baseProducts | json }}</td>
+                    <td>
+                        <a *ngFor="let entry of product.baseProducts" [href]="getLinkForProductId(entry)">
+                            {{ entry }}
+                        </a>
+                    </td>
                     <td>{{ product.complexOutputId }}</td>
                     <td><a [href]="product.link" target="_blank">{{ product.processId + " " + product.paraId }}</a></td>
                     <td>{{ product.derivedProducts | json }}</td>

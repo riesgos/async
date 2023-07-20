@@ -62,7 +62,7 @@ export class LogsComponent implements OnInit {
 
   getFocussedLogs(): any {
     if (this.focussedLog === undefined) return [];
-    return this.logs[this.focussedLog].reverse();
+    return this.logs[this.focussedLog];
   }
 
   refreshLogData() {
