@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, forkJoin } from "rxjs";
-import { CredentialsError, isAuthenticationError, isSuccessfulAuthentication } from "../db/db.service";
+import { CredentialsError, isAuthenticationError, isSuccessfulAuthentication } from "../backend/db/db.service";
 import { BackendService, UserOrder } from "../backend/backend.service";
-import { UserSelfInformation } from "src/app/backend_api/models";
+import { UserSelfInformation } from "src/app/services/backend/backend_api/models";
 import { allTrue } from "../../utils/utils";
 import { LocalstoreService } from "../localstore/localstore";
 import { PrecalcDataService } from "../precalcData/precalc-data.service";
-import { LogsService } from "../logs/logs.service";
+import { LogsService } from "../backend/logs/logs.service";
 
 
 
@@ -21,7 +21,8 @@ export interface AppState {
     orderState: 'none' | 'sending' | 'accepted',
     formData: AppStateFormDatum[],
     combinationsAvailable: number,
-    localStoreData: { [key: string]: any }
+    localStoreData: { [key: string]: any },
+    focussedLog: "assetmaster_wrapper" | "modelprop_eq_wrapper" | "shakyground_wrapper" | "shakemap_resampler_wrapper" | "deus_eq_wrapper" | "tsunami_wrapper" | "modelprop_ts_wrapper" | "deus_ts_wrapper"
 }
 
 const initialState: AppState = {
@@ -30,7 +31,8 @@ const initialState: AppState = {
     orderState: 'none',
     formData: [],
     combinationsAvailable: 0,
-    localStoreData: {}
+    localStoreData: {},
+    focussedLog: 'assetmaster_wrapper'
 };
 
 
@@ -111,12 +113,18 @@ export interface GetFromLocalStoreResultAction {
     payload: { [key: string]: string | null }
 }
 
+export interface FocusOnLogAction {
+    type: 'focusOnLog',
+    payload: AppState["focussedLog"]
+}
+
 export type Action = AppStart | appStartSuccess |
                      LoginAction | LoginSuccessAction | LoginFailureAction |
                      FormSelectAction | FormSubmitAction |
                      RegisterAction | RegisterSuccessAction | RegisterFailureAction |
                      OrderAction | OrderSuccessAction | OrderFailureAction |
-                     SaveToLocalStoreAction | GetFromLocalStoreAction | GetFromLocalStoreResultAction;
+                     SaveToLocalStoreAction | GetFromLocalStoreAction | GetFromLocalStoreResultAction |
+                     FocusOnLogAction;
 
 
 
@@ -282,6 +290,9 @@ export class AppStateService {
             this.precalc.reset();
             currentState.formData = this.precalc.toFormData(currentState.formData);
             currentState.combinationsAvailable = this.precalc.countAvailable();
+        }
+        else if (action.type === 'focusOnLog') {
+            currentState.focussedLog = action.payload;
         }
 
         return currentState;

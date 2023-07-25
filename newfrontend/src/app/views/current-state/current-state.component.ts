@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, filter, interval, map, share, switchMap } from 'rxjs';
-import { Job, Order, Process, ProductType } from 'src/app/backend_api/models';
+import { Job, Order, Process, ProductType } from 'src/app/services/backend/backend_api/models';
 import { AppStateService } from 'src/app/services/appstate/appstate.service';
-import { DbService, ProductInfo } from 'src/app/services/db/db.service';
+import { DbService, ProductInfo } from 'src/app/services/backend/db/db.service';
 
 /**
  * @TODO: 
@@ -17,6 +17,7 @@ import { DbService, ProductInfo } from 'src/app/services/db/db.service';
   styleUrls: ['./current-state.component.css']
 })
 export class CurrentStateComponent implements OnInit {
+
 
   public productTypes$   = new BehaviorSubject<ProductType[]>([]);
   public products$       = new BehaviorSubject<ProductInfo[]>([]);
@@ -43,7 +44,11 @@ export class CurrentStateComponent implements OnInit {
 
     timer$.pipe(
         switchMap(_ => this.db.getProducts()),
-        map(products => products.sort((a, b) => a.complexOutputId > b.complexOutputId ? -1 : 1))
+        map(products => products.sort((a, b) => a.complexOutputId > b.complexOutputId ? -1 : 1)),
+        map(p => {
+          p[0].baseProducts[0]
+          return p;
+        })
     ).subscribe(this.products$);
 
     timer$.pipe(
@@ -64,6 +69,10 @@ export class CurrentStateComponent implements OnInit {
 
   }
 
+  public getLinkForProductId(id: number) {
+    const product = this.products$.value.find(v => v.complexOutputId === id);
+    return product?.link;
+  }
 
   public getProcessById(id: number) {
     return this.processes$.value.find(v => v.id === id);

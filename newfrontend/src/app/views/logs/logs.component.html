@@ -1,15 +1,21 @@
 
 
 <h4>Logs</h4>
-<app-tabs style="margin-bottom: 10rem; min-height: 10rem;">
 
-    <app-tab *ngFor="let logItem of logs | keyvalue; let i = index" [tabTitle]="logItem.key" [active]="i === 0 ? true : false">
-        <table class="box">
-            <tr *ngFor="let logEntry of logItem.value; let i = index">
-                <td>{{ logItem.value.length - i }}</td>
-                <td>{{ logEntry }}</td>
-            </tr>
-        </table>
-    </app-tab>
+<div class="logNames">
+    <span (click)="focusOnLog('assetmaster_wrapper')"        class="header" [class.active]="focussedLog === 'assetmaster_wrapper'"         >assetmaster_wrapper</span>
+    <span (click)="focusOnLog('modelprop_eq_wrapper')"       class="header" [class.active]="focussedLog === 'modelprop_eq_wrapper'"        >modelprop_eq_wrapper</span>
+    <span (click)="focusOnLog('shakyground_wrapper')"        class="header" [class.active]="focussedLog === 'shakyground_wrapper'"         >shakyground_wrapper</span>
+    <span (click)="focusOnLog('shakemap_resampler_wrapper')" class="header" [class.active]="focussedLog === 'shakemap_resampler_wrapper'"  >shakemap_resampler_wrapper</span>
+    <span (click)="focusOnLog('deus_eq_wrapper')"            class="header" [class.active]="focussedLog === 'deus_eq_wrapper'"             >deus_eq_wrapper</span>
+    <span (click)="focusOnLog('tsunami_wrapper')"            class="header" [class.active]="focussedLog === 'tsunami_wrapper'"             >tsunami_wrapper</span>
+    <span (click)="focusOnLog('modelprop_ts_wrapper')"       class="header" [class.active]="focussedLog === 'modelprop_ts_wrapper'"        >modelprop_ts_wrapper</span>
+    <span (click)="focusOnLog('deus_ts_wrapper')"            class="header" [class.active]="focussedLog === 'deus_ts_wrapper'"             >deus_ts_wrapper</span>
+</div>
 
-</app-tabs>
+<table class="box">
+    <tr *ngFor="let logEntry of getFocussedLogs(); let i = index;">
+        <td>{{ i }}</td>
+        <td>{{ logEntry }}</td>
+    </tr>
+</table>

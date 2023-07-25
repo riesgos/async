@@ -4,10 +4,10 @@
 
 export const environment = {
   production: false,
-  filestorageUrl: "http://127.0.0.1/",
-  queueUrl: "http://127.0.0.1/queue/",
-  fastApiUrl: "http://127.0.0.1/backend/",
-  logsUrl: "http://127.0.0.1/logs/"
+  filestorageUrl: "http://10.104.136.68/riesgosfiles",
+  queueUrl: "http://10.104.136.68/queue/",
+  fastApiUrl: "http://10.104.136.68/backend/",
+  logsUrl: "http://10.104.136.68/logs/"
 };
 
 /*

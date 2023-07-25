@@ -9,7 +9,6 @@ import { AppStateFormDatum, AppStateService } from 'src/app/services/appstate/ap
 })
 export class PrecalcFormEntryComponent implements OnInit {
 
-  @Input() formGroup!: FormGroup;
   @Input() entry!: AppStateFormDatum;
   public form!: FormControl;
 
@@ -17,7 +16,6 @@ export class PrecalcFormEntryComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = new FormControl(this.entry.value);
-    this.formGroup.addControl(this.entry.key, this.form);
     this.form.valueChanges.subscribe(v => this.state.action({
         type: 'formSelect',
         payload: {

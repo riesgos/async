@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { catchError, defaultIfEmpty, forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
-import { ComplexOutput, Job, Order, Process, Product, ProductType, UserSelfInformation } from "src/app/backend_api/models";
-import { ApiService } from "src/app/backend_api/services";
-import { UserOrder } from "../backend/backend.service";
+import { ComplexOutput, Job, Order, Process, Product, ProductType, UserSelfInformation } from "src/app/services/backend/backend_api/models";
+import { ApiService } from "src/app/services/backend/backend_api/services";
+import { UserOrder } from "../backend.service";
 
 
 export interface ProductInfo {
     orderId: number,
+    jobId: number,
     processId: string,
     paraId: string,
     link: string,
@@ -127,6 +128,7 @@ export function isAuthenticationError(result: any): result is CredentialsError {
 
                     const productData: ProductInfo = {
                         orderId: orderId,
+                        jobId: job.id,
                         processId: processId,
                         paraId: paraId,
                         link: link,
